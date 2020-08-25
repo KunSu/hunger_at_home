@@ -25,7 +25,7 @@ import (
 // 	})
 // }
 
-func queryStrings(c *gin.Context) {
+func querySignUp(c *gin.Context) {
 	//getting data from request
 	userID := c.Query("userID")
 	userName := c.Query("userName")
@@ -70,7 +70,7 @@ func main() {
 	r := gin.Default()
 	// r.GET("/", homePage)
 	// r.POST("/", postHomePage)
-	r.GET("/query", queryStrings) // query?name=zhadanren&age=233
+	r.GET("/signup", querySignUp)
 	// r.GET("/path/:name/:age", pathParameters) //query/zhadanren/233
 	r.Run()
 }
