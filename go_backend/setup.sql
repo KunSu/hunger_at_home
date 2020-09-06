@@ -13,7 +13,11 @@ DROP TABLE IF EXISTS `foodApp`.`userInfo`;
 CREATE TABLE `foodApp`.`userInfo` (
   `userID` int NOT NULL,
   `userName` varchar(255) NOT NULL,
+  `email` varchar(20) NOT NULL,
   `password` varchar(20) NOT NULL,
+  `firstName` varchar(255) NOT NULL,
+  `lastName` varchar(255) NOT NULL,
+  `phoneNumber` int NOT NULL,
   `userIdentity` varchar(20) NOT NULL,
   PRIMARY KEY (`userID`)
 ); 

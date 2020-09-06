@@ -31,7 +31,11 @@ func querySignUp(c *gin.Context) {
 	//getting data from request
 	userID := c.Query("userID")
 	userName := c.Query("userName")
+	email := c.Query("email")
 	password := c.Query("password")
+	firstName := c.Query("firstName")
+	lastName := c.Query("lastName")
+	phoneNumber := c.Query("phoneNumber")
 	userIdentity := c.Query("userIdentity")
 
 	//connect to the db
@@ -45,15 +49,12 @@ func querySignUp(c *gin.Context) {
 		panic(err.Error())
 	} else {
 		fmt.Println("DB Connected!")
-		c.JSON(200, gin.H{
-			"httpCode": "200",
-			"message":  "Database is connected",
-		})
 	}
 	defer db.Close()
 
 	//insert to db
-	insert, err := db.Query("SELECT INTO userinfo VALUES(?,?,?,?)", userID, userName, password, userIdentity)
+	insert, err := db.Query("INSERT INTO userinfo VALUES(?,?,?,?,?,?,?,?)", userID, userName, email, password, firstName, lastName, phoneNumber, userIdentity)
+
 	if err != nil {
 		fmt.Println("Sign up error")
 		c.JSON(200, gin.H{
@@ -87,10 +88,6 @@ func queryLogin(c *gin.Context) {
 		panic(err.Error())
 	} else {
 		fmt.Println("DB Connected!")
-		// c.JSON(200, gin.H{
-		// 	"httpCode": "200",
-		// 	"message":  "Database is connected",
-		// })
 	}
 	defer db.Close()
 
