@@ -20,3 +20,17 @@ CREATE TABLE `foodApp`.`userInfo` (
   `userIdentity` varchar(20) NOT NULL,
   PRIMARY KEY (userID)
 ); 
+
+-- Create Table [companyInfo]
+DROP TABLE IF EXISTS `foodApp`.`companyInfo`;
+CREATE TABLE `foodApp`.`companyInfo` (
+  `companyID` int NOT NULL AUTO_INCREMENT, 
+  `companyName` varchar(20) NOT NULL UNIQUE,
+  `address` varchar(100) NOT NULL,
+  `city` varchar(20) NOT NULL,
+  `state` varchar(20) NOT NULL,
+  `zipCode` int NOT NULL,
+  `fedID` varchar(100) NOT NULL UNIQUE,
+  `einID` varchar(100) NOT NULL UNIQUE,
+   PRIMARY KEY (companyID)
+); 
