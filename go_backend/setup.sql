@@ -1,4 +1,5 @@
-CREATE database IF NOT EXISTS foodApp
+DROP database IF EXISTS foodApp
+CREATE database foodApp
 DEFAULT CHARACTER SET utf8;
 SET GLOBAL local_infile = 1;
 SET default_storage_engine = InnoDB;
