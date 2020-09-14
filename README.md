@@ -10,7 +10,19 @@ Setup Backend
 2. Install dependancies
 	a. Go Gin: go get -u github.com/gin-gonic/gin
 	b. Go SQL driver: go get -u github.com/go-sql-driver/mysql
-
+3. Start Backend
+	a. Have local DB running, the default db info is listed below (stated in config.go)
+		const (
+			host     = "localhost"
+			port     = "3306"
+			user     = "root"
+			password = ""
+			dbName   = "foodapp"
+		)
+		user can change related info according to their own db setting
+	b. Copy paste the code from Setup.sql or run it in local db application to create local database
+	c. Before you run the backend, make sure your port 8080 is not used by other application. Run all .go files using command line: go run main.go loginSystem.go config.go
+	d. Done, you can use postman to try few APIs
 
 Backend API Testing
 1. Signup Testing
