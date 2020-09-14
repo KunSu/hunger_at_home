@@ -21,7 +21,7 @@ Setup Backend
 		)
 		user can change related info according to their own db setting
 	b. Copy paste the code from Setup.sql or run it in local db application to create local database
-	c. Before you run the backend, make sure your port 8080 is not used by other application. CD into go_backend folder, run all .go files using command line: go run main.go loginSystem.go config.go
+	c. Before you run the backend, make sure your port 8080 is not used by other application. CD into go_backend folder, run all .go files using command line: go run config.go loginSystem.go main.go
 	d. Done, you can use postman to try few APIs
 
 Backend API Testing
