@@ -4,9 +4,13 @@
 
 Setup Backend
 1. Download Go and install on local machine : https://golang.org/doc/install
+	a. Go workspace and PATH are also needed to run .go
+		Mac: https://sourabhbajaj.com/mac-setup/Go/
+		Linux: https://www.linode.com/docs/development/go/install-go-on-ubuntu/
 2. Install dependancies
 	a. Go Gin: go get -u github.com/gin-gonic/gin
 	b. Go SQL driver: go get -u github.com/go-sql-driver/mysql
+
 
 Backend API Testing
 1. Signup Testing
