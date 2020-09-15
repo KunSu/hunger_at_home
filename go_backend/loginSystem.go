@@ -1,22 +1,38 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func postTest(c *gin.Context) {
+	//converting input from json to struct then string
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	type SensorReading struct {
+		Name     string `json:"name"`
+		Capacity int    `json:"capacity"`
+		Time     string `json:"time"`
+	}
+
+	var reading SensorReading
+	er := json.Unmarshal([]byte(value), &reading)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&reading).Elem()
+	name := fmt.Sprint(e.Field(0).Interface())
 	c.JSON(200, gin.H{
-		"message": string(value),
+		"name": string(name),
 	})
 }
 
