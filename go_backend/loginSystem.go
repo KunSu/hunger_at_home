@@ -2,11 +2,23 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
+
+func postTest(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	c.JSON(200, gin.H{
+		"message": string(value),
+	})
+}
 
 func homePage(c *gin.Context) {
 	c.JSON(200, gin.H{
@@ -17,12 +29,21 @@ func homePage(c *gin.Context) {
 //sign up function
 func querySignUp(c *gin.Context) {
 	//getting data from request
+
+	//TODO: use payload body to transfer data
 	email := c.Query("email")
 	password := c.Query("password")
 	firstName := c.Query("firstName")
 	lastName := c.Query("lastName")
 	phoneNumber := c.Query("phoneNumber")
 	userIdentity := c.Query("userIdentity")
+
+	if !isEmailValid(email) {
+		c.JSON(404, gin.H{
+			"httpCode": "404",
+			"message":  "The email address is not valid",
+		})
+	}
 
 	// connect to the db
 	db := connectDB(c)
@@ -34,13 +55,13 @@ func querySignUp(c *gin.Context) {
 		fmt.Println("Sign up error")
 		c.JSON(404, gin.H{
 			"httpCode": "404",
-			"message":  "Signup is not vailed",
+			"message":  "This email address is already taken",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
 			"httpCode": "201",
-			"message":  "User created",
+			"message":  "Congrats! Your signup is successful",
 		})
 	}
 	defer insert.Close()
@@ -51,6 +72,8 @@ func queryLogin(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
 	password := c.Query("password")
+
+	//TODO: MD5 for encode and decode password
 
 	// connect to the db
 	db := connectDB(c)
