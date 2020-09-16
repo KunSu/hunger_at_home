@@ -12,11 +12,9 @@ func main() {
 	r := gin.Default()
 	//TODO: URL design and catagorize them into different /
 	r.GET("/", homePage)
-	// r.GET("api/signup", querySignUp)
 	r.POST("api/signup", querySignUp)
 	r.GET("api/login", queryLogin)
 	r.GET("api/reset", queryResetPassword)
 	r.POST("api/companySignup", queryCompanySignUp)
-	r.POST("api/postTest", postTest)
 	r.Run()
 }
