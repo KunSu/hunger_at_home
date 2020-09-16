@@ -11,31 +11,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func postTest(c *gin.Context) {
-	//converting input from json to struct then string
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type SensorReading struct {
-		Name     string `json:"name"`
-		Capacity int    `json:"capacity"`
-		Time     string `json:"time"`
-	}
-
-	var reading SensorReading
-	er := json.Unmarshal([]byte(value), &reading)
-	if er != nil {
-		fmt.Println(err.Error())
-	}
-	e := reflect.ValueOf(&reading).Elem()
-	name := fmt.Sprint(e.Field(0).Interface())
-	c.JSON(200, gin.H{
-		"name": string(name),
-	})
-}
-
 func homePage(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Hello World",
@@ -119,7 +94,7 @@ func querySignUp(c *gin.Context) {
 	defer insert.Close()
 }
 
-//login function
+//Login Function
 func queryLogin(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
@@ -166,7 +141,7 @@ func queryLogin(c *gin.Context) {
 	defer rows.Close()
 }
 
-//resetPassword
+//Reset Password, TODO: need to be improved later
 func queryResetPassword(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
@@ -200,50 +175,4 @@ func queryResetPassword(c *gin.Context) {
 		}
 		defer update.Close()
 	}
-}
-
-//donor company sighup function
-func queryCompanySignUp(c *gin.Context) {
-	//getting data from request
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type Signup struct {
-		CompanyName string `json:"companyName"`
-		FedID       string `json:"fedID"`
-		EinID       string `json:"einID"`
-	}
-
-	var signup Signup
-	er := json.Unmarshal([]byte(value), &signup)
-	if er != nil {
-		fmt.Println(err.Error())
-	}
-	e := reflect.ValueOf(&signup).Elem()
-	companyName := fmt.Sprint(e.Field(0).Interface())
-	fedID := fmt.Sprint(e.Field(1).Interface())
-	einID := fmt.Sprint(e.Field(2).Interface())
-
-	// connect to the db
-	db := connectDB(c)
-	defer db.Close()
-	//insert to db
-	insert, err := db.Query("INSERT INTO company VALUES(DEFAULT,?,?,?,DEFAULT)", companyName, fedID, einID)
-
-	if err != nil {
-		fmt.Println("Sign up error")
-		c.JSON(500, gin.H{
-			"httpCode": "404",
-			"message":  "Company name is already taken",
-		})
-		panic(err.Error())
-	} else {
-		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "Company has been assigned or created",
-		})
-	}
-	defer insert.Close()
 }

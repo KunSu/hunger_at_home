@@ -16,5 +16,6 @@ func main() {
 	r.GET("api/login", queryLogin)
 	r.GET("api/reset", queryResetPassword)
 	r.POST("api/companySignup", queryCompanySignUp)
+	r.POST("api/addressSignup", queryAddressSignUp)
 	r.Run()
 }

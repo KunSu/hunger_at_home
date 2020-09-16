@@ -17,12 +17,12 @@ CREATE TABLE `foodApp`.`user` (
   `password` varchar(20) NOT NULL,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
-  `phoneNumber` int NOT NULL,
+  `phoneNumber` varchar(255) NOT NULL,
   `userIdentity` varchar(20) NOT NULL,
   `companyID` int NOT NULL,
   `secureQuestion` varchar(255) NOT NULL,
   `secureAnswer` varchar(255) NOT NULL,
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
 
@@ -33,7 +33,7 @@ CREATE TABLE `foodApp`.`company` (
   `companyName` varchar(20) NOT NULL UNIQUE,
   `fedID` varchar(100) NOT NULL UNIQUE,
   `einID` varchar(100) NOT NULL UNIQUE,
-   `timestamp` date NOT NULL,
+   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
    PRIMARY KEY (id)
 ); 
 
@@ -109,3 +109,5 @@ CREATE TABLE `foodApp`.`orderAssociate` (
   `timestamp` date NOT NULL,
    PRIMARY KEY (orderID, donorID, recipientID)
 ); 
+
+select * from user
