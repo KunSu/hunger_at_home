@@ -45,14 +45,38 @@ func homePage(c *gin.Context) {
 //sign up function
 func querySignUp(c *gin.Context) {
 	//getting data from request
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Signup struct {
+		Email          string `json:"email"`
+		Password       string `json:"password"`
+		FirstName      string `json:"firstName"`
+		LastName       string `json:"lastName"`
+		PhoneNumber    string `json:"phoneNumber"`
+		UserIdentity   string `json:"userIdentity"`
+		CompanyID      string `json:"companyID"`
+		SecureQuestion string `json:"secureQuestion"`
+		SecureAnswer   string `json:"secureAnswer"`
+	}
 
-	//TODO: use payload body to transfer data
-	email := c.Query("email")
-	password := c.Query("password")
-	firstName := c.Query("firstName")
-	lastName := c.Query("lastName")
-	phoneNumber := c.Query("phoneNumber")
-	userIdentity := c.Query("userIdentity")
+	var signup Signup
+	er := json.Unmarshal([]byte(value), &signup)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&signup).Elem()
+	email := fmt.Sprint(e.Field(0).Interface())
+	password := fmt.Sprint(e.Field(1).Interface())
+	firstName := fmt.Sprint(e.Field(2).Interface())
+	lastName := fmt.Sprint(e.Field(3).Interface())
+	phoneNumber := fmt.Sprint(e.Field(4).Interface())
+	userIdentity := fmt.Sprint(e.Field(5).Interface())
+	companyID := fmt.Sprint(e.Field(6).Interface())
+	secureQuestion := fmt.Sprint(e.Field(7).Interface())
+	secureAnswer := fmt.Sprint(e.Field(8).Interface())
 
 	if !isEmailValid(email) {
 		c.JSON(404, gin.H{
@@ -61,11 +85,23 @@ func querySignUp(c *gin.Context) {
 		})
 	}
 
+	// c.JSON(200, gin.H{
+	// 	"email":          string(email),
+	// 	"password":       string(password),
+	// 	"firstName":      string(firstName),
+	// 	"lastName":       string(lastName),
+	// 	"phoneNumber":    string(phoneNumber),
+	// 	"userIdentity":   string(userIdentity),
+	// 	"companyID":      string(companyID),
+	// 	"secureQuestion": string(secureQuestion),
+	// 	"secureAnswer":   string(secureAnswer),
+	// })
+
 	// connect to the db
 	db := connectDB(c)
 	defer db.Close()
 	//insert to db
-	insert, err := db.Query("INSERT INTO userinfo VALUES(DEFAULT,?,?,?,?,?,?)", email, password, firstName, lastName, phoneNumber, userIdentity)
+	insert, err := db.Query("INSERT INTO user VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,DEFAULT)", email, password, firstName, lastName, phoneNumber, userIdentity, companyID, secureQuestion, secureAnswer)
 
 	if err != nil {
 		fmt.Println("Sign up error")
