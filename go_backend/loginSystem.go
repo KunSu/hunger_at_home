@@ -205,26 +205,38 @@ func queryResetPassword(c *gin.Context) {
 //donor company sighup function
 func queryCompanySignUp(c *gin.Context) {
 	//getting data from request
-	//userID := c.Query("userID")
-	companyName := c.Query("companyName")
-	address := c.Query("address")
-	city := c.Query("city")
-	state := c.Query("state")
-	zipCode := c.Query("zipCode")
-	fedID := c.Query("fedID")
-	einID := c.Query("einID")
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Signup struct {
+		CompanyName string `json:"companyName"`
+		FedID       string `json:"fedID"`
+		EinID       string `json:"einID"`
+	}
+
+	var signup Signup
+	er := json.Unmarshal([]byte(value), &signup)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&signup).Elem()
+	companyName := fmt.Sprint(e.Field(0).Interface())
+	fedID := fmt.Sprint(e.Field(1).Interface())
+	einID := fmt.Sprint(e.Field(2).Interface())
 
 	// connect to the db
 	db := connectDB(c)
 	defer db.Close()
 	//insert to db
-	insert, err := db.Query("INSERT INTO companyInfo VALUES(DEFAULT,?,?,?,?,?,?,?)", companyName, address, city, state, zipCode, fedID, einID)
+	insert, err := db.Query("INSERT INTO company VALUES(DEFAULT,?,?,?,DEFAULT)", companyName, fedID, einID)
 
 	if err != nil {
 		fmt.Println("Sign up error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "Signup is not vailed",
+			"httpCode": "404",
+			"message":  "Company name is already taken",
 		})
 		panic(err.Error())
 	} else {
