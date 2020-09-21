@@ -45,7 +45,7 @@ CREATE TABLE `foodApp`.`address` (
   `city` varchar(20) NOT NULL,
   `state` varchar(20) NOT NULL,
   `zipCode` int NOT NULL,
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
    PRIMARY KEY (id)
 ); 
 
@@ -54,7 +54,7 @@ DROP TABLE IF EXISTS `foodApp`.`companyAddressAssociate`;
 CREATE TABLE `foodApp`.`companyAddressAssociate` (
   `addressID` int NOT NULL, 
   `companyID` int NOT NULL,  
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
    PRIMARY KEY (addressID, companyID)
 ); 
 
@@ -75,7 +75,7 @@ CREATE TABLE `foodApp`.`donation` (
   `donorID` int NOT NULL,
   `driverID` int NOT NULL,
   `status` varchar(100) NOT NULL,
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
 
@@ -95,7 +95,7 @@ CREATE TABLE `foodApp`.`request` (
   `pickUpTime` date NOT NULL,
   `donorID` int NOT NULL,
   `status` varchar(100) NOT NULL,
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
 
@@ -106,7 +106,7 @@ CREATE TABLE `foodApp`.`orderAssociate` (
   `driverID` int,  
   `donorID` int NOT NULL,  
   `recipientID` int NOT NULL,  
-  `timestamp` date NOT NULL,
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
    PRIMARY KEY (orderID, donorID, recipientID)
 ); 
 
