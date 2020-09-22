@@ -24,23 +24,15 @@ Setup Backend
 	c. Before you run the backend, make sure your port 8080 is not used by other application. CD into go_backend folder, run all .go files using command line: go run config.go loginSystem.go main.go
 	d. Done, you can use postman to try few APIs
 
-Backend API Testing
-1. Signup Testing
-	a. Format: localhost:8080/signup?email={your-emil}&password={your-password}&firstName={firstname}&lastName={lastname}&phoneNumber={phone_number}&userIdentity={identity}
-	b. Example: localhost:8080/signup?email=zhadanren1@gmail.com&password=1234&firstName=zha&lastName=danren1&phoneNumber=111&userIdentity=admin
-	c. Email has to be unique otherwise it can not be added to the DB, and you will get an error message
-2. Login Testing
-	a. Format: localhost:8080/login?email={email}&password={password}
-	b. Example: localhost:8080/login?email=zhadanren2@gmail.com&password=1234
-	c. Only accounts that are already in the DB through Signup can be logged in
-	d. If password/email is not correct, you will get an error message
-3. Company Signup Testing
-	a. Format: localhost:8080/companySignup?companyName={company_name}&address={address}&city={city}&state=C{State}&zipCode={zipcode}&fedID={fedID}&einID={einID}
-	b. Example: localhost:8080/companySignup?companyName=c4&address=2713 Der Rey&city=San Jose&state=CA&zipCode=76544&fedID=1asd2&einID=dsa4
-	c. Company name is unique at this stage can can be changed later according to the requirements
-	d. you can not signup company with the same name for now 
-4. Reset Password Testing
-	a. Format: localhost:8080/reset?email={email}&password={password}&rePassword={new_password}
-	b. Example: localhost:8080/reset?email=zhadanren2@gmail.com&password=12345&rePassword=1234
-	c. It can only be applied to the existing accounts, otherwise you will get an error message
-	d. More verification methods will be add in to the function later
+Backend API Testing(Assuming the default port as 8080)
+1. userInfo.go
+	Description: a go file that stores user related APIs such as signup and login
+	Detailed API
+		Signup:
+			a. URL: localhost:8080/api/signup (POST request)
+			b. Body Content:{"email": "zhadanren1@gmail.com", "password": "1234", "firstName": "zhadan", "lastName": "ren", "phoneNumber": "4445556666", "userIdentity": "admin", "companyID": "12", "secureQuestion": "something", "secureAnswer": "something"}
+		Login:
+			a. URL: localhostL:8080/api/login (GET request)
+			b. Parameter content: localhost:8080/login?email=zhadanren1@gmail.com&password=1234
+			c. MD5 havent been applied yet but it can be done very soon
+

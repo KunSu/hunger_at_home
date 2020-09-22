@@ -58,6 +58,7 @@ func querySignUp(c *gin.Context) {
 			"httpCode": "404",
 			"message":  "The email address is not valid",
 		})
+		return
 	}
 
 	// c.JSON(200, gin.H{
@@ -109,7 +110,7 @@ func queryLogin(c *gin.Context) {
 	var (
 		userID int
 	)
-	rows, err := db.Query("SELECT userID from userinfo WHERE email = ? AND password = ?", email, password)
+	rows, err := db.Query("SELECT id from user WHERE email = ? AND password = ?", email, password)
 	if err != nil {
 		fmt.Println("Login error")
 		c.JSON(404, gin.H{
