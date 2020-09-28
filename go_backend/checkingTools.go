@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,11 +23,22 @@ func isEmailValid(e string) bool {
 }
 
 func isPhoneValid(p string) bool {
-	if len(p) != 9 {
+	if len(p) != 10 {
+		fmt.Print("Length is not valid")
 		return false
 	}
 	for _, v := range p {
 		if v < '0' || v > '9' {
+			fmt.Print("letter is not valid")
+			return false
+		}
+	}
+	return true
+}
+
+func IsLetter(s string) bool {
+	for _, r := range s {
+		if !unicode.IsLetter(r) {
 			return false
 		}
 	}

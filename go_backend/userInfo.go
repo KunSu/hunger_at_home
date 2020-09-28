@@ -63,9 +63,18 @@ func querySignUp(c *gin.Context) {
 	}
 
 	//check if valid phone
+	fmt.Print(len(phoneNumber))
 	if !isPhoneValid(phoneNumber) {
 		c.JSON(404, gin.H{
 			"message": "The phone number is not valid",
+		})
+		return
+	}
+
+	//check if secure question and answer are both only containing alphabit
+	if !IsLetter(secureQuestion) || !IsLetter(secureAnswer) {
+		c.JSON(404, gin.H{
+			"message": "The secure questions/answers are invalid, they should only contain alphabit",
 		})
 		return
 	}
