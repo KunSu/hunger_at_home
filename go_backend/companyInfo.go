@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,13 +35,29 @@ func queryCompanySignUp(c *gin.Context) {
 	einID := fmt.Sprint(e.Field(2).Interface())
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO company VALUES(DEFAULT,?,?,?,DEFAULT)", companyName, fedID, einID)
 
 	if err != nil {
 		fmt.Println("Sign up error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(404, gin.H{
+				"httpCode": "500",
+				"message":  "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(500, gin.H{
 			"httpCode": "404",
 			"message":  "Company name is already taken",
@@ -82,13 +99,28 @@ func queryAddressSignUp(c *gin.Context) {
 	zipCode := fmt.Sprint(e.Field(3).Interface())
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO address VALUES(DEFAULT,?,?,?,?,DEFAULT)", address, city, state, zipCode)
-
 	if err != nil {
 		fmt.Println("Sign up error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(404, gin.H{
+				"httpCode": "500",
+				"message":  "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(500, gin.H{
 			"httpCode": "404",
 			"message":  "This address is already taken",
@@ -130,13 +162,29 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 	zipCode := fmt.Sprint(e.Field(3).Interface())
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO address VALUES(DEFAULT,?,?,?,?,DEFAULT)", address, city, state, zipCode)
 
 	if err != nil {
 		fmt.Println("Sign up error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(404, gin.H{
+				"httpCode": "500",
+				"message":  "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(500, gin.H{
 			"httpCode": "404",
 			"message":  "This address is already taken",

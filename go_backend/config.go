@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -16,19 +17,15 @@ const (
 	dbName   = "foodapp"
 )
 
-func connectDB(c *gin.Context) *sql.DB {
+func connectDB(c *gin.Context) (*sql.DB, error) {
 	//connect to the db
-	sqlConnect := "root:@tcp(" + host + ":" + port + ")/" + dbName
+	sqlConnect := user + ":@tcp(" + host + ":" + port + ")/" + dbName
 	db, err := sql.Open("mysql", sqlConnect)
+
 	if err != nil {
-		fmt.Println("DB connection error")
-		c.JSON(200, gin.H{
-			"httpCode": "500",
-			"message":  "Database is not connected",
-		})
-		panic(err.Error())
-	} else {
-		fmt.Println("DB Connected!")
+		fmt.Println("here are some error in db")
+		return nil, errors.New("math: square root of negative number")
 	}
-	return db
+	return db, nil
+
 }

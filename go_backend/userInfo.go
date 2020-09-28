@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -74,13 +75,28 @@ func querySignUp(c *gin.Context) {
 	// })
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if db == nil {
+		fmt.Println("DB has something wrong")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB has something wrong",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO user VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,DEFAULT)", email, password, firstName, lastName, phoneNumber, userIdentity, companyID, secureQuestion, secureAnswer)
-
 	if err != nil {
 		fmt.Println("Sign up error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(404, gin.H{
+				"httpCode": "500",
+				"message":  "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(404, gin.H{
 			"httpCode": "404",
 			"message":  "This email address is already taken",
@@ -104,7 +120,16 @@ func queryLogin(c *gin.Context) {
 	//TODO: MD5 for encode and decode password
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//select userID from db
 	var (
@@ -113,6 +138,13 @@ func queryLogin(c *gin.Context) {
 	rows, err := db.Query("SELECT id from user WHERE email = ? AND password = ?", email, password)
 	if err != nil {
 		fmt.Println("Login error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(404, gin.H{
+				"httpCode": "500",
+				"message":  "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(404, gin.H{
 			"httpCode": "404",
 			"message":  "Such username or password is incorrect",
@@ -150,7 +182,16 @@ func queryResetPassword(c *gin.Context) {
 	rePassword := c.Query("rePassword")
 
 	// connect to the db
-	db := connectDB(c)
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"httpCode": "500",
+			"message":  "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
 	defer db.Close()
 	//update to db
 	if rePassword != password {
@@ -162,6 +203,13 @@ func queryResetPassword(c *gin.Context) {
 		update, err := db.Query("UPDATE userinfo SET password = ? WHERE email = ?", password, email)
 		if err != nil {
 			fmt.Println("update error")
+			if strings.Contains(err.Error(), "Access denied") {
+				c.JSON(404, gin.H{
+					"httpCode": "500",
+					"message":  "DB access error, username or password is wrong",
+				})
+				panic(err.Error())
+			}
 			c.JSON(404, gin.H{
 				"httpCode": "404",
 				"message":  "Update is not vailed",
