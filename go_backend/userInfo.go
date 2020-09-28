@@ -57,8 +57,7 @@ func querySignUp(c *gin.Context) {
 	//check if valid email
 	if !isEmailValid(email) {
 		c.JSON(404, gin.H{
-			"httpCode": "404",
-			"message":  "The email address is not valid",
+			"message": "The email address is not valid",
 		})
 		return
 	}
@@ -66,8 +65,7 @@ func querySignUp(c *gin.Context) {
 	//check if valid phone
 	if !isPhoneValid(phoneNumber) {
 		c.JSON(404, gin.H{
-			"httpCode": "404",
-			"message":  "The phone number is not valid",
+			"message": "The phone number is not valid",
 		})
 		return
 	}
@@ -76,8 +74,7 @@ func querySignUp(c *gin.Context) {
 	if db == nil {
 		fmt.Println("DB has something wrong")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB has something wrong",
+			"message": "DB has something wrong",
 		})
 		panic(err.Error())
 	}
@@ -88,14 +85,12 @@ func querySignUp(c *gin.Context) {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "This email address is already taken",
+			"message": "This email address is already taken",
 		})
 		panic(err.Error())
 	} else {
@@ -119,8 +114,7 @@ func queryLogin(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -134,15 +128,13 @@ func queryLogin(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Login error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(404, gin.H{
-			"httpCode": "404",
-			"message":  "Such username or password is incorrect",
+			"message": "Such username or password is incorrect",
 		})
 		panic(err.Error())
 	} else {
@@ -154,14 +146,12 @@ func queryLogin(c *gin.Context) {
 		}
 		if userID == 0 {
 			c.JSON(404, gin.H{
-				"httpCode": "404",
-				"message":  "Such username or password is incorrect",
+				"message": "Such username or password is incorrect",
 			})
 		} else {
 			c.JSON(200, gin.H{
-				"httpCode": "200",
-				"userID":   userID,
-				"message":  "User Found",
+				"userID":  userID,
+				"message": "User Found",
 			})
 		}
 
@@ -181,8 +171,7 @@ func queryResetPassword(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -199,21 +188,18 @@ func queryResetPassword(c *gin.Context) {
 		if err != nil {
 			fmt.Println("update error")
 			if strings.Contains(err.Error(), "Access denied") {
-				c.JSON(404, gin.H{
-					"httpCode": "500",
-					"message":  "DB access error, username or password is wrong",
+				c.JSON(500, gin.H{
+					"message": "DB access error, username or password is wrong",
 				})
 				panic(err.Error())
 			}
 			c.JSON(404, gin.H{
-				"httpCode": "404",
-				"message":  "Update is not vailed",
+				"message": "Update is not vailed",
 			})
 			panic(err.Error())
 		} else {
 			c.JSON(200, gin.H{
-				"httpCode": "200",
-				"message":  "Password is updated",
+				"message": "Password is updated",
 			})
 
 		}

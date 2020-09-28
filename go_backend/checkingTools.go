@@ -51,14 +51,12 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "Query statements has something wrong",
+			"message": "Query statements has something wrong",
 		})
 		panic(err.Error())
 	} else {
@@ -70,13 +68,11 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 		}
 		if id == 0 {
 			c.JSON(404, gin.H{
-				"httpCode": "404",
-				"message":  "Such user does not exist",
+				"message": "Such user does not exist",
 			})
 		} else {
 			c.JSON(200, gin.H{
 				"message":        "User signup is successful",
-				"httpCode":       "200",
 				"id":             id,
 				"email":          email,
 				"password":       password,
@@ -108,14 +104,12 @@ func getCompany(comName string, c *gin.Context, db *sql.DB) {
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "Query statements has something wrong",
+			"message": "Query statements has something wrong",
 		})
 		panic(err.Error())
 	} else {
@@ -127,13 +121,11 @@ func getCompany(comName string, c *gin.Context, db *sql.DB) {
 		}
 		if id == 0 {
 			c.JSON(404, gin.H{
-				"httpCode": "404",
-				"message":  "Such company does not exist",
+				"message": "Such company does not exist",
 			})
 		} else {
 			c.JSON(200, gin.H{
 				"message":     "Company signup is successful",
-				"httpCode":    "200",
 				"id":          id,
 				"companyName": companyName,
 				"fedID":       fedID,

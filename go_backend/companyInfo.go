@@ -39,8 +39,7 @@ func queryCompanySignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -52,14 +51,12 @@ func queryCompanySignUp(c *gin.Context) {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(404, gin.H{
-			"httpCode": "404",
-			"message":  "Company name is already taken",
+			"message": "Company name is already taken",
 		})
 		panic(err.Error())
 	} else {
@@ -100,8 +97,7 @@ func queryAddressSignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -112,21 +108,18 @@ func queryAddressSignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"httpCode": "404",
-			"message":  "This address is already taken",
+		c.JSON(404, gin.H{
+			"message": "This address is already taken",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "This address has been assigned or created",
+			"message": "This address has been assigned or created",
 		})
 	}
 	defer insert.Close()
@@ -163,8 +156,7 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -176,21 +168,18 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "404",
-			"message":  "This address is already taken",
+			"message": "This address is already taken",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "This address has been assigned or created",
+			"message": "This address has been assigned or created",
 		})
 	}
 	defer insert.Close()

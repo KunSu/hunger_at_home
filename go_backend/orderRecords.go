@@ -61,8 +61,7 @@ func queryDonation(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -74,21 +73,18 @@ func queryDonation(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This donation order can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "This donation order can not be submitted",
+			"message": "This donation order can not be submitted",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "This donation order has been assigned or created",
+			"message": "This donation order has been assigned or created",
 		})
 	}
 	defer insert.Close()
@@ -143,8 +139,7 @@ func queryRequest(c *gin.Context) {
 	if err != nil {
 		fmt.Println("DB error")
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "DB connection problem",
+			"message": "DB connection problem",
 		})
 		panic(err.Error())
 	}
@@ -155,21 +150,18 @@ func queryRequest(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This request order can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
-				"httpCode": "500",
-				"message":  "DB access error, username or password is wrong",
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"httpCode": "500",
-			"message":  "This donation order can not be submitted",
+			"message": "This donation order can not be submitted",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "This request order has been assigned or created",
+			"message": "This request order has been assigned or created",
 		})
 	}
 	defer insert.Close()
