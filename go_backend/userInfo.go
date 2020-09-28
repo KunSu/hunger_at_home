@@ -54,10 +54,20 @@ func querySignUp(c *gin.Context) {
 	secureQuestion := fmt.Sprint(e.Field(7).Interface())
 	secureAnswer := fmt.Sprint(e.Field(8).Interface())
 
+	//check if valid email
 	if !isEmailValid(email) {
 		c.JSON(404, gin.H{
 			"httpCode": "404",
 			"message":  "The email address is not valid",
+		})
+		return
+	}
+
+	//check if valid phone
+	if !isPhoneValid(phoneNumber) {
+		c.JSON(404, gin.H{
+			"httpCode": "404",
+			"message":  "The phone number is not valid",
 		})
 		return
 	}
@@ -83,8 +93,8 @@ func querySignUp(c *gin.Context) {
 			})
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"httpCode": "404",
+		c.JSON(500, gin.H{
+			"httpCode": "500",
 			"message":  "This email address is already taken",
 		})
 		panic(err.Error())

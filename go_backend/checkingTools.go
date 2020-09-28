@@ -13,10 +13,23 @@ var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z
 
 // isEmailValid checks if the email provided passes the required structure and length.
 func isEmailValid(e string) bool {
-	if len(e) < 3 && len(e) > 254 {
+	email := strings.ToLower(e)
+	if len(email) < 3 && len(email) > 254 {
 		return false
 	}
-	return emailRegex.MatchString(e)
+	return emailRegex.MatchString(email)
+}
+
+func isPhoneValid(p string) bool {
+	if len(p) != 9 {
+		return false
+	}
+	for _, v := range p {
+		if v < '0' || v > '9' {
+			return false
+		}
+	}
+	return true
 }
 
 func getUser(userEmail string, c *gin.Context, db *sql.DB) {
@@ -62,6 +75,7 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 			})
 		} else {
 			c.JSON(200, gin.H{
+				"message":        "User signup is successful",
 				"httpCode":       "200",
 				"id":             id,
 				"email":          email,
@@ -118,6 +132,7 @@ func getCompany(comName string, c *gin.Context, db *sql.DB) {
 			})
 		} else {
 			c.JSON(200, gin.H{
+				"message":     "Company signup is successful",
 				"httpCode":    "200",
 				"id":          id,
 				"companyName": companyName,
