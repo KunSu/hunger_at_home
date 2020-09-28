@@ -45,30 +45,27 @@ func queryCompanySignUp(c *gin.Context) {
 		panic(err.Error())
 	}
 
-	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO company VALUES(DEFAULT,?,?,?,DEFAULT)", companyName, fedID, einID)
 
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
+			c.JSON(500, gin.H{
 				"httpCode": "500",
 				"message":  "DB access error, username or password is wrong",
 			})
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
+		c.JSON(404, gin.H{
 			"httpCode": "404",
 			"message":  "Company name is already taken",
 		})
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "Company has been assigned or created",
-		})
+		getCompany(companyName, c, db)
 	}
+	defer db.Close()
 	defer insert.Close()
 }
 

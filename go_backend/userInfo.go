@@ -61,19 +61,6 @@ func querySignUp(c *gin.Context) {
 		})
 		return
 	}
-
-	// c.JSON(200, gin.H{
-	// 	"email":          string(email),
-	// 	"password":       string(password),
-	// 	"firstName":      string(firstName),
-	// 	"lastName":       string(lastName),
-	// 	"phoneNumber":    string(phoneNumber),
-	// 	"userIdentity":   string(userIdentity),
-	// 	"companyID":      string(companyID),
-	// 	"secureQuestion": string(secureQuestion),
-	// 	"secureAnswer":   string(secureAnswer),
-	// })
-
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
@@ -85,13 +72,12 @@ func querySignUp(c *gin.Context) {
 		panic(err.Error())
 	}
 
-	defer db.Close()
 	//insert to db
 	insert, err := db.Query("INSERT INTO user VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,DEFAULT)", email, password, firstName, lastName, phoneNumber, userIdentity, companyID, secureQuestion, secureAnswer)
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(404, gin.H{
+			c.JSON(500, gin.H{
 				"httpCode": "500",
 				"message":  "DB access error, username or password is wrong",
 			})
@@ -103,12 +89,11 @@ func querySignUp(c *gin.Context) {
 		})
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"httpCode": "201",
-			"message":  "Congrats! Your signup is successful",
-		})
+		getUser(email, c, db)
 	}
+	defer db.Close()
 	defer insert.Close()
+
 }
 
 //Login Function

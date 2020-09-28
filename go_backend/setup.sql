@@ -13,7 +13,7 @@ USE foodApp;
 DROP TABLE IF EXISTS `foodApp`.`user`;
 CREATE TABLE `foodApp`.`user` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(20) NOT NULL UNIQUE,
+  `email` varchar(200) NOT NULL UNIQUE,
   `password` varchar(20) NOT NULL,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
@@ -109,5 +109,3 @@ CREATE TABLE `foodApp`.`orderAssociate` (
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
    PRIMARY KEY (orderID, donorID, recipientID)
 ); 
-
-select * from user

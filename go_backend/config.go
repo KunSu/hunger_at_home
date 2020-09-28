@@ -24,8 +24,7 @@ func connectDB(c *gin.Context) (*sql.DB, error) {
 
 	if err != nil {
 		fmt.Println("here are some error in db")
-		return nil, errors.New("math: square root of negative number")
+		return nil, errors.New("finally you got here! I dont know how but nvm....")
 	}
 	return db, nil
-
 }
