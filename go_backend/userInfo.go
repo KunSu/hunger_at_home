@@ -215,3 +215,35 @@ func queryResetPassword(c *gin.Context) {
 		defer update.Close()
 	}
 }
+
+//TODO
+func queryGetUser(c *gin.Context) {
+
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type User struct {
+		UserID string `json:"userID"`
+	}
+
+	var user User
+	er := json.Unmarshal([]byte(value), &user)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&company).Elem()
+	userID := fmt.Sprint(e.Field(0).Interface())
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+	//todo for getting user information
+
+	defer db.Close()
+}

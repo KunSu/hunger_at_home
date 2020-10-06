@@ -125,6 +125,70 @@ func queryAddressSignUp(c *gin.Context) {
 	defer insert.Close()
 }
 
+//TODO
+func queryGetCompany(c *gin.Context) {
+
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Company struct {
+		CompanyID string `json:"companyID"`
+	}
+
+	var company Company
+	er := json.Unmarshal([]byte(value), &company)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&company).Elem()
+	companyID := fmt.Sprint(e.Field(0).Interface())
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+	//todo for getting company information
+
+	defer db.Close()
+}
+
+//TODO
+func queryGetUser(c *gin.Context) {
+
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type User struct {
+		UserID string `json:"userID"`
+	}
+
+	var user User
+	er := json.Unmarshal([]byte(value), &user)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&company).Elem()
+	userID := fmt.Sprint(e.Field(0).Interface())
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+	//todo for getting user information
+
+	defer db.Close()
+}
+
 //TODO.........
 func queryCompanyAddressAssociate(c *gin.Context) {
 	//getting data from request
