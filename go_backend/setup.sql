@@ -22,6 +22,7 @@ CREATE TABLE `foodApp`.`user` (
   `companyID` int NOT NULL,
   `secureQuestion` varchar(255) NOT NULL,
   `secureAnswer` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
@@ -58,43 +59,27 @@ CREATE TABLE `foodApp`.`companyAddressAssociate` (
    PRIMARY KEY (addressID, companyID)
 ); 
 
--- Create Table [donation]
-DROP TABLE IF EXISTS `foodApp`.`donation`;
-CREATE TABLE `foodApp`.`donation` (
+-- Create Table [item]
+DROP TABLE IF EXISTS `foodApp`.`item`;
+CREATE TABLE `foodApp`.`item` (
   `id` int NOT NULL AUTO_INCREMENT,
   `foodName` varchar(255) NOT NULL,
   `foodCategory` varchar(255) NOT NULL,
   `expireDate` date NOT NULL,
   `quantity` varchar(255) NOT NULL,
-  `note` varchar(255) NOT NULL,
-  `address` varchar(100) NOT NULL,
-  `city` varchar(20) NOT NULL,
-  `state` varchar(20) NOT NULL,
-  `zipCode` int NOT NULL,
-  `pickUpTime` date NOT NULL,
-  `donorID` int NOT NULL,
-  `driverID` int NOT NULL,
-  `status` varchar(100) NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
 
--- Create Table [request]
-DROP TABLE IF EXISTS `foodApp`.`request`;
-CREATE TABLE `foodApp`.`request` (
+-- Create Table [order]
+DROP TABLE IF EXISTS `foodApp`.`order`;
+CREATE TABLE `foodApp`.`order` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `foodName` varchar(255) NOT NULL,
-  `foodCategory` varchar(255) NOT NULL,
-  `expireDate` date NOT NULL,
-  `quantity` varchar(255) NOT NULL,
   `note` varchar(255) NOT NULL,
-  `address` varchar(100) NOT NULL,
-  `city` varchar(20) NOT NULL,
-  `state` varchar(20) NOT NULL,
-  `zipCode` int NOT NULL,
+  `addressID` varchar(100) NOT NULL,
   `pickUpTime` date NOT NULL,
-  `donorID` int NOT NULL,
   `status` varchar(100) NOT NULL,
+  `type` varchar(100) NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
@@ -105,7 +90,19 @@ CREATE TABLE `foodApp`.`orderAssociate` (
   `orderID` int NOT NULL, 
   `driverID` int,  
   `donorID` int NOT NULL,  
-  `recipientID` int NOT NULL,  
+  `recipientID` int NOT NULL,
+  `adminID` int NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-   PRIMARY KEY (orderID, donorID, recipientID)
+   PRIMARY KEY (orderID, donorID, recipientID, adminID)
 ); 
+
+-- Create Table [orderItemAssociate]
+DROP TABLE IF EXISTS `foodApp`.`orderItemAssociate`;
+CREATE TABLE `foodApp`.`orderItemAssociate` (
+  `orderID` int NOT NULL, 
+  `itemID` int,  
+  `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+   PRIMARY KEY (orderID, itemID)
+); 
+
+select companyName from company
