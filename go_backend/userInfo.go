@@ -54,6 +54,11 @@ func querySignUp(c *gin.Context) {
 	secureQuestion := fmt.Sprint(e.Field(7).Interface())
 	secureAnswer := fmt.Sprint(e.Field(8).Interface())
 
+	//check identity
+	status := "approved"
+	if userIdentity == "employee" {
+		status = "pending"
+	}
 	//check if valid email
 	if !isEmailValid(email) {
 		c.JSON(404, gin.H{
@@ -89,7 +94,7 @@ func querySignUp(c *gin.Context) {
 	}
 
 	//insert to db
-	insert, err := db.Query("INSERT INTO user VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,DEFAULT)", email, password, firstName, lastName, phoneNumber, userIdentity, companyID, secureQuestion, secureAnswer)
+	insert, err := db.Query("INSERT INTO user VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,DEFAULT)", email, password, firstName, lastName, phoneNumber, userIdentity, companyID, secureQuestion, secureAnswer, status)
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
@@ -168,6 +173,56 @@ func queryLogin(c *gin.Context) {
 	defer rows.Close()
 }
 
+func queryUpdateUserStatus(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Update struct {
+		Email  string `json:"email"`
+		Status string `json:"status"`
+	}
+
+	var update Update
+	er := json.Unmarshal([]byte(value), &update)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&update).Elem()
+	email := fmt.Sprint(e.Field(0).Interface())
+	status := fmt.Sprint(e.Field(1).Interface())
+
+	// connect to the db
+	db, err := connectDB(c)
+	if db == nil {
+		fmt.Println("DB has something wrong")
+		c.JSON(500, gin.H{
+			"message": "DB has something wrong",
+		})
+		panic(err.Error())
+	}
+
+	updateQuery, err := db.Query("UPDATE user SET status = ? WHERE email = ?", status, email)
+	if err != nil {
+		fmt.Println("Update error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(404, gin.H{
+			"message": "Does not found such user",
+		})
+		panic(err.Error())
+	} else {
+		getUser(email, c, db)
+	}
+	defer updateQuery.Close()
+	defer db.Close()
+}
+
 //Reset Password, TODO: need to be improved later
 func queryResetPassword(c *gin.Context) {
 	//getting data from request
@@ -214,36 +269,4 @@ func queryResetPassword(c *gin.Context) {
 		}
 		defer update.Close()
 	}
-}
-
-//TODO
-func queryGetUser(c *gin.Context) {
-
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type User struct {
-		UserID string `json:"userID"`
-	}
-
-	var user User
-	er := json.Unmarshal([]byte(value), &user)
-	if er != nil {
-		fmt.Println(err.Error())
-	}
-	e := reflect.ValueOf(&company).Elem()
-	userID := fmt.Sprint(e.Field(0).Interface())
-	db, err := connectDB(c)
-	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
-		panic(err.Error())
-	}
-	//todo for getting user information
-
-	defer db.Close()
 }

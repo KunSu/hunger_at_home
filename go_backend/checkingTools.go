@@ -58,6 +58,7 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 		companyID      string
 		secureQuestion string
 		secureAnswer   string
+		status         string
 		timestamp      string
 	)
 	rows, err := db.Query("SELECT * from user WHERE email = ?", userEmail)
@@ -74,7 +75,7 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 		panic(err.Error())
 	} else {
 		for rows.Next() {
-			err := rows.Scan(&id, &email, &password, &firstName, &lastName, &phoneNumber, &userIdentity, &companyID, &secureQuestion, &secureAnswer, &timestamp)
+			err := rows.Scan(&id, &email, &password, &firstName, &lastName, &phoneNumber, &userIdentity, &companyID, &secureQuestion, &secureAnswer, &status, &timestamp)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -96,6 +97,7 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 				"companyID":      companyID,
 				"secureQuestion": secureQuestion,
 				"secureAnswer":   secureAnswer,
+				"status":         status,
 				"timestamp":      timestamp,
 			})
 		}

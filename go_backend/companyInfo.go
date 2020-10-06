@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"reflect"
 	"strings"
 
@@ -56,7 +57,7 @@ func queryCompanySignUp(c *gin.Context) {
 			panic(err.Error())
 		}
 		c.JSON(404, gin.H{
-			"message": "Company name is already taken",
+			"message": "Company name, FED or EIN is/are already taken",
 		})
 		panic(err.Error())
 	} else {
@@ -126,24 +127,8 @@ func queryAddressSignUp(c *gin.Context) {
 }
 
 //TODO
-func queryGetCompany(c *gin.Context) {
-
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type Company struct {
-		CompanyID string `json:"companyID"`
-	}
-
-	var company Company
-	er := json.Unmarshal([]byte(value), &company)
-	if er != nil {
-		fmt.Println(err.Error())
-	}
-	e := reflect.ValueOf(&company).Elem()
-	companyID := fmt.Sprint(e.Field(0).Interface())
+func queryGetCompanyList(c *gin.Context) {
+	//connect to DB
 	db, err := connectDB(c)
 	if err != nil {
 		fmt.Println("DB error")
@@ -152,41 +137,40 @@ func queryGetCompany(c *gin.Context) {
 		})
 		panic(err.Error())
 	}
-	//todo for getting company information
-
 	defer db.Close()
-}
+	//get company names
+	var companyName string
+	companyList := []string{}
 
-//TODO
-func queryGetUser(c *gin.Context) {
-
-	body := c.Request.Body
-	value, err := ioutil.ReadAll(body)
+	rows, err := db.Query("SELECT companyName from company")
 	if err != nil {
-		fmt.Println(err.Error())
-	}
-	type User struct {
-		UserID string `json:"userID"`
-	}
-
-	var user User
-	er := json.Unmarshal([]byte(value), &user)
-	if er != nil {
-		fmt.Println(err.Error())
-	}
-	e := reflect.ValueOf(&company).Elem()
-	userID := fmt.Sprint(e.Field(0).Interface())
-	db, err := connectDB(c)
-	if err != nil {
-		fmt.Println("DB error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
 		c.JSON(500, gin.H{
-			"message": "DB connection problem",
+			"message": "Query statements has something wrong",
 		})
 		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&companyName)
+			if err != nil {
+				log.Fatal(err)
+			}
+			companyList = append(companyList, companyName)
+		}
 	}
-	//todo for getting user information
+	listInJSON, err := json.Marshal(companyList)
+	if err != nil {
+		log.Fatal("Cannot encode to JSON ", err)
+	}
 
-	defer db.Close()
+	c.String(200, string(listInJSON))
+	defer rows.Close()
+
 }
 
 //TODO.........

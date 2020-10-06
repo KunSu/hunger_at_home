@@ -19,5 +19,7 @@ func main() {
 	r.POST("api/addressCompanyAssociate", queryCompanyAddressAssociate)
 	r.POST("api/donation", queryDonation)
 	r.POST("api/request", queryRequest)
+	r.POST("api/companyList", queryGetCompanyList)
+	r.POST("api/updateUserStatus", queryUpdateUserStatus)
 	r.Run()
 }
