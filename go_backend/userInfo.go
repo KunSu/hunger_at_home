@@ -66,6 +66,7 @@ func querySignUp(c *gin.Context) {
 		})
 		return
 	}
+	email = strings.ToLower(string(email))
 
 	//check if valid phone
 	fmt.Print(len(phoneNumber))
@@ -120,6 +121,7 @@ func queryLogin(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
 	password := c.Query("password")
+	email = strings.ToLower(string(email))
 
 	//TODO: MD5 for encode and decode password
 
@@ -137,8 +139,9 @@ func queryLogin(c *gin.Context) {
 	//select userID from db
 	var (
 		userID int
+		status string
 	)
-	rows, err := db.Query("SELECT id from user WHERE email = ? AND password = ?", email, password)
+	rows, err := db.Query("SELECT id, status from user WHERE email = ? AND password = ?", email, password)
 	if err != nil {
 		fmt.Println("Login error")
 		if strings.Contains(err.Error(), "Access denied") {
@@ -153,7 +156,7 @@ func queryLogin(c *gin.Context) {
 		panic(err.Error())
 	} else {
 		for rows.Next() {
-			err := rows.Scan(&userID)
+			err := rows.Scan(&userID, &status)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -161,6 +164,10 @@ func queryLogin(c *gin.Context) {
 		if userID == 0 {
 			c.JSON(404, gin.H{
 				"message": "Such username or password is incorrect",
+			})
+		} else if status == "pending" {
+			c.JSON(404, gin.H{
+				"message": "Such user has not been approved by admin",
 			})
 		} else {
 			c.JSON(200, gin.H{
@@ -173,6 +180,7 @@ func queryLogin(c *gin.Context) {
 	defer rows.Close()
 }
 
+//Set user status from pendign to approved
 func queryUpdateUserStatus(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -192,6 +200,7 @@ func queryUpdateUserStatus(c *gin.Context) {
 	e := reflect.ValueOf(&update).Elem()
 	email := fmt.Sprint(e.Field(0).Interface())
 	status := fmt.Sprint(e.Field(1).Interface())
+	email = strings.ToLower(string(email))
 
 	// connect to the db
 	db, err := connectDB(c)
