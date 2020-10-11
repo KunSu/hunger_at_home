@@ -72,14 +72,14 @@ CREATE TABLE `foodApp`.`item` (
 ); 
 
 -- Create Table [order]
-DROP TABLE IF EXISTS `foodApp`.`order`;
-CREATE TABLE `foodApp`.`order` (
+DROP TABLE IF EXISTS `foodApp`.`orderRecord`;
+CREATE TABLE `foodApp`.`orderRecord` (
   `id` int NOT NULL AUTO_INCREMENT,
   `note` varchar(255) NOT NULL,
   `addressID` varchar(100) NOT NULL,
   `pickUpTime` date NOT NULL,
   `status` varchar(100) NOT NULL,
-  `type` varchar(100) NOT NULL,
+  `orderType` varchar(100) NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
@@ -105,4 +105,4 @@ CREATE TABLE `foodApp`.`orderItemAssociate` (
    PRIMARY KEY (orderID, itemID)
 ); 
 
-select companyName from company
+select * from orderRecord

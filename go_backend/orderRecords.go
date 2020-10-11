@@ -10,51 +10,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//donation order
-func queryDonation(c *gin.Context) {
+//add an item
+func queryAddItem(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
+	type Item struct {
 		// ID
 		FoodName     string `json:"foodName"`
 		FoodCategory string `json:"foodCategory"`
 		ExpireDate   string `json:"expireDate"`
 		Quantity     string `json:"quantity"`
-		Note         string `json:"note"`
-		Address      string `json:"address"`
-		City         string `json:"city"`
-		State        string `json:"state"`
-		ZipCode      string `json:"zipCode"`
-		PickUpTime   string `json:"pickUpTime"`
-		DonorID      string `json:"donorID"`
-		DriverID     string `json:"driverID"`
-		Status       string `json:"status"`
 		// Timestamp string `json:"timestamp"`
 	}
 
-	var signup Signup
-	er := json.Unmarshal([]byte(value), &signup)
+	var item Item
+	er := json.Unmarshal([]byte(value), &item)
 	if er != nil {
 		fmt.Println(err.Error())
 	}
-	e := reflect.ValueOf(&signup).Elem()
+	e := reflect.ValueOf(&item).Elem()
 	foodName := fmt.Sprint(e.Field(0).Interface())
 	foodCategory := fmt.Sprint(e.Field(1).Interface())
 	expireDate := fmt.Sprint(e.Field(2).Interface())
 	quantity := fmt.Sprint(e.Field(3).Interface())
-	note := fmt.Sprint(e.Field(4).Interface())
-	address := fmt.Sprint(e.Field(5).Interface())
-	city := fmt.Sprint(e.Field(6).Interface())
-	state := fmt.Sprint(e.Field(7).Interface())
-	zipCode := fmt.Sprint(e.Field(8).Interface())
-	pickUpTime := fmt.Sprint(e.Field(9).Interface())
-	donorID := fmt.Sprint(e.Field(10).Interface())
-	driverID := fmt.Sprint(e.Field(11).Interface())
-	status := fmt.Sprint(e.Field(12).Interface())
 
 	// connect to the db
 	db, err := connectDB(c)
@@ -68,10 +50,10 @@ func queryDonation(c *gin.Context) {
 
 	defer db.Close()
 	//insert to db
-	insert, err := db.Query("INSERT INTO donation VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,?,DEFAULT)", foodName, foodCategory, expireDate, quantity, note, address, city, state, zipCode, pickUpTime, donorID, driverID, status)
+	insert, err := db.Query("INSERT INTO item VALUES(DEFAULT,?,?,?,?,DEFAULT)", foodName, foodCategory, expireDate, quantity)
 
 	if err != nil {
-		fmt.Println("This donation order can not be submitted")
+		fmt.Println("This item can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
 				"message": "DB access error, username or password is wrong",
@@ -79,60 +61,51 @@ func queryDonation(c *gin.Context) {
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"message": "This donation order can not be submitted",
+			"message": "This item can not be submitted",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"message": "This donation order has been assigned or created",
+			"message": "This item has been assigned or created",
 		})
 	}
 	defer insert.Close()
 }
 
-// request order
-func queryRequest(c *gin.Context) {
+//add an order
+func queryAddOrder(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
+	type Order struct {
 		// ID
-		FoodName     string `json:"foodName"`
-		FoodCategory string `json:"foodCategory"`
-		ExpireDate   string `json:"expireDate"`
-		Quantity     string `json:"quantity"`
-		Note         string `json:"note"`
-		Address      string `json:"address"`
-		City         string `json:"city"`
-		State        string `json:"state"`
-		ZipCode      string `json:"zipCode"`
-		PickUpTime   string `json:"pickUpTime"`
-		DonorID      string `json:"donorID"`
-		Status       string `json:"status"`
+		Note       string `json:"note"`
+		AddressID  string `json:"addressID"`
+		PickUpTime string `json:"pickUpTime"`
+		Status     string `json:"status"`
+		OrderType  string `json:"orderType"`
 		// Timestamp string `json:"timestamp"`
 	}
 
-	var signup Signup
-	er := json.Unmarshal([]byte(value), &signup)
+	var order Order
+	er := json.Unmarshal([]byte(value), &order)
 	if er != nil {
 		fmt.Println(err.Error())
 	}
-	e := reflect.ValueOf(&signup).Elem()
-	foodName := fmt.Sprint(e.Field(0).Interface())
-	foodCategory := fmt.Sprint(e.Field(1).Interface())
-	expireDate := fmt.Sprint(e.Field(2).Interface())
-	quantity := fmt.Sprint(e.Field(3).Interface())
-	note := fmt.Sprint(e.Field(4).Interface())
-	address := fmt.Sprint(e.Field(5).Interface())
-	city := fmt.Sprint(e.Field(6).Interface())
-	state := fmt.Sprint(e.Field(7).Interface())
-	zipCode := fmt.Sprint(e.Field(8).Interface())
-	pickUpTime := fmt.Sprint(e.Field(9).Interface())
-	donorID := fmt.Sprint(e.Field(10).Interface())
-	status := fmt.Sprint(e.Field(11).Interface())
+	e := reflect.ValueOf(&order).Elem()
+	note := fmt.Sprint(e.Field(0).Interface())
+	addressID := fmt.Sprint(e.Field(1).Interface())
+	pickUpTime := fmt.Sprint(e.Field(2).Interface())
+	status := fmt.Sprint(e.Field(3).Interface())
+	orderType := fmt.Sprint(e.Field(4).Interface())
+	fmt.Println(note)
+	fmt.Println(addressID)
+	fmt.Println(pickUpTime)
+	fmt.Println(status)
+	fmt.Println(orderType)
 
 	// connect to the db
 	db, err := connectDB(c)
@@ -146,9 +119,9 @@ func queryRequest(c *gin.Context) {
 
 	defer db.Close()
 	//insert to db
-	insert, err := db.Query("INSERT INTO request VALUES(DEFAULT,?,?,?,?,?,?,?,?,?,?,?,?,DEFAULT)", foodName, foodCategory, expireDate, quantity, note, address, city, state, zipCode, pickUpTime, donorID, status)
+	insert, err := db.Query("INSERT INTO orderRecord VALUES(DEFAULT,?,?,?,?,?,DEFAULT)", note, addressID, pickUpTime, status, orderType)
 	if err != nil {
-		fmt.Println("This request order can not be submitted")
+		fmt.Println("This order can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
 				"message": "DB access error, username or password is wrong",
@@ -156,12 +129,12 @@ func queryRequest(c *gin.Context) {
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"message": "This donation order can not be submitted",
+			"message": "This order can not be submitted",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"message": "This request order has been assigned or created",
+			"message": "This order has been assigned or created",
 		})
 	}
 	defer insert.Close()
