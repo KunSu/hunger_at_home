@@ -67,6 +67,7 @@ CREATE TABLE `foodApp`.`item` (
   `foodCategory` varchar(255) NOT NULL,
   `expireDate` date NOT NULL,
   `quantity` varchar(255) NOT NULL,
+  `temperature` varchar(255) NOT NULL,
   `timestamp` date NOT NULL DEFAULT CURRENT_TIMESTAMP, 
   PRIMARY KEY (id)
 ); 
@@ -105,4 +106,4 @@ CREATE TABLE `foodApp`.`orderItemAssociate` (
    PRIMARY KEY (orderID, itemID)
 ); 
 
-select * from orderRecord
+select * from orderAssociate

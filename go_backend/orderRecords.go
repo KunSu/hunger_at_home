@@ -195,7 +195,69 @@ func queryUpdateItemTemperature(c *gin.Context) {
 	defer db.Close()
 }
 
-func queryItemOrderAssociate(c *gin.Context) {
+func queryAddOrderAssociate(c *gin.Context) {
+	//getting data from request
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type OrderItem struct {
+		// ID
+		OrderID     string `json:"orderID"`
+		DriverID    string `json:"driverID"`
+		DonorID     string `json:"donorID"`
+		RecipientID string `json:"recipientID"`
+		AdminID     string `json:"adminID"`
+		// Timestamp string `json:"timestamp"`
+	}
+
+	var orderItem OrderItem
+	er := json.Unmarshal([]byte(value), &orderItem)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&orderItem).Elem()
+	orderID := fmt.Sprint(e.Field(0).Interface())
+	driverID := fmt.Sprint(e.Field(1).Interface())
+	donorID := fmt.Sprint(e.Field(2).Interface())
+	recipientID := fmt.Sprint(e.Field(3).Interface())
+	adminID := fmt.Sprint(e.Field(4).Interface())
+
+	// connect to the db
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	//insert to db
+	insert, err := db.Query("INSERT INTO orderAssociate VALUES(?,?,?,?,?,DEFAULT)", orderID, driverID, donorID, recipientID, adminID)
+	if err != nil {
+		fmt.Println("This record can not be submitted")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(500, gin.H{
+			"message": "This record can not be submitted",
+		})
+		panic(err.Error())
+	} else {
+		c.JSON(201, gin.H{
+			"message": "This record has been assigned or created",
+		})
+	}
+	defer insert.Close()
+}
+
+func queryAddItemOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -252,4 +314,63 @@ func queryItemOrderAssociate(c *gin.Context) {
 		})
 	}
 	defer insert.Close()
+}
+
+func queryUpdateOrderAssociate(c *gin.Context) {
+
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Update struct {
+		OrderID     string `json:"orderID"`
+		DriverID    string `json:"driverID"`
+		DonorID     string `json:"donorID"`
+		RecipientID string `json:"recipientID"`
+		AdminID     string `json:"adminID"`
+	}
+
+	var update Update
+	er := json.Unmarshal([]byte(value), &update)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&update).Elem()
+	orderID := fmt.Sprint(e.Field(0).Interface())
+	driverID := fmt.Sprint(e.Field(1).Interface())
+	donorID := fmt.Sprint(e.Field(2).Interface())
+	recipientID := fmt.Sprint(e.Field(3).Interface())
+	adminID := fmt.Sprint(e.Field(4).Interface())
+
+	// connect to the db
+	db, err := connectDB(c)
+	if db == nil {
+		fmt.Println("DB has something wrong")
+		c.JSON(500, gin.H{
+			"message": "DB has something wrong",
+		})
+		panic(err.Error())
+	}
+
+	updateQuery, err := db.Query("UPDATE orderAssociate SET driverID = ?, donorID = ?, recipientID = ?, adminID = ? WHERE orderID = ?", driverID, donorID, recipientID, adminID, orderID)
+	if err != nil {
+		fmt.Println("Update error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(404, gin.H{
+			"message": "Does not found such order",
+		})
+		panic(err.Error())
+	} else { //TODO:check if order exist...
+		c.JSON(200, gin.H{
+			"message": "Order info has been updated",
+		})
+	}
+	defer updateQuery.Close()
+	defer db.Close()
 }
