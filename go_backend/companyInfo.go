@@ -173,7 +173,52 @@ func queryGetCompanyList(c *gin.Context) {
 
 }
 
-//TODO.........
+// func queryGetCompanyList(c *gin.Context) {
+// 	//connect to DB
+// 	db, err := connectDB(c)
+// 	if err != nil {
+// 		fmt.Println("DB error")
+// 		c.JSON(500, gin.H{
+// 			"message": "DB connection problem",
+// 		})
+// 		panic(err.Error())
+// 	}
+// 	defer db.Close()
+// 	//get company names
+// 	var companyName string
+// 	companyList := []string{}
+
+// 	rows, err := db.Query("SELECT companyName from company")
+// 	if err != nil {
+// 		if strings.Contains(err.Error(), "Access denied") {
+// 			c.JSON(500, gin.H{
+// 				"message": "DB access error, username or password is wrong",
+// 			})
+// 			panic(err.Error())
+// 		}
+// 		c.JSON(500, gin.H{
+// 			"message": "Query statements has something wrong",
+// 		})
+// 		panic(err.Error())
+// 	} else {
+// 		for rows.Next() {
+// 			err := rows.Scan(&companyName)
+// 			if err != nil {
+// 				log.Fatal(err)
+// 			}
+// 			companyList = append(companyList, companyName)
+// 		}
+// 	}
+// 	listInJSON, err := json.Marshal(companyList)
+// 	if err != nil {
+// 		log.Fatal("Cannot encode to JSON ", err)
+// 	}
+
+// 	c.String(200, string(listInJSON))
+// 	defer rows.Close()
+
+// }
+
 func queryCompanyAddressAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -181,23 +226,24 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
-		Address string `json:"address"`
-		City    string `json:"city"`
-		State   string `json:"state"`
-		ZipCode string `json:"zipCode"`
+	type CompanyAddress struct {
+		// ID
+		AddressID string `json:"AddressID"`
+		CompanyID string `json:"CompanyID"`
+		// Timestamp string `json:"timestamp"`
 	}
 
-	var signup Signup
-	er := json.Unmarshal([]byte(value), &signup)
+	var companyAddress CompanyAddress
+	er := json.Unmarshal([]byte(value), &companyAddress)
 	if er != nil {
 		fmt.Println(err.Error())
 	}
-	e := reflect.ValueOf(&signup).Elem()
-	address := fmt.Sprint(e.Field(0).Interface())
-	city := fmt.Sprint(e.Field(1).Interface())
-	state := fmt.Sprint(e.Field(2).Interface())
-	zipCode := fmt.Sprint(e.Field(3).Interface())
+	e := reflect.ValueOf(&companyAddress).Elem()
+	addressID := fmt.Sprint(e.Field(0).Interface())
+	companyID := fmt.Sprint(e.Field(1).Interface())
+
+	fmt.Println(addressID)
+	fmt.Println(companyID)
 
 	// connect to the db
 	db, err := connectDB(c)
@@ -211,10 +257,9 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 
 	defer db.Close()
 	//insert to db
-	insert, err := db.Query("INSERT INTO address VALUES(DEFAULT,?,?,?,?,DEFAULT)", address, city, state, zipCode)
-
+	insert, err := db.Query("INSERT INTO companyAddressAssociate VALUES(?,?,DEFAULT)", addressID, companyID)
 	if err != nil {
-		fmt.Println("Sign up error")
+		fmt.Println("This record can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
 			c.JSON(500, gin.H{
 				"message": "DB access error, username or password is wrong",
@@ -222,12 +267,12 @@ func queryCompanyAddressAssociate(c *gin.Context) {
 			panic(err.Error())
 		}
 		c.JSON(500, gin.H{
-			"message": "This address is already taken",
+			"message": "This record can not be submitted",
 		})
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
-			"message": "This address has been assigned or created",
+			"message": "This record has been assigned or created",
 		})
 	}
 	defer insert.Close()
