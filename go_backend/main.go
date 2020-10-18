@@ -25,6 +25,7 @@ func main() {
 
 	r.POST("api/addItem", queryAddItem)
 	r.POST("api/updateItemTemperature", queryUpdateItemTemperature)
+	r.POST("api/updateOrderStatus", queryUpdateOrderStatus)
 	r.POST("api/addOrder", queryAddOrder)
 	r.POST("api/addOrderItemAssociate", queryAddItemOrderAssociate)
 	r.POST("api/addOrderAssociate", queryAddOrderAssociate)

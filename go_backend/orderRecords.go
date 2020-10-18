@@ -143,6 +143,60 @@ func queryAddOrder(c *gin.Context) {
 	defer insert.Close()
 }
 
+//update status of an order, used by donor and requester
+func queryUpdateOrderStatus(c *gin.Context) {
+
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Update struct {
+		ID     string `json:"id"`
+		Status string `json:"status"`
+	}
+
+	var update Update
+	er := json.Unmarshal([]byte(value), &update)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&update).Elem()
+	id := fmt.Sprint(e.Field(0).Interface())
+	status := fmt.Sprint(e.Field(1).Interface())
+
+	// connect to the db
+	db, err := connectDB(c)
+	if db == nil {
+		fmt.Println("DB has something wrong")
+		c.JSON(500, gin.H{
+			"message": "DB has something wrong",
+		})
+		panic(err.Error())
+	}
+
+	updateQuery, err := db.Query("UPDATE orderRecord SET status = ? WHERE id = ?", status, id)
+	if err != nil {
+		fmt.Println("Update error")
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(404, gin.H{
+			"message": "Does not found such order",
+		})
+		panic(err.Error())
+	} else { //TODO:check if item exist...
+		c.JSON(200, gin.H{
+			"message": "Status has been updated",
+		})
+	}
+	defer updateQuery.Close()
+	defer db.Close()
+}
+
 //get the order list of a user by donorID and status, double JSON encoded
 func queryGetOrderListByDonorID(c *gin.Context) {
 	body := c.Request.Body
@@ -232,6 +286,7 @@ func queryGetOrderListByDonorID(c *gin.Context) {
 	defer rows.Close()
 }
 
+//update the temperature of an item by itemID
 func queryUpdateItemTemperature(c *gin.Context) {
 
 	body := c.Request.Body
@@ -277,7 +332,7 @@ func queryUpdateItemTemperature(c *gin.Context) {
 		})
 		panic(err.Error())
 	} else { //TODO:check if item exist...
-		c.JSON(404, gin.H{
+		c.JSON(200, gin.H{
 			"message": "Temperature has been updated",
 		})
 	}
@@ -285,6 +340,7 @@ func queryUpdateItemTemperature(c *gin.Context) {
 	defer db.Close()
 }
 
+//add a record in orderAssociate table
 func queryAddOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -347,6 +403,7 @@ func queryAddOrderAssociate(c *gin.Context) {
 	defer insert.Close()
 }
 
+//add a record in itemOrderAssociate table
 func queryAddItemOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -406,6 +463,7 @@ func queryAddItemOrderAssociate(c *gin.Context) {
 	defer insert.Close()
 }
 
+//update orderAssociate table info, used by admin
 func queryUpdateOrderAssociate(c *gin.Context) {
 
 	body := c.Request.Body
