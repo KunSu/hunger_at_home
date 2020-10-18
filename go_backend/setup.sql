@@ -106,4 +106,4 @@ CREATE TABLE `foodApp`.`orderItemAssociate` (
    PRIMARY KEY (orderID, itemID)
 ); 
 
-select * from orderAssociate
+select * from orderRecord

@@ -29,6 +29,7 @@ func main() {
 	r.POST("api/addOrderItemAssociate", queryAddItemOrderAssociate)
 	r.POST("api/addOrderAssociate", queryAddOrderAssociate)
 	r.POST("api/updateOrderAssociate", queryUpdateOrderAssociate)
+	r.POST("api/getOrderListByDonorID", queryGetOrderListByDonorID)
 
 	r.Run()
 }

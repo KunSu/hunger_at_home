@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"reflect"
 	"strings"
 
@@ -140,6 +141,95 @@ func queryAddOrder(c *gin.Context) {
 		})
 	}
 	defer insert.Close()
+}
+
+//get the order list of a user by donorID and status
+func queryGetOrderListByDonorID(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Input struct {
+		DonorID string `json:"donorID"`
+		Status  string `json:"status"`
+	}
+
+	var input Input
+	er := json.Unmarshal([]byte(value), &input)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&input).Elem()
+	donorID := fmt.Sprint(e.Field(0).Interface())
+	status := fmt.Sprint(e.Field(1).Interface())
+	// fmt.Println(companyID)
+	//connect to DB
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+	defer db.Close()
+	//get company names
+	var (
+		note       string
+		addressID  string
+		pickUpTime string
+		orderType  string
+	)
+	type Order struct {
+		Note       string `json:"note"`
+		Address    string `json:"address"`
+		PickUpTime string `json:"pickUpTime"`
+		OrderType  string `json:"orderType"`
+	}
+	orderList := []string{}
+
+	rows, err := db.Query("SELECT orderRecord.note, orderRecord.addressID, orderRecord.pickUpTime, orderRecord.orderType FROM orderRecord INNER JOIN orderAssociate ON orderRecord.id = orderAssociate.orderID WHERE orderAssociate.donorID = ? AND orderRecord.status = ?", donorID, status)
+	if err != nil {
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(500, gin.H{
+			"message": "Query statements has something wrong",
+		})
+		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&note, &addressID, &pickUpTime, &orderType)
+			if err != nil {
+				log.Fatal(err)
+			}
+			orderRecord := &Order{
+				Note:       note,
+				Address:    addressID,
+				PickUpTime: pickUpTime,
+				OrderType:  orderType,
+			}
+			// fmt.Println(orderRecord)
+			orderInJSON, err := json.Marshal(orderRecord)
+			if err != nil {
+				log.Fatal("Cannot encode to JSON ", err)
+			}
+			fmt.Println(string(orderInJSON))
+			orderList = append(orderList, string(orderInJSON))
+			fmt.Println(orderList)
+		}
+	}
+	listInJSON, err := json.Marshal(orderList)
+	if err != nil {
+		log.Fatal("Cannot encode to JSON ", err)
+	}
+
+	c.String(200, string(listInJSON))
+	defer rows.Close()
 }
 
 func queryUpdateItemTemperature(c *gin.Context) {
