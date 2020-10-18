@@ -19,7 +19,9 @@ func main() {
 
 	r.POST("api/companySignup", queryCompanySignUp)
 	r.POST("api/companyList", queryGetCompanyList)
-	r.POST("api/addressCompanyAssociate", queryCompanyAddressAssociate)
+	r.POST("api/addressCompanyAssociate", queryAddCompanyAddressAssociate)
+	r.POST("api/addressSignUp", queryAddressSignUp)
+	r.POST("api/addressList", queryGetAddressList)
 
 	r.POST("api/addItem", queryAddItem)
 	r.POST("api/updateItemTemperature", queryUpdateItemTemperature)

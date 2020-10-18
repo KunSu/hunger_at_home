@@ -126,6 +126,77 @@ func queryAddressSignUp(c *gin.Context) {
 	defer insert.Close()
 }
 
+//Getting the address list of a company based on companyID
+func queryGetAddressList(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	type Input struct {
+		CompanyID string `json:"companyID"`
+	}
+
+	var input Input
+	er := json.Unmarshal([]byte(value), &input)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&input).Elem()
+	companyID := fmt.Sprint(e.Field(0).Interface())
+	fmt.Println(companyID)
+	//connect to DB
+	db, err := connectDB(c)
+	if err != nil {
+		fmt.Println("DB error")
+		c.JSON(500, gin.H{
+			"message": "DB connection problem",
+		})
+		panic(err.Error())
+	}
+	defer db.Close()
+	//get company names
+	var (
+		address string
+		city    string
+		state   string
+		zipCode string
+	)
+	addressList := []string{}
+	var addressString string
+
+	rows, err := db.Query("SELECT address.address, address.city, address.state, address.zipCode FROM address INNER JOIN companyAddressAssociate ON address.id = companyAddressAssociate.addressID WHERE companyAddressAssociate.companyID = ?", companyID)
+	if err != nil {
+		if strings.Contains(err.Error(), "Access denied") {
+			c.JSON(500, gin.H{
+				"message": "DB access error, username or password is wrong",
+			})
+			panic(err.Error())
+		}
+		c.JSON(500, gin.H{
+			"message": "Query statements has something wrong",
+		})
+		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&address, &city, &state, &zipCode)
+			if err != nil {
+				log.Fatal(err)
+			}
+			addressString = address + ", " + city + ", " + state + ", " + zipCode
+			addressList = append(addressList, addressString)
+		}
+	}
+	listInJSON, err := json.Marshal(addressList)
+	if err != nil {
+		log.Fatal("Cannot encode to JSON ", err)
+	}
+
+	c.String(200, string(listInJSON))
+	defer rows.Close()
+
+}
+
 //TODO
 func queryGetCompanyList(c *gin.Context) {
 	//connect to DB
@@ -219,7 +290,8 @@ func queryGetCompanyList(c *gin.Context) {
 
 // }
 
-func queryCompanyAddressAssociate(c *gin.Context) {
+//add record into companyAddressAssociate table
+func queryAddCompanyAddressAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
