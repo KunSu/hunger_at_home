@@ -143,7 +143,7 @@ func queryAddOrder(c *gin.Context) {
 	defer insert.Close()
 }
 
-//get the order list of a user by donorID and status
+//get the order list of a user by donorID and status, double JSON encoded
 func queryGetOrderListByDonorID(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
