@@ -12,7 +12,7 @@ import (
 )
 
 //add an item
-func queryAddItem(c *gin.Context) {
+func (ct *Controller) QueryAddItem(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -76,7 +76,7 @@ func queryAddItem(c *gin.Context) {
 }
 
 //add an order
-func queryAddOrder(c *gin.Context) {
+func (ct *Controller) QueryAddOrder(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -144,7 +144,7 @@ func queryAddOrder(c *gin.Context) {
 }
 
 //update status of an order, used by donor and requester
-func queryUpdateOrderStatus(c *gin.Context) {
+func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -198,7 +198,7 @@ func queryUpdateOrderStatus(c *gin.Context) {
 }
 
 //get the order list of a user by donorID and status, double JSON encoded
-func queryGetOrderListByDonorID(c *gin.Context) {
+func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -287,7 +287,7 @@ func queryGetOrderListByDonorID(c *gin.Context) {
 }
 
 //update the temperature of an item by itemID
-func queryUpdateItemTemperature(c *gin.Context) {
+func (ct *Controller) QueryUpdateItemTemperature(c *gin.Context) {
 
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -341,7 +341,7 @@ func queryUpdateItemTemperature(c *gin.Context) {
 }
 
 //add a record in orderAssociate table
-func queryAddOrderAssociate(c *gin.Context) {
+func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -404,7 +404,7 @@ func queryAddOrderAssociate(c *gin.Context) {
 }
 
 //add a record in itemOrderAssociate table
-func queryAddItemOrderAssociate(c *gin.Context) {
+func (ct *Controller) QueryAddItemOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -464,7 +464,7 @@ func queryAddItemOrderAssociate(c *gin.Context) {
 }
 
 //update orderAssociate table info, used by admin
-func queryUpdateOrderAssociate(c *gin.Context) {
+func (ct *Controller) QueryUpdateOrderAssociate(c *gin.Context) {
 
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)

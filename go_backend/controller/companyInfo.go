@@ -12,7 +12,7 @@ import (
 )
 
 //Company sighup function
-func queryCompanySignUp(c *gin.Context) {
+func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -56,7 +56,7 @@ func queryCompanySignUp(c *gin.Context) {
 			})
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
+		c.JSON(500, gin.H{
 			"message": "Company name, FED or EIN is/are already taken",
 		})
 		panic(err.Error())
@@ -68,7 +68,7 @@ func queryCompanySignUp(c *gin.Context) {
 }
 
 //Company Address signup function
-func queryAddressSignUp(c *gin.Context) {
+func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -127,7 +127,7 @@ func queryAddressSignUp(c *gin.Context) {
 }
 
 //Getting the address list of a company based on companyID
-func queryGetAddressList(c *gin.Context) {
+func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -198,7 +198,7 @@ func queryGetAddressList(c *gin.Context) {
 }
 
 //TODO
-func queryGetCompanyList(c *gin.Context) {
+func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 	//connect to DB
 	db, err := connectDB(c)
 	if err != nil {
@@ -291,7 +291,7 @@ func queryGetCompanyList(c *gin.Context) {
 // }
 
 //add record into companyAddressAssociate table
-func queryAddCompanyAddressAssociate(c *gin.Context) {
+func (ct *Controller) QueryAddCompanyAddressAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)

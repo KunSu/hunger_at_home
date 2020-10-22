@@ -19,7 +19,7 @@ func homePage(c *gin.Context) {
 }
 
 //sign up function
-func querySignUp(c *gin.Context) {
+func (ct *Controller) QuerySignUp(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -117,7 +117,7 @@ func querySignUp(c *gin.Context) {
 }
 
 //Login Function
-func queryLogin(c *gin.Context) {
+func (ct *Controller) QueryLogin(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
 	password := c.Query("password")
@@ -181,7 +181,7 @@ func queryLogin(c *gin.Context) {
 }
 
 //Set user status from pendign to approved
-func queryUpdateUserStatus(c *gin.Context) {
+func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -233,7 +233,7 @@ func queryUpdateUserStatus(c *gin.Context) {
 }
 
 //Reset Password, TODO: need to be improved later
-func queryResetPassword(c *gin.Context) {
+func (ct *Controller) QueryResetPassword(c *gin.Context) {
 	//getting data from request
 	email := c.Query("email")
 	password := c.Query("password")
