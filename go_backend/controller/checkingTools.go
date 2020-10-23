@@ -9,6 +9,7 @@ import (
 	"unicode"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zijianguan0204/hunger_at_home/model"
 )
 
 var emailRegex = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -48,7 +49,7 @@ func IsLetter(s string) bool {
 func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 	//select userID from db
 	var (
-		id             int
+		id             string
 		email          string
 		password       string
 		firstName      string
@@ -80,26 +81,25 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 				log.Fatal(err)
 			}
 		}
-		if id == 0 {
+		if id == "0" {
 			c.JSON(404, gin.H{
 				"message": "Such user does not exist",
 			})
 		} else {
-			c.JSON(200, gin.H{
-				"message":        "User signup is successful",
-				"id":             id,
-				"email":          email,
-				"password":       password,
-				"firstName":      firstName,
-				"lastName":       lastName,
-				"phoneNumber":    phoneNumber,
-				"userIdentity":   userIdentity,
-				"companyID":      companyID,
-				"secureQuestion": secureQuestion,
-				"secureAnswer":   secureAnswer,
-				"status":         status,
-				"timestamp":      timestamp,
-			})
+			signupOutput := model.SignupOutput{
+				ID:             id,
+				Email:          email,
+				Password:       password,
+				FirstName:      firstName,
+				LastName:       lastName,
+				PhoneNumber:    phoneNumber,
+				UserIdentity:   userIdentity,
+				CompanyID:      companyID,
+				SecureQuestion: secureQuestion,
+				SecureAnswer:   secureAnswer,
+				Status:         status,
+			}
+			c.JSON(200, signupOutput)
 		}
 
 	}

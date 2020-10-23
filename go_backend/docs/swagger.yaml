@@ -1,0 +1,134 @@
+basePath: /v1
+definitions:
+  model.LoginOutput:
+    properties:
+      password:
+        type: string
+      userID:
+        type: string
+    type: object
+  model.SignupInput:
+    properties:
+      companyID:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      secureAnswer:
+        type: string
+      secureQuestion:
+        type: string
+      userIdentity:
+        type: string
+    type: object
+  model.SignupOutput:
+    properties:
+      companyID:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      secureAnswer:
+        type: string
+      secureQuestion:
+        type: string
+      status:
+        type: string
+      userIdentity:
+        type: string
+    type: object
+host: localhost:8080/api
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a hunger at home application backend server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Hunger At Home API
+  version: "1.0"
+paths:
+  /user/login/{email}/{password}:
+    get:
+      consumes:
+      - application/json
+      description: use email address and password to login
+      parameters:
+      - description: Email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: Password
+        in: path
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.LoginOutput'
+        "404":
+          description: Can not find user
+          schema:
+            type: string
+        "500":
+          description: Server Issue
+          schema:
+            type: string
+      summary: Login using an existing account
+      tags:
+      - user
+  /user/signup/:
+    post:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Add a user
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.SignupInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SignupOutput'
+        "404":
+          description: Can not find user
+          schema:
+            type: string
+        "500":
+          description: Server Issue
+          schema:
+            type: string
+      summary: Add a new pet to the store
+      tags:
+      - user
+swagger: "2.0"

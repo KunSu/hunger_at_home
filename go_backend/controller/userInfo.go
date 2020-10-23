@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/zijianguan0204/hunger_at_home/model"
 )
 
 func homePage(c *gin.Context) {
@@ -18,32 +19,39 @@ func homePage(c *gin.Context) {
 	})
 }
 
-//sign up function
+//User Signup
+// @Summary Add a new pet to the store
+// @Description get string by ID
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param userInfo body model.SignupInput true "Add a user"
+// @Success 200 {object} model.SignupOutput
+// @Failure 500 {string} string	"Server Issue"
+// @Failure 404 {string} string	"Can not find user"
+// @Router /user/signup/ [post]
 func (ct *Controller) QuerySignUp(c *gin.Context) {
+
 	//getting data from request
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
-		Email          string `json:"email"`
-		Password       string `json:"password"`
-		FirstName      string `json:"firstName"`
-		LastName       string `json:"lastName"`
-		PhoneNumber    string `json:"phoneNumber"`
-		UserIdentity   string `json:"userIdentity"`
-		CompanyID      string `json:"companyID"`
-		SecureQuestion string `json:"secureQuestion"`
-		SecureAnswer   string `json:"secureAnswer"`
-	}
 
-	var signup Signup
-	er := json.Unmarshal([]byte(value), &signup)
+	var signupInput model.SignupInput
+	//TODO: Try to figure out why
+	// if err := c.ShouldBindJSON(&signup); err != nil {
+	// 	c.JSON(500, gin.H{
+	// 		"message": "Input is not in JSON format",
+	// 	})
+	// 	return
+	// }
+	er := json.Unmarshal([]byte(value), &signupInput)
 	if er != nil {
 		fmt.Println(err.Error())
 	}
-	e := reflect.ValueOf(&signup).Elem()
+	e := reflect.ValueOf(&signupInput).Elem()
 	email := fmt.Sprint(e.Field(0).Interface())
 	password := fmt.Sprint(e.Field(1).Interface())
 	firstName := fmt.Sprint(e.Field(2).Interface())
@@ -116,14 +124,23 @@ func (ct *Controller) QuerySignUp(c *gin.Context) {
 
 }
 
-//Login Function
+// User Login
+// @Summary Login using an existing account
+// @Description use email address and password to login
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param email path string true "Email"
+// @Param password path string true "Password"
+// @Success 200 {object} model.LoginOutput
+// @Failure 404 {object} string	"Can not find user"
+// @Failure 500 {object} string	"Server Issue"
+// @Router /user/login/{email}/{password} [get]
 func (ct *Controller) QueryLogin(c *gin.Context) {
 	//getting data from request
-	email := c.Query("email")
-	password := c.Query("password")
+	email := c.Param("email")
+	password := c.Param("password")
 	email = strings.ToLower(string(email))
-
-	//TODO: MD5 for encode and decode password
 
 	// connect to the db
 	db, err := connectDB(c)
@@ -138,7 +155,7 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 	defer db.Close()
 	//select userID from db
 	var (
-		userID int
+		userID string
 		status string
 	)
 	rows, err := db.Query("SELECT id, status from user WHERE email = ? AND password = ?", email, password)
@@ -161,7 +178,7 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 				log.Fatal(err)
 			}
 		}
-		if userID == 0 {
+		if userID == "0" {
 			c.JSON(404, gin.H{
 				"message": "Such username or password is incorrect",
 			})
@@ -170,10 +187,11 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 				"message": "Such user has not been approved by admin",
 			})
 		} else {
-			c.JSON(200, gin.H{
-				"userID":  userID,
-				"message": "User Found",
-			})
+			loginOutput := model.LoginOutput{
+				UserID:  userID,
+				Message: "User Found",
+			}
+			c.JSON(200, loginOutput)
 		}
 
 	}

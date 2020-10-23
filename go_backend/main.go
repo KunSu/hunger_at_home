@@ -4,10 +4,31 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/zijianguan0204/hunger_at_home/controller"
+	_ "github.com/zijianguan0204/hunger_at_home/docs"
 )
 
+// @title Hunger At Home API
+// @version 1.0
+// @description This is a hunger at home application backend server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080/api
+// @BasePath /v1
+
 func main() {
+
+	// r := gin.New()
 	fmt.Println("Hello World")
 
 	r := gin.Default()
@@ -18,7 +39,7 @@ func main() {
 		user := v1.Group("/user")
 		{
 			user.POST("signup", c.QuerySignUp)
-			user.GET("login", c.QueryLogin)
+			user.GET("login/:email/:password", c.QueryLogin)
 			user.POST("updateUserStatus", c.QueryUpdateUserStatus)
 			user.GET("resetPassword", c.QueryResetPassword)
 		}
@@ -44,26 +65,9 @@ func main() {
 			order.POST("getOrderListByDonorID", c.QueryGetOrderListByDonorID)
 		}
 	}
-	//TODO: URL design and catagorize them into different /
-	// r.POST("api/signup", controller.QuerySignUp)
-	// r.GET("api/login", controller.QueryLogin)
-	// r.POST("api/updateUserStatus", controller.QueryUpdateUserStatus)
-	// r.GET("api/reset", controller.QueryResetPassword)
 
-	// r.POST("api/companySignup", controller.QueryCompanySignUp)
-	// r.POST("api/companyList", controller.QueryGetCompanyList)
-	// r.POST("api/addressCompanyAssociate", controller.QueryAddCompanyAddressAssociate)
-	// r.POST("api/addressSignUp", controller.QueryAddressSignUp)
-	// r.POST("api/addressList", controller.QueryGetAddressList)
-
-	// r.POST("api/addItem", controller.QueryAddItem)
-	// r.POST("api/updateItemTemperature", controller.QueryUpdateItemTemperature)
-	// r.POST("api/updateOrderStatus", controller.QueryUpdateOrderStatus)
-	// r.POST("api/addOrder", controller.QueryAddOrder)
-	// r.POST("api/addOrderItemAssociate", controller.QueryAddItemOrderAssociate)
-	// r.POST("api/addOrderAssociate", controller.QueryAddOrderAssociate)
-	// r.POST("api/updateOrderAssociate", controller.QueryUpdateOrderAssociate)
-	// r.POST("api/getOrderListByDonorID", controller.QueryGetOrderListByDonorID)
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json") // The url pointing to API definition
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	r.Run()
 }
