@@ -65,14 +65,16 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 	rows, err := db.Query("SELECT * from user WHERE email = ?", userEmail)
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "Query statements has something wrong",
-		})
+		message := model.Message{
+			Message: "Query statements has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		for rows.Next() {
@@ -82,9 +84,10 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 			}
 		}
 		if id == "0" {
-			c.JSON(404, gin.H{
-				"message": "Such user does not exist",
-			})
+			message := model.Message{
+				Message: "Such user does not exist",
+			}
+			c.JSON(404, message)
 		} else {
 			signupOutput := model.SignupOutput{
 				ID:             id,
@@ -109,7 +112,7 @@ func getUser(userEmail string, c *gin.Context, db *sql.DB) {
 func getCompany(comName string, c *gin.Context, db *sql.DB) {
 	//select userID from db
 	var (
-		id          int
+		id          string
 		companyName string
 		fedID       string
 		einID       string
@@ -118,14 +121,16 @@ func getCompany(comName string, c *gin.Context, db *sql.DB) {
 	rows, err := db.Query("SELECT * from company WHERE companyName = ?", comName)
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "Query statements has something wrong",
-		})
+		message := model.Message{
+			Message: "Query statements has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		for rows.Next() {
@@ -134,19 +139,19 @@ func getCompany(comName string, c *gin.Context, db *sql.DB) {
 				log.Fatal(err)
 			}
 		}
-		if id == 0 {
-			c.JSON(404, gin.H{
-				"message": "Such company does not exist",
-			})
+		if id == "0" {
+			message := model.Message{
+				Message: "Such company does not exist",
+			}
+			c.JSON(404, message)
 		} else {
-			c.JSON(200, gin.H{
-				"message":     "Company signup is successful",
-				"id":          id,
-				"companyName": companyName,
-				"fedID":       fedID,
-				"einID":       einID,
-				"timestamp":   timestamp,
-			})
+			companySignUpOutput := model.CompanySignupOutput{
+				ID:          id,
+				CompanyName: companyName,
+				FedID:       fedID,
+				EinID:       einID,
+			}
+			c.JSON(200, companySignUpOutput)
 		}
 
 	}

@@ -42,7 +42,7 @@ CREATE TABLE `foodApp`.`company` (
 DROP TABLE IF EXISTS `foodApp`.`address`;
 CREATE TABLE `foodApp`.`address` (
   `id` int NOT NULL AUTO_INCREMENT, 
-  `address` varchar(100) NOT NULL,
+  `address` varchar(100) NOT NULL UNIQUE,
   `city` varchar(20) NOT NULL,
   `state` varchar(20) NOT NULL,
   `zipCode` int NOT NULL,
@@ -106,4 +106,5 @@ CREATE TABLE `foodApp`.`orderItemAssociate` (
    PRIMARY KEY (orderID, itemID)
 ); 
 
-select * from orderRecord
+select * from orderRecord;
+select * from companyAddressAssociate;

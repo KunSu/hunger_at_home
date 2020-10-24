@@ -1,10 +1,43 @@
 basePath: /v1
 definitions:
+  model.AddressSignupInput:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zipCode:
+        type: string
+    type: object
+  model.CompanyAddressRecordSignupInput:
+    properties:
+      AddressID:
+        type: string
+      CompanyID:
+        type: string
+    type: object
+  model.CompanySignupInput:
+    properties:
+      companyName:
+        type: string
+      einID:
+        type: string
+      fedID:
+        type: string
+    type: object
   model.LoginOutput:
     properties:
       password:
         type: string
       userID:
+        type: string
+    type: object
+  model.Message:
+    properties:
+      message:
+        example: message
         type: string
     type: object
   model.SignupInput:
@@ -53,6 +86,13 @@ definitions:
       userIdentity:
         type: string
     type: object
+  model.UpdateInput:
+    properties:
+      email:
+        type: string
+      status:
+        type: string
+    type: object
 host: localhost:8080/api
 info:
   contact:
@@ -67,6 +107,96 @@ info:
   title: Hunger At Home API
   version: "1.0"
 paths:
+  /company/addressCompanyAssociate/:
+    post:
+      consumes:
+      - application/json
+      description: get companyAddress associate record info and parse them to db
+      parameters:
+      - description: Add a record
+        in: body
+        name: companyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.CompanyAddressRecordSignupInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new record to company address associate table
+      tags:
+      - company
+  /company/addressSignUp/:
+    post:
+      consumes:
+      - application/json
+      description: get address info and parse them to db
+      parameters:
+      - description: Add an address
+        in: body
+        name: companyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddressSignupInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new address
+      tags:
+      - company
+  /company/companySignup/:
+    post:
+      consumes:
+      - application/json
+      description: get company info and parse them to db
+      parameters:
+      - description: Add a company
+        in: body
+        name: companyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.CompanySignupInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SignupOutput'
+        "404":
+          description: Can not find company
+          schema:
+            type: string
+        "500":
+          description: Server Issue
+          schema:
+            type: string
+      summary: Add a new company
+      tags:
+      - company
   /user/login/{email}/{password}:
     get:
       consumes:
@@ -105,7 +235,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: get string by ID
+      description: get user info and parse them to db
       parameters:
       - description: Add a user
         in: body
@@ -128,7 +258,37 @@ paths:
           description: Server Issue
           schema:
             type: string
-      summary: Add a new pet to the store
+      summary: Add a new user
+      tags:
+      - user
+  /user/updateUserStatus/:
+    post:
+      consumes:
+      - application/json
+      description: update status by userID
+      parameters:
+      - description: Update user status
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.SignupOutput'
+        "404":
+          description: Can not find user
+          schema:
+            type: string
+        "500":
+          description: Server Issue
+          schema:
+            type: string
+      summary: Update a status from "pending" to {status}
       tags:
       - user
 swagger: "2.0"

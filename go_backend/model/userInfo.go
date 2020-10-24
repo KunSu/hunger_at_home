@@ -1,5 +1,9 @@
 package model
 
+type Message struct {
+	Message string `json:"message" example:"message"`
+}
+
 type SignupInput struct {
 	Email          string `json:"email"`
 	Password       string `json:"password"`
@@ -29,4 +33,9 @@ type SignupOutput struct {
 type LoginOutput struct {
 	UserID  string `json:"userID"`
 	Message string `json:"password"`
+}
+
+type UpdateInput struct {
+	Email  string `json:"email"`
+	Status string `json:"status"`
 }

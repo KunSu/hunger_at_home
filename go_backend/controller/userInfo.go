@@ -20,8 +20,8 @@ func homePage(c *gin.Context) {
 }
 
 //User Signup
-// @Summary Add a new pet to the store
-// @Description get string by ID
+// @Summary Add a new user
+// @Description get user info and parse them to db
 // @Tags user
 // @Accept  json
 // @Produce  json
@@ -69,9 +69,10 @@ func (ct *Controller) QuerySignUp(c *gin.Context) {
 	}
 	//check if valid email
 	if !isEmailValid(email) {
-		c.JSON(404, gin.H{
-			"message": "The email address is not valid",
-		})
+		message := model.Message{
+			Message: "The email address is not valid",
+		}
+		c.JSON(404, message)
 		return
 	}
 	email = strings.ToLower(string(email))
@@ -79,26 +80,28 @@ func (ct *Controller) QuerySignUp(c *gin.Context) {
 	//check if valid phone
 	fmt.Print(len(phoneNumber))
 	if !isPhoneValid(phoneNumber) {
-		c.JSON(404, gin.H{
-			"message": "The phone number is not valid",
-		})
+		message := model.Message{
+			Message: "The phone number is not valid",
+		}
+		c.JSON(404, message)
 		return
 	}
 
 	//check if secure question and answer are both only containing alphabit
 	if !IsLetter(secureQuestion) || !IsLetter(secureAnswer) {
-		c.JSON(404, gin.H{
-			"message": "The secure questions/answers are invalid, they should only contain alphabit",
-		})
+		message := model.Message{
+			Message: "The secure questions/answers are invalid, they should only contain alphabit",
+		}
+		c.JSON(404, message)
 		return
 	}
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
-		fmt.Println("DB has something wrong")
-		c.JSON(500, gin.H{
-			"message": "DB has something wrong",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -107,14 +110,16 @@ func (ct *Controller) QuerySignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This email address is already taken",
-		})
+		message := model.Message{
+			Message: "This email address is already taken",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		getUser(email, c, db)
@@ -145,10 +150,10 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -162,14 +167,16 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Login error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "Such username or password is incorrect",
-		})
+		message := model.Message{
+			Message: "Such username or password is incorrect",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else {
 		for rows.Next() {
@@ -179,13 +186,15 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 			}
 		}
 		if userID == "0" {
-			c.JSON(404, gin.H{
-				"message": "Such username or password is incorrect",
-			})
+			message := model.Message{
+				Message: "Such username or password is incorrect",
+			}
+			c.JSON(404, message)
 		} else if status == "pending" {
-			c.JSON(404, gin.H{
-				"message": "Such user has not been approved by admin",
-			})
+			message := model.Message{
+				Message: "Such username or password is incorrect",
+			}
+			c.JSON(404, message)
 		} else {
 			loginOutput := model.LoginOutput{
 				UserID:  userID,
@@ -198,19 +207,25 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 	defer rows.Close()
 }
 
-//Set user status from pendign to approved
+////User status update
+// @Summary Update a status from "pending" to {status}
+// @Description update status by userID
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param userInfo body model.UpdateInput true "Update user status"
+// @Success 200 {object} model.SignupOutput
+// @Failure 500 {string} string	"Server Issue"
+// @Failure 404 {string} string	"Can not find user"
+// @Router /user/updateUserStatus/ [post]
 func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Update struct {
-		Email  string `json:"email"`
-		Status string `json:"status"`
-	}
 
-	var update Update
+	var update model.UpdateInput
 	er := json.Unmarshal([]byte(value), &update)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -223,10 +238,10 @@ func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
-		fmt.Println("DB has something wrong")
-		c.JSON(500, gin.H{
-			"message": "DB has something wrong",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -234,14 +249,16 @@ func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Update error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "Does not found such user",
-		})
+		message := model.Message{
+			Message: "Does not found such user",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		getUser(email, c, db)

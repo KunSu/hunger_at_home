@@ -41,7 +41,7 @@ func main() {
 			user.POST("signup", c.QuerySignUp)
 			user.GET("login/:email/:password", c.QueryLogin)
 			user.POST("updateUserStatus", c.QueryUpdateUserStatus)
-			user.GET("resetPassword", c.QueryResetPassword)
+			// user.GET("resetPassword", c.QueryResetPassword)
 		}
 
 		company := v1.Group("/company")

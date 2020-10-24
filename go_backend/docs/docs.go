@@ -33,6 +33,144 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/company/addressCompanyAssociate/": {
+            "post": {
+                "description": "get companyAddress associate record info and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Add a new record to company address associate table",
+                "parameters": [
+                    {
+                        "description": "Add a record",
+                        "name": "companyInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CompanyAddressRecordSignupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/addressSignUp/": {
+            "post": {
+                "description": "get address info and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Add a new address",
+                "parameters": [
+                    {
+                        "description": "Add an address",
+                        "name": "companyInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddressSignupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/companySignup/": {
+            "post": {
+                "description": "get company info and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Add a new company",
+                "parameters": [
+                    {
+                        "description": "Add a company",
+                        "name": "companyInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CompanySignupInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SignupOutput"
+                        }
+                    },
+                    "404": {
+                        "description": "Can not find company",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Server Issue",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login/{email}/{password}": {
             "get": {
                 "description": "use email address and password to login",
@@ -86,7 +224,7 @@ var doc = `{
         },
         "/user/signup/": {
             "post": {
-                "description": "get string by ID",
+                "description": "get user info and parse them to db",
                 "consumes": [
                     "application/json"
                 ],
@@ -96,7 +234,7 @@ var doc = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Add a new pet to the store",
+                "summary": "Add a new user",
                 "parameters": [
                     {
                         "description": "Add a user",
@@ -129,9 +267,97 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/user/updateUserStatus/": {
+            "post": {
+                "description": "update status by userID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update a status from \"pending\" to {status}",
+                "parameters": [
+                    {
+                        "description": "Update user status",
+                        "name": "userInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.SignupOutput"
+                        }
+                    },
+                    "404": {
+                        "description": "Can not find user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Server Issue",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "model.AddressSignupInput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CompanyAddressRecordSignupInput": {
+            "type": "object",
+            "properties": {
+                "AddressID": {
+                    "type": "string"
+                },
+                "CompanyID": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CompanySignupInput": {
+            "type": "object",
+            "properties": {
+                "companyName": {
+                    "type": "string"
+                },
+                "einID": {
+                    "type": "string"
+                },
+                "fedID": {
+                    "type": "string"
+                }
+            }
+        },
         "model.LoginOutput": {
             "type": "object",
             "properties": {
@@ -140,6 +366,15 @@ var doc = `{
                 },
                 "userID": {
                     "type": "string"
+                }
+            }
+        },
+        "model.Message": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "message"
                 }
             }
         },
@@ -209,6 +444,17 @@ var doc = `{
                     "type": "string"
                 },
                 "userIdentity": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateInput": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }

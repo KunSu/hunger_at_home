@@ -9,9 +9,20 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zijianguan0204/hunger_at_home/model"
 )
 
-//Company sighup function
+//Company Signup
+// @Summary Add a new company
+// @Description get company info and parse them to db
+// @Tags company
+// @Accept  json
+// @Produce  json
+// @Param companyInfo body model.CompanySignupInput true "Add a company"
+// @Success 200 {object} model.SignupOutput
+// @Failure 500 {string} string	"Server Issue"
+// @Failure 404 {string} string	"Can not find company"
+// @Router /company/companySignup/ [post]
 func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -19,13 +30,8 @@ func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
-		CompanyName string `json:"companyName"`
-		FedID       string `json:"fedID"`
-		EinID       string `json:"einID"`
-	}
 
-	var signup Signup
+	var signup model.CompanySignupInput
 	er := json.Unmarshal([]byte(value), &signup)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -38,10 +44,10 @@ func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -51,14 +57,16 @@ func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "Company name, FED or EIN is/are already taken",
-		})
+		message := model.Message{
+			Message: "Company name, FED or EIN is/are already taken",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		getCompany(companyName, c, db)
@@ -67,7 +75,17 @@ func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	defer insert.Close()
 }
 
-//Company Address signup function
+//Address Signup
+// @Summary Add a new address
+// @Description get address info and parse them to db
+// @Tags company
+// @Accept  json
+// @Produce  json
+// @Param companyInfo body model.AddressSignupInput true "Add an address"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /company/addressSignUp/ [post]
 func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -75,14 +93,8 @@ func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Signup struct {
-		Address string `json:"address"`
-		City    string `json:"city"`
-		State   string `json:"state"`
-		ZipCode string `json:"zipCode"`
-	}
 
-	var signup Signup
+	var signup model.AddressSignupInput
 	er := json.Unmarshal([]byte(value), &signup)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -96,10 +108,10 @@ func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -107,26 +119,30 @@ func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	//insert to db
 	insert, err := db.Query("INSERT INTO address VALUES(DEFAULT,?,?,?,?,DEFAULT)", address, city, state, zipCode)
 	if err != nil {
-		fmt.Println("Sign up error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "This address is already taken",
-		})
+		//TODO:check the address is taken or not
+		message := model.Message{
+			Message: "This address is already taken",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"message": "This address has been assigned or created",
-		})
+		message := model.Message{
+			Message: "This address has been assigned or created",
+		}
+		c.JSON(201, message)
 	}
 	defer insert.Close()
 }
 
-//Getting the address list of a company based on companyID
+//Getting the address list of a company based on
+//TODO:Reformating json object for address
 func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
@@ -197,7 +213,7 @@ func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 
 }
 
-//TODO
+//TODO:Reformating json object for company
 func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 	//connect to DB
 	db, err := connectDB(c)
@@ -216,14 +232,16 @@ func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 	rows, err := db.Query("SELECT companyName from company")
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "Query statements has something wrong",
-		})
+		message := model.Message{
+			Message: "Query statements has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
 		for rows.Next() {
@@ -244,53 +262,17 @@ func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 
 }
 
-// func queryGetCompanyList(c *gin.Context) {
-// 	//connect to DB
-// 	db, err := connectDB(c)
-// 	if err != nil {
-// 		fmt.Println("DB error")
-// 		c.JSON(500, gin.H{
-// 			"message": "DB connection problem",
-// 		})
-// 		panic(err.Error())
-// 	}
-// 	defer db.Close()
-// 	//get company names
-// 	var companyName string
-// 	companyList := []string{}
-
-// 	rows, err := db.Query("SELECT companyName from company")
-// 	if err != nil {
-// 		if strings.Contains(err.Error(), "Access denied") {
-// 			c.JSON(500, gin.H{
-// 				"message": "DB access error, username or password is wrong",
-// 			})
-// 			panic(err.Error())
-// 		}
-// 		c.JSON(500, gin.H{
-// 			"message": "Query statements has something wrong",
-// 		})
-// 		panic(err.Error())
-// 	} else {
-// 		for rows.Next() {
-// 			err := rows.Scan(&companyName)
-// 			if err != nil {
-// 				log.Fatal(err)
-// 			}
-// 			companyList = append(companyList, companyName)
-// 		}
-// 	}
-// 	listInJSON, err := json.Marshal(companyList)
-// 	if err != nil {
-// 		log.Fatal("Cannot encode to JSON ", err)
-// 	}
-
-// 	c.String(200, string(listInJSON))
-// 	defer rows.Close()
-
-// }
-
-//add record into companyAddressAssociate table
+// Add Company&Address associate record
+// @Summary Add a new record to company address associate table
+// @Description get companyAddress associate record info and parse them to db
+// @Tags company
+// @Accept  json
+// @Produce  json
+// @Param companyInfo body model.CompanyAddressRecordSignupInput true "Add a record"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /company/addressCompanyAssociate/ [post]
 func (ct *Controller) QueryAddCompanyAddressAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -298,14 +280,8 @@ func (ct *Controller) QueryAddCompanyAddressAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type CompanyAddress struct {
-		// ID
-		AddressID string `json:"AddressID"`
-		CompanyID string `json:"CompanyID"`
-		// Timestamp string `json:"timestamp"`
-	}
 
-	var companyAddress CompanyAddress
+	var companyAddress model.CompanyAddressRecordSignupInput
 	er := json.Unmarshal([]byte(value), &companyAddress)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -320,10 +296,10 @@ func (ct *Controller) QueryAddCompanyAddressAssociate(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -333,19 +309,22 @@ func (ct *Controller) QueryAddCompanyAddressAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This record can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This record can not be submitted",
-		})
+		message := model.Message{
+			Message: "This record can not be submitted",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"message": "This record has been assigned or created",
-		})
+		message := model.Message{
+			Message: "This record has been assigned or created",
+		}
+		c.JSON(201, message)
 	}
 	defer insert.Close()
 }
