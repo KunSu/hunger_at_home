@@ -9,9 +9,20 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zijianguan0204/hunger_at_home/model"
 )
 
-//add an item
+// Create a new item
+// @Summary Add a new item
+// @Description get item info and parse them to db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.AddItemInput true "Add an item"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/addItem/ [post]
 func (ct *Controller) QueryAddItem(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -19,17 +30,8 @@ func (ct *Controller) QueryAddItem(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Item struct {
-		// ID
-		FoodName     string `json:"foodName"`
-		FoodCategory string `json:"foodCategory"`
-		ExpireDate   string `json:"expireDate"`
-		Quantity     string `json:"quantity"`
-		Temperature  string `json:"temperature"`
-		// Timestamp string `json:"timestamp"`
-	}
 
-	var item Item
+	var item model.AddItemInput
 	er := json.Unmarshal([]byte(value), &item)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -44,10 +46,10 @@ func (ct *Controller) QueryAddItem(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -58,24 +60,37 @@ func (ct *Controller) QueryAddItem(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This item can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This item can not be submitted",
-		})
+		message := model.Message{
+			Message: "This item can not be submitted",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"message": "This item has been assigned or created",
-		})
+		message := model.Message{
+			Message: "This item has been created",
+		}
+		c.JSON(201, message)
 	}
 	defer insert.Close()
 }
 
-//add an order
+// Create a new order
+// @Summary Add a new order
+// @Description get order info and parse them to db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.AddOrderInput true "Add an order"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/addOrder/ [post]
 func (ct *Controller) QueryAddOrder(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -83,17 +98,8 @@ func (ct *Controller) QueryAddOrder(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Order struct {
-		// ID
-		Note       string `json:"note"`
-		AddressID  string `json:"addressID"`
-		PickUpTime string `json:"pickUpTime"`
-		Status     string `json:"status"`
-		OrderType  string `json:"orderType"`
-		// Timestamp string `json:"timestamp"`
-	}
 
-	var order Order
+	var order model.AddOrderInput
 	er := json.Unmarshal([]byte(value), &order)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -104,19 +110,14 @@ func (ct *Controller) QueryAddOrder(c *gin.Context) {
 	pickUpTime := fmt.Sprint(e.Field(2).Interface())
 	status := fmt.Sprint(e.Field(3).Interface())
 	orderType := fmt.Sprint(e.Field(4).Interface())
-	fmt.Println(note)
-	fmt.Println(addressID)
-	fmt.Println(pickUpTime)
-	fmt.Println(status)
-	fmt.Println(orderType)
 
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -126,24 +127,37 @@ func (ct *Controller) QueryAddOrder(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This order can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB has something wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This order can not be submitted",
-		})
+		message := model.Message{
+			Message: "This order can not be submitted",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"message": "This order has been assigned or created",
-		})
+		message := model.Message{
+			Message: "This order has been created",
+		}
+		c.JSON(201, message)
 	}
 	defer insert.Close()
 }
 
-//update status of an order, used by donor and requester
+// Update the status of an existing order
+// @Summary Update the order status
+// @Description get orderID and status info and update them in db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.UpdateOrderStatusInput true "update an order status"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/updateOrderStatus/ [post]
 func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 
 	body := c.Request.Body
@@ -151,12 +165,8 @@ func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Update struct {
-		ID     string `json:"id"`
-		Status string `json:"status"`
-	}
 
-	var update Update
+	var update model.UpdateOrderStatusInput
 	er := json.Unmarshal([]byte(value), &update)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -168,10 +178,10 @@ func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
-		fmt.Println("DB has something wrong")
-		c.JSON(500, gin.H{
-			"message": "DB has something wrong",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -179,19 +189,22 @@ func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Update error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "Does not found such order",
-		})
+		message := model.Message{
+			Message: "Does not found such order",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else { //TODO:check if item exist...
-		c.JSON(200, gin.H{
-			"message": "Status has been updated",
-		})
+		message := model.Message{
+			Message: "The order status has been updated",
+		}
+		c.JSON(201, message)
 	}
 	defer updateQuery.Close()
 	defer db.Close()
@@ -286,7 +299,17 @@ func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 	defer rows.Close()
 }
 
-//update the temperature of an item by itemID
+// Update the temperature of an existing item
+// @Summary Update the order status
+// @Description get itemID and temperture info and update them in db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.UpdateTemperatureInput true "update an item temperature"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/updateItemTemperature/ [post]
 func (ct *Controller) QueryUpdateItemTemperature(c *gin.Context) {
 
 	body := c.Request.Body
@@ -294,12 +317,8 @@ func (ct *Controller) QueryUpdateItemTemperature(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Update struct {
-		ID          string `json:"id"`
-		Temperature string `json:"temperature"`
-	}
 
-	var update Update
+	var update model.UpdateTemperatureInput
 	er := json.Unmarshal([]byte(value), &update)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -311,10 +330,10 @@ func (ct *Controller) QueryUpdateItemTemperature(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
-		fmt.Println("DB has something wrong")
-		c.JSON(500, gin.H{
-			"message": "DB has something wrong",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -322,25 +341,38 @@ func (ct *Controller) QueryUpdateItemTemperature(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Update error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "Does not found such item",
-		})
+		message := model.Message{
+			Message: "Did not found such item",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else { //TODO:check if item exist...
-		c.JSON(200, gin.H{
-			"message": "Temperature has been updated",
-		})
+		message := model.Message{
+			Message: "This item temperature has been updated",
+		}
+		c.JSON(201, message)
 	}
 	defer updateQuery.Close()
 	defer db.Close()
 }
 
-//add a record in orderAssociate table
+// Create a new orderAssociate record
+// @Summary Add a new orderAssociate record
+// @Description get orderAssociate record and parse them to db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.OrderAssociateInput true "Add an orderAssociate record"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/updateOrderAssociate/ [post]
 func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -348,17 +380,8 @@ func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type OrderItem struct {
-		// ID
-		OrderID     string `json:"orderID"`
-		DriverID    string `json:"driverID"`
-		DonorID     string `json:"donorID"`
-		RecipientID string `json:"recipientID"`
-		AdminID     string `json:"adminID"`
-		// Timestamp string `json:"timestamp"`
-	}
 
-	var orderItem OrderItem
+	var orderItem model.OrderAssociateInput
 	er := json.Unmarshal([]byte(value), &orderItem)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -373,10 +396,10 @@ func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -386,14 +409,16 @@ func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This record can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This record can not be submitted",
-		})
+		message := model.Message{
+			Message: "This record can not be found",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else {
 		c.JSON(201, gin.H{
@@ -403,7 +428,17 @@ func (ct *Controller) QueryAddOrderAssociate(c *gin.Context) {
 	defer insert.Close()
 }
 
-//add a record in itemOrderAssociate table
+// Create a new orderItem associate record
+// @Summary Add a new orderItem record
+// @Description get orderItem record and parse them to db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.OrderItemInput true "Add an orderItem record"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/addOrderItemAssociate/ [post]
 func (ct *Controller) QueryAddItemOrderAssociate(c *gin.Context) {
 	//getting data from request
 	body := c.Request.Body
@@ -411,14 +446,8 @@ func (ct *Controller) QueryAddItemOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type OrderItem struct {
-		// ID
-		OrderID string `json:"orderID"`
-		ItemID  string `json:"itemID"`
-		// Timestamp string `json:"timestamp"`
-	}
 
-	var orderItem OrderItem
+	var orderItem model.OrderItemInput
 	er := json.Unmarshal([]byte(value), &orderItem)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -433,10 +462,10 @@ func (ct *Controller) QueryAddItemOrderAssociate(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if err != nil {
-		fmt.Println("DB error")
-		c.JSON(500, gin.H{
-			"message": "DB connection problem",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -446,24 +475,37 @@ func (ct *Controller) QueryAddItemOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("This record can not be submitted")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(500, gin.H{
-			"message": "This record can not be submitted",
-		})
+		message := model.Message{
+			Message: "This record can not be submitted",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else {
-		c.JSON(201, gin.H{
-			"message": "This record has been assigned or created",
-		})
+		message := model.Message{
+			Message: "This record has been created",
+		}
+		c.JSON(201, message)
 	}
 	defer insert.Close()
 }
 
-//update orderAssociate table info, used by admin
+// Update an OrderAssociate record
+// @Summary Update the ID information, used by Admin
+// @Description get ID information and update it in db
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.UpdateOrderAssociateInput true "update the ID inforamtion of a record"
+// @Success 201 {object} model.Message
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/updateOrderAssociate/ [post]
 func (ct *Controller) QueryUpdateOrderAssociate(c *gin.Context) {
 
 	body := c.Request.Body
@@ -471,15 +513,8 @@ func (ct *Controller) QueryUpdateOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Update struct {
-		OrderID     string `json:"orderID"`
-		DriverID    string `json:"driverID"`
-		DonorID     string `json:"donorID"`
-		RecipientID string `json:"recipientID"`
-		AdminID     string `json:"adminID"`
-	}
 
-	var update Update
+	var update model.UpdateOrderAssociateInput
 	er := json.Unmarshal([]byte(value), &update)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -494,10 +529,10 @@ func (ct *Controller) QueryUpdateOrderAssociate(c *gin.Context) {
 	// connect to the db
 	db, err := connectDB(c)
 	if db == nil {
-		fmt.Println("DB has something wrong")
-		c.JSON(500, gin.H{
-			"message": "DB has something wrong",
-		})
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
 		panic(err.Error())
 	}
 
@@ -505,19 +540,22 @@ func (ct *Controller) QueryUpdateOrderAssociate(c *gin.Context) {
 	if err != nil {
 		fmt.Println("Update error")
 		if strings.Contains(err.Error(), "Access denied") {
-			c.JSON(500, gin.H{
-				"message": "DB access error, username or password is wrong",
-			})
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
 			panic(err.Error())
 		}
-		c.JSON(404, gin.H{
-			"message": "Does not found such order",
-		})
+		message := model.Message{
+			Message: "Does not found such order",
+		}
+		c.JSON(404, message)
 		panic(err.Error())
 	} else { //TODO:check if order exist...
-		c.JSON(200, gin.H{
-			"message": "Order info has been updated",
-		})
+		message := model.Message{
+			Message: "This record has been updated",
+		}
+		c.JSON(201, message)
 	}
 	defer updateQuery.Close()
 	defer db.Close()

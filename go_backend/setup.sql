@@ -108,3 +108,5 @@ CREATE TABLE `foodApp`.`orderItemAssociate` (
 
 select * from orderRecord;
 select * from companyAddressAssociate;
+select * from orderRecord;
+select * from orderAssociate;

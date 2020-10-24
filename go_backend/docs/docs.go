@@ -157,15 +157,291 @@ var doc = `{
                         }
                     },
                     "404": {
-                        "description": "Can not find company",
+                        "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     },
                     "500": {
-                        "description": "Server Issue",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/addItem/": {
+            "post": {
+                "description": "get item info and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Add a new item",
+                "parameters": [
+                    {
+                        "description": "Add an item",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddItemInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/addOrder/": {
+            "post": {
+                "description": "get order info and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Add a new order",
+                "parameters": [
+                    {
+                        "description": "Add an order",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddOrderInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/addOrderItemAssociate/": {
+            "post": {
+                "description": "get orderItem record and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Add a new orderItem record",
+                "parameters": [
+                    {
+                        "description": "Add an orderItem record",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderItemInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/updateItemTemperature/": {
+            "post": {
+                "description": "get itemID and temperture info and update them in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Update the order status",
+                "parameters": [
+                    {
+                        "description": "update an item temperature",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateTemperatureInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/updateOrderAssociate/": {
+            "post": {
+                "description": "get ID information and update it in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Update the ID information, used by Admin",
+                "parameters": [
+                    {
+                        "description": "update the ID inforamtion of a record",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateOrderAssociateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/updateOrderStatus/": {
+            "post": {
+                "description": "get orderID and status info and update them in db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Update the order status",
+                "parameters": [
+                    {
+                        "description": "update an order status",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateOrderStatusInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
                         }
                     }
                 }
@@ -316,6 +592,46 @@ var doc = `{
         }
     },
     "definitions": {
+        "model.AddItemInput": {
+            "type": "object",
+            "properties": {
+                "expireDate": {
+                    "type": "string"
+                },
+                "foodCategory": {
+                    "type": "string"
+                },
+                "foodName": {
+                    "type": "string"
+                },
+                "quantity": {
+                    "type": "string"
+                },
+                "temperature": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AddOrderInput": {
+            "type": "object",
+            "properties": {
+                "addressID": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "orderType": {
+                    "type": "string"
+                },
+                "pickUpTime": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AddressSignupInput": {
             "type": "object",
             "properties": {
@@ -375,6 +691,39 @@ var doc = `{
                 "message": {
                     "type": "string",
                     "example": "message"
+                }
+            }
+        },
+        "model.OrderAssociateInput": {
+            "type": "object",
+            "properties": {
+                "adminID": {
+                    "type": "string"
+                },
+                "donorID": {
+                    "type": "string"
+                },
+                "driverID": {
+                    "type": "string"
+                },
+                "orderID": {
+                    "description": "ID",
+                    "type": "string"
+                },
+                "recipientID": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.OrderItemInput": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "string"
+                },
+                "orderID": {
+                    "description": "ID",
+                    "type": "string"
                 }
             }
         },
@@ -455,6 +804,48 @@ var doc = `{
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateOrderAssociateInput": {
+            "type": "object",
+            "properties": {
+                "adminID": {
+                    "type": "string"
+                },
+                "donorID": {
+                    "type": "string"
+                },
+                "driverID": {
+                    "type": "string"
+                },
+                "orderID": {
+                    "type": "string"
+                },
+                "recipientID": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateOrderStatusInput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UpdateTemperatureInput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "temperature": {
                     "type": "string"
                 }
             }

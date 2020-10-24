@@ -20,8 +20,8 @@ import (
 // @Produce  json
 // @Param companyInfo body model.CompanySignupInput true "Add a company"
 // @Success 200 {object} model.SignupOutput
-// @Failure 500 {string} string	"Server Issue"
-// @Failure 404 {string} string	"Can not find company"
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
 // @Router /company/companySignup/ [post]
 func (ct *Controller) QueryCompanySignUp(c *gin.Context) {
 	//getting data from request

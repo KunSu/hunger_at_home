@@ -1,5 +1,31 @@
 basePath: /v1
 definitions:
+  model.AddItemInput:
+    properties:
+      expireDate:
+        type: string
+      foodCategory:
+        type: string
+      foodName:
+        type: string
+      quantity:
+        type: string
+      temperature:
+        type: string
+    type: object
+  model.AddOrderInput:
+    properties:
+      addressID:
+        type: string
+      note:
+        type: string
+      orderType:
+        type: string
+      pickUpTime:
+        type: string
+      status:
+        type: string
+    type: object
   model.AddressSignupInput:
     properties:
       address:
@@ -38,6 +64,28 @@ definitions:
     properties:
       message:
         example: message
+        type: string
+    type: object
+  model.OrderAssociateInput:
+    properties:
+      adminID:
+        type: string
+      donorID:
+        type: string
+      driverID:
+        type: string
+      orderID:
+        description: ID
+        type: string
+      recipientID:
+        type: string
+    type: object
+  model.OrderItemInput:
+    properties:
+      itemID:
+        type: string
+      orderID:
+        description: ID
         type: string
     type: object
   model.SignupInput:
@@ -91,6 +139,33 @@ definitions:
       email:
         type: string
       status:
+        type: string
+    type: object
+  model.UpdateOrderAssociateInput:
+    properties:
+      adminID:
+        type: string
+      donorID:
+        type: string
+      driverID:
+        type: string
+      orderID:
+        type: string
+      recipientID:
+        type: string
+    type: object
+  model.UpdateOrderStatusInput:
+    properties:
+      id:
+        type: string
+      status:
+        type: string
+    type: object
+  model.UpdateTemperatureInput:
+    properties:
+      id:
+        type: string
+      temperature:
         type: string
     type: object
 host: localhost:8080/api
@@ -187,16 +262,196 @@ paths:
           schema:
             $ref: '#/definitions/model.SignupOutput'
         "404":
-          description: Can not find company
+          description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
         "500":
-          description: Server Issue
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
       summary: Add a new company
       tags:
       - company
+  /order/addItem/:
+    post:
+      consumes:
+      - application/json
+      description: get item info and parse them to db
+      parameters:
+      - description: Add an item
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddItemInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new item
+      tags:
+      - order
+  /order/addOrder/:
+    post:
+      consumes:
+      - application/json
+      description: get order info and parse them to db
+      parameters:
+      - description: Add an order
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddOrderInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new order
+      tags:
+      - order
+  /order/addOrderItemAssociate/:
+    post:
+      consumes:
+      - application/json
+      description: get orderItem record and parse them to db
+      parameters:
+      - description: Add an orderItem record
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderItemInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new orderItem record
+      tags:
+      - order
+  /order/updateItemTemperature/:
+    post:
+      consumes:
+      - application/json
+      description: get itemID and temperture info and update them in db
+      parameters:
+      - description: update an item temperature
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateTemperatureInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Update the order status
+      tags:
+      - order
+  /order/updateOrderAssociate/:
+    post:
+      consumes:
+      - application/json
+      description: get ID information and update it in db
+      parameters:
+      - description: update the ID inforamtion of a record
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateOrderAssociateInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Update the ID information, used by Admin
+      tags:
+      - order
+  /order/updateOrderStatus/:
+    post:
+      consumes:
+      - application/json
+      description: get orderID and status info and update them in db
+      parameters:
+      - description: update an order status
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateOrderStatusInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Update the order status
+      tags:
+      - order
   /user/login/{email}/{password}:
     get:
       consumes:
