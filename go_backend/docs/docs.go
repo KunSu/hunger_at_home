@@ -79,6 +79,55 @@ var doc = `{
                 }
             }
         },
+        "/company/addressList/": {
+            "post": {
+                "description": "CompanyID as input then list of address in JSON as output",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get company adderss list based on Company ID",
+                "parameters": [
+                    {
+                        "description": "get an address list by its companyID",
+                        "name": "companyInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.AddressListInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.AddressListOutput"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/company/addressSignUp/": {
             "post": {
                 "description": "get address info and parse them to db",
@@ -108,6 +157,44 @@ var doc = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/company/companyList/": {
+            "post": {
+                "description": "Return a JSON formated array of company",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Get the whole company list with their IDs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.CompanyListOutput"
+                            }
                         }
                     },
                     "404": {
@@ -263,6 +350,52 @@ var doc = `{
                 }
             }
         },
+        "/order/addOrderAssociate/": {
+            "post": {
+                "description": "get orderAssociate record and parse them to db",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Add a new orderAssociate record",
+                "parameters": [
+                    {
+                        "description": "Add an orderAssociate record",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.OrderAssociateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/order/addOrderItemAssociate/": {
             "post": {
                 "description": "get orderItem record and parse them to db",
@@ -292,6 +425,55 @@ var doc = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/getOrderListByDonorID/": {
+            "post": {
+                "description": "DonorID and the status exclude as input",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get order details by donor ID while status is not withdraw",
+                "parameters": [
+                    {
+                        "description": "get an order list exclude withdraw status by its donor ID",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetOrderListByDonorIDInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.GetOrderListByDonorIDOutput"
+                            }
                         }
                     },
                     "404": {
@@ -632,6 +814,31 @@ var doc = `{
                 }
             }
         },
+        "model.AddressListInput": {
+            "type": "object",
+            "properties": {
+                "companyID": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.AddressListOutput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "zipCode": {
+                    "type": "string"
+                }
+            }
+        },
         "model.AddressSignupInput": {
             "type": "object",
             "properties": {
@@ -660,6 +867,17 @@ var doc = `{
                 }
             }
         },
+        "model.CompanyListOutput": {
+            "type": "object",
+            "properties": {
+                "companyID": {
+                    "type": "string"
+                },
+                "companyName": {
+                    "type": "string"
+                }
+            }
+        },
         "model.CompanySignupInput": {
             "type": "object",
             "properties": {
@@ -670,6 +888,34 @@ var doc = `{
                     "type": "string"
                 },
                 "fedID": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetOrderListByDonorIDInput": {
+            "type": "object",
+            "properties": {
+                "donorID": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetOrderListByDonorIDOutput": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "orderType": {
+                    "type": "string"
+                },
+                "pickUpTime": {
                     "type": "string"
                 }
             }

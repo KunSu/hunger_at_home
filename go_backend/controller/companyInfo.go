@@ -141,19 +141,25 @@ func (ct *Controller) QueryAddressSignUp(c *gin.Context) {
 	defer insert.Close()
 }
 
-//Getting the address list of a company based on
-//TODO:Reformating json object for address
+// Get address list
+// @Summary Get company adderss list based on Company ID
+// @Description CompanyID as input then list of address in JSON as output
+// @Tags company
+// @Accept  json
+// @Produce  json
+// @Param companyInfo body model.AddressListInput true "get an address list by its companyID"
+// @Success 200 {array} model.AddressListOutput
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /company/addressList/ [post]
 func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 	body := c.Request.Body
 	value, err := ioutil.ReadAll(body)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	type Input struct {
-		CompanyID string `json:"companyID"`
-	}
 
-	var input Input
+	var input model.AddressListInput
 	er := json.Unmarshal([]byte(value), &input)
 	if er != nil {
 		fmt.Println(err.Error())
@@ -178,8 +184,8 @@ func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 		state   string
 		zipCode string
 	)
-	addressList := []string{}
-	var addressString string
+
+	addressList := []model.AddressListOutput{}
 
 	rows, err := db.Query("SELECT address.address, address.city, address.state, address.zipCode FROM address INNER JOIN companyAddressAssociate ON address.id = companyAddressAssociate.addressID WHERE companyAddressAssociate.companyID = ?", companyID)
 	if err != nil {
@@ -199,21 +205,31 @@ func (ct *Controller) QueryGetAddressList(c *gin.Context) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			addressString = address + ", " + city + ", " + state + ", " + zipCode
-			addressList = append(addressList, addressString)
+			addressRecord := model.AddressListOutput{
+				Address: address,
+				City:    city,
+				State:   state,
+				ZipCode: zipCode,
+			}
+			addressList = append(addressList, addressRecord)
 		}
 	}
-	listInJSON, err := json.Marshal(addressList)
-	if err != nil {
-		log.Fatal("Cannot encode to JSON ", err)
-	}
 
-	c.String(200, string(listInJSON))
+	c.JSON(200, addressList)
 	defer rows.Close()
 
 }
 
-//TODO:Reformating json object for company
+// Get company list
+// @Summary Get the whole company list with their IDs
+// @Description Return a JSON formated array of company
+// @Tags company
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.CompanyListOutput
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /company/companyList/ [post]
 func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 	//connect to DB
 	db, err := connectDB(c)
@@ -226,10 +242,13 @@ func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 	}
 	defer db.Close()
 	//get company names
-	var companyName string
-	companyList := []string{}
+	var (
+		id          string
+		companyName string
+	)
+	companyList := []model.CompanyListOutput{}
 
-	rows, err := db.Query("SELECT companyName from company")
+	rows, err := db.Query("SELECT id, companyName from company")
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
 			message := model.Message{
@@ -245,19 +264,19 @@ func (ct *Controller) QueryGetCompanyList(c *gin.Context) {
 		panic(err.Error())
 	} else {
 		for rows.Next() {
-			err := rows.Scan(&companyName)
+			err := rows.Scan(&id, &companyName)
 			if err != nil {
 				log.Fatal(err)
 			}
-			companyList = append(companyList, companyName)
+			company := model.CompanyListOutput{
+				CompanyID:   id,
+				CompanyName: companyName,
+			}
+			companyList = append(companyList, company)
 		}
 	}
-	listInJSON, err := json.Marshal(companyList)
-	if err != nil {
-		log.Fatal("Cannot encode to JSON ", err)
-	}
 
-	c.String(200, string(listInJSON))
+	c.JSON(200, companyList)
 	defer rows.Close()
 
 }

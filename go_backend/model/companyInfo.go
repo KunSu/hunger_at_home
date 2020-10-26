@@ -24,3 +24,19 @@ type CompanyAddressRecordSignupInput struct {
 	AddressID string `json:"AddressID"`
 	CompanyID string `json:"CompanyID"`
 }
+
+type AddressListInput struct {
+	CompanyID string `json:"companyID"`
+}
+
+type AddressListOutput struct {
+	Address string `json:"address"`
+	City    string `json:"city"`
+	State   string `json:"state"`
+	ZipCode string `json:"zipCode"`
+}
+
+type CompanyListOutput struct {
+	CompanyID   string `json:"companyID"`
+	CompanyName string `json:"companyName"`
+}

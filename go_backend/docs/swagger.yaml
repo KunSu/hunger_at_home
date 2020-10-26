@@ -26,6 +26,22 @@ definitions:
       status:
         type: string
     type: object
+  model.AddressListInput:
+    properties:
+      companyID:
+        type: string
+    type: object
+  model.AddressListOutput:
+    properties:
+      address:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      zipCode:
+        type: string
+    type: object
   model.AddressSignupInput:
     properties:
       address:
@@ -44,6 +60,13 @@ definitions:
       CompanyID:
         type: string
     type: object
+  model.CompanyListOutput:
+    properties:
+      companyID:
+        type: string
+      companyName:
+        type: string
+    type: object
   model.CompanySignupInput:
     properties:
       companyName:
@@ -51,6 +74,24 @@ definitions:
       einID:
         type: string
       fedID:
+        type: string
+    type: object
+  model.GetOrderListByDonorIDInput:
+    properties:
+      donorID:
+        type: string
+      status:
+        type: string
+    type: object
+  model.GetOrderListByDonorIDOutput:
+    properties:
+      address:
+        type: string
+      note:
+        type: string
+      orderType:
+        type: string
+      pickUpTime:
         type: string
     type: object
   model.LoginOutput:
@@ -212,6 +253,38 @@ paths:
       summary: Add a new record to company address associate table
       tags:
       - company
+  /company/addressList/:
+    post:
+      consumes:
+      - application/json
+      description: CompanyID as input then list of address in JSON as output
+      parameters:
+      - description: get an address list by its companyID
+        in: body
+        name: companyInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.AddressListInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.AddressListOutput'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get company adderss list based on Company ID
+      tags:
+      - company
   /company/addressSignUp/:
     post:
       consumes:
@@ -240,6 +313,31 @@ paths:
           schema:
             $ref: '#/definitions/model.Message'
       summary: Add a new address
+      tags:
+      - company
+  /company/companyList/:
+    post:
+      consumes:
+      - application/json
+      description: Return a JSON formated array of company
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.CompanyListOutput'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get the whole company list with their IDs
       tags:
       - company
   /company/companySignup/:
@@ -332,6 +430,36 @@ paths:
       summary: Add a new order
       tags:
       - order
+  /order/addOrderAssociate/:
+    post:
+      consumes:
+      - application/json
+      description: get orderAssociate record and parse them to db
+      parameters:
+      - description: Add an orderAssociate record
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderAssociateInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.Message'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Add a new orderAssociate record
+      tags:
+      - order
   /order/addOrderItemAssociate/:
     post:
       consumes:
@@ -360,6 +488,38 @@ paths:
           schema:
             $ref: '#/definitions/model.Message'
       summary: Add a new orderItem record
+      tags:
+      - order
+  /order/getOrderListByDonorID/:
+    post:
+      consumes:
+      - application/json
+      description: DonorID and the status exclude as input
+      parameters:
+      - description: get an order list exclude withdraw status by its donor ID
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetOrderListByDonorIDInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.GetOrderListByDonorIDOutput'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get order details by donor ID while status is not withdraw
       tags:
       - order
   /order/updateItemTemperature/:
