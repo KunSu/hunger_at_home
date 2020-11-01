@@ -39,3 +39,12 @@ type UpdateInput struct {
 	Email  string `json:"email"`
 	Status string `json:"status"`
 }
+
+type GetUserIDInput struct {
+	Email string `json:"email"`
+}
+
+type GetUserIDOutput struct {
+	UserID string `json:"userID"`
+	Status string `json:"status"`
+}

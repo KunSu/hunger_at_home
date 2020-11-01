@@ -41,6 +41,7 @@ func main() {
 			user.POST("signup", c.QuerySignUp)
 			user.GET("login/:email/:password", c.QueryLogin)
 			user.POST("updateUserStatus", c.QueryUpdateUserStatus)
+			user.POST("getUserID", c.QueryGetUserID)
 			// user.GET("resetPassword", c.QueryResetPassword)
 		}
 
@@ -63,6 +64,8 @@ func main() {
 			order.POST("addOrderAssociate", c.QueryAddOrderAssociate)
 			order.POST("updateOrderAssociate", c.QueryUpdateOrderAssociate)
 			order.POST("getOrderListByDonorID", c.QueryGetOrderListByDonorID)
+			order.POST("getOrderListByEmployeeID", c.QueryGetOrderListByEmployeeID)
+			order.POST("getOrderListByRecipientID", c.QueryGetOrderListByRecipientID)
 		}
 	}
 

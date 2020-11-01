@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -211,13 +212,13 @@ func (ct *Controller) QueryUpdateOrderStatus(c *gin.Context) {
 }
 
 // Get order list
-// @Summary Get order details by donor ID while status is not withdraw
-// @Description DonorID and the status exclude as input
+// @Summary Get order details by donor ID while status is not input status
+// @Description DonorID, the status exclude and amount of records as input
 // @Tags order
 // @Accept  json
 // @Produce  json
-// @Param orderInfo body model.GetOrderListByDonorIDInput true "get an order list exclude withdraw status by its donor ID"
-// @Success 200 {array} model.GetOrderListByDonorIDOutput
+// @Param orderInfo body model.GetOrderListByUserIDInput true "get an order list with amount of records exclude input status by its donor ID"
+// @Success 200 {array} model.GetOrderListByUserIDOutput
 // @Failure 500 {object} model.Message
 // @Failure 404 {object} model.Message
 // @Router /order/getOrderListByDonorID/ [post]
@@ -228,15 +229,16 @@ func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 		fmt.Println(err.Error())
 	}
 
-	var input model.GetOrderListByDonorIDInput
+	var input model.GetOrderListByUserIDInput
 	er := json.Unmarshal([]byte(value), &input)
 	if er != nil {
 		fmt.Println(err.Error())
 	}
 	e := reflect.ValueOf(&input).Elem()
-	donorID := fmt.Sprint(e.Field(0).Interface())
+	userID := fmt.Sprint(e.Field(0).Interface())
 	status := fmt.Sprint(e.Field(1).Interface())
-
+	amount := fmt.Sprint(e.Field(2).Interface())
+	amountInt, _ := strconv.Atoi(amount)
 	//connect to DB
 	db, err := connectDB(c)
 	if err != nil {
@@ -255,9 +257,10 @@ func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 		orderType  string
 	)
 
-	orderList := []model.GetOrderListByDonorIDOutput{}
+	orderList := []model.GetOrderListByUserIDOutput{}
+	counter := 0
 
-	rows, err := db.Query("SELECT orderRecord.note, orderRecord.addressID, orderRecord.pickUpTime, orderRecord.orderType FROM orderRecord INNER JOIN orderAssociate ON orderRecord.id = orderAssociate.orderID WHERE orderAssociate.donorID = ? AND orderRecord.status != ?", donorID, status)
+	rows, err := db.Query("SELECT orderRecord.note, orderRecord.addressID, orderRecord.pickUpTime, orderRecord.orderType FROM orderRecord INNER JOIN orderAssociate ON orderRecord.id = orderAssociate.orderID WHERE orderAssociate.donorID = ? AND orderRecord.status != ?", userID, status)
 	if err != nil {
 		if strings.Contains(err.Error(), "Access denied") {
 			message := model.Message{
@@ -277,7 +280,7 @@ func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			orderRecord := model.GetOrderListByDonorIDOutput{
+			orderRecord := model.GetOrderListByUserIDOutput{
 				Note:       note,
 				Address:    addressID,
 				PickUpTime: pickUpTime,
@@ -289,15 +292,194 @@ func (ct *Controller) QueryGetOrderListByDonorID(c *gin.Context) {
 			// 	log.Fatal("Cannot encode to JSON ", err)
 			// }
 			// fmt.Println(string(orderInJSON))
-			orderList = append(orderList, orderRecord)
-			fmt.Println(orderList)
+			if counter < amountInt {
+				counter = counter + 1
+				orderList = append(orderList, orderRecord)
+			}
 		}
 	}
-	// listInJSON, err := json.Marshal(orderList)
-	// if err != nil {
-	// 	log.Fatal("Cannot encode to JSON ", err)
-	// }
+	c.JSON(200, orderList)
+	defer rows.Close()
+}
 
+// Get order list
+// @Summary Get order details by EmployeeID while status is not input status
+// @Description EmployeeID, the status exclude and amount of records as input
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.GetOrderListByUserIDInput true "get an order list with amount of records exclude input status by its EmployeeID"
+// @Success 200 {array} model.GetOrderListByUserIDOutput
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/getOrderListByEmployeeID/ [post]
+func (ct *Controller) QueryGetOrderListByEmployeeID(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	var input model.GetOrderListByUserIDInput
+	er := json.Unmarshal([]byte(value), &input)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&input).Elem()
+	userID := fmt.Sprint(e.Field(0).Interface())
+	status := fmt.Sprint(e.Field(1).Interface())
+	amount := fmt.Sprint(e.Field(2).Interface())
+	amountInt, _ := strconv.Atoi(amount)
+	//connect to DB
+	db, err := connectDB(c)
+	if err != nil {
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
+		panic(err.Error())
+	}
+	defer db.Close()
+	//get company names
+	var (
+		note       string
+		addressID  string
+		pickUpTime string
+		orderType  string
+	)
+
+	orderList := []model.GetOrderListByUserIDOutput{}
+	counter := 0
+
+	rows, err := db.Query("SELECT orderRecord.note, orderRecord.addressID, orderRecord.pickUpTime, orderRecord.orderType FROM orderRecord INNER JOIN orderAssociate ON orderRecord.id = orderAssociate.orderID WHERE orderAssociate.driverID = ? AND orderRecord.status != ?", userID, status)
+	if err != nil {
+		if strings.Contains(err.Error(), "Access denied") {
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
+			panic(err.Error())
+		}
+		message := model.Message{
+			Message: "Query statement has something wrong",
+		}
+		c.JSON(500, message)
+		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&note, &addressID, &pickUpTime, &orderType)
+			if err != nil {
+				log.Fatal(err)
+			}
+			orderRecord := model.GetOrderListByUserIDOutput{
+				Note:       note,
+				Address:    addressID,
+				PickUpTime: pickUpTime,
+				OrderType:  orderType,
+			}
+			// fmt.Println(orderRecord)
+			// orderInJSON, err := json.Marshal(orderRecord)
+			// if err != nil {
+			// 	log.Fatal("Cannot encode to JSON ", err)
+			// }
+			// fmt.Println(string(orderInJSON))
+			if counter < amountInt {
+				counter = counter + 1
+				orderList = append(orderList, orderRecord)
+			}
+		}
+	}
+	c.JSON(200, orderList)
+	defer rows.Close()
+}
+
+// Get order list
+// @Summary Get order details by RecipientID while status is not input status
+// @Description RecipientID, the status exclude and amount of records as input
+// @Tags order
+// @Accept  json
+// @Produce  json
+// @Param orderInfo body model.GetOrderListByUserIDInput true "get an order list with amount of records exclude input status by its RecipientID"
+// @Success 200 {array} model.GetOrderListByUserIDOutput
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /order/getOrderListByRecipientID/ [post]
+func (ct *Controller) QueryGetOrderListByRecipientID(c *gin.Context) {
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	var input model.GetOrderListByUserIDInput
+	er := json.Unmarshal([]byte(value), &input)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&input).Elem()
+	userID := fmt.Sprint(e.Field(0).Interface())
+	status := fmt.Sprint(e.Field(1).Interface())
+	amount := fmt.Sprint(e.Field(2).Interface())
+	amountInt, _ := strconv.Atoi(amount)
+	//connect to DB
+	db, err := connectDB(c)
+	if err != nil {
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
+		panic(err.Error())
+	}
+	defer db.Close()
+	//get company names
+	var (
+		note       string
+		addressID  string
+		pickUpTime string
+		orderType  string
+	)
+
+	orderList := []model.GetOrderListByUserIDOutput{}
+	counter := 0
+
+	rows, err := db.Query("SELECT orderRecord.note, orderRecord.addressID, orderRecord.pickUpTime, orderRecord.orderType FROM orderRecord INNER JOIN orderAssociate ON orderRecord.id = orderAssociate.orderID WHERE orderAssociate.recipientID = ? AND orderRecord.status != ?", userID, status)
+	if err != nil {
+		if strings.Contains(err.Error(), "Access denied") {
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
+			panic(err.Error())
+		}
+		message := model.Message{
+			Message: "Query statement has something wrong",
+		}
+		c.JSON(500, message)
+		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&note, &addressID, &pickUpTime, &orderType)
+			if err != nil {
+				log.Fatal(err)
+			}
+			orderRecord := model.GetOrderListByUserIDOutput{
+				Note:       note,
+				Address:    addressID,
+				PickUpTime: pickUpTime,
+				OrderType:  orderType,
+			}
+			// fmt.Println(orderRecord)
+			// orderInJSON, err := json.Marshal(orderRecord)
+			// if err != nil {
+			// 	log.Fatal("Cannot encode to JSON ", err)
+			// }
+			// fmt.Println(string(orderInJSON))
+			if counter < amountInt {
+				counter = counter + 1
+				orderList = append(orderList, orderRecord)
+			}
+		}
+	}
 	c.JSON(200, orderList)
 	defer rows.Close()
 }

@@ -444,7 +444,7 @@ var doc = `{
         },
         "/order/getOrderListByDonorID/": {
             "post": {
-                "description": "DonorID and the status exclude as input",
+                "description": "DonorID, the status exclude and amount of records as input",
                 "consumes": [
                     "application/json"
                 ],
@@ -454,15 +454,15 @@ var doc = `{
                 "tags": [
                     "order"
                 ],
-                "summary": "Get order details by donor ID while status is not withdraw",
+                "summary": "Get order details by donor ID while status is not input status",
                 "parameters": [
                     {
-                        "description": "get an order list exclude withdraw status by its donor ID",
+                        "description": "get an order list with amount of records exclude input status by its donor ID",
                         "name": "orderInfo",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.GetOrderListByDonorIDInput"
+                            "$ref": "#/definitions/model.GetOrderListByUserIDInput"
                         }
                     }
                 ],
@@ -472,7 +472,105 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/model.GetOrderListByDonorIDOutput"
+                                "$ref": "#/definitions/model.GetOrderListByUserIDOutput"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/getOrderListByEmployeeID/": {
+            "post": {
+                "description": "EmployeeID, the status exclude and amount of records as input",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get order details by EmployeeID while status is not input status",
+                "parameters": [
+                    {
+                        "description": "get an order list with amount of records exclude input status by its EmployeeID",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetOrderListByUserIDInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.GetOrderListByUserIDOutput"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/getOrderListByRecipientID/": {
+            "post": {
+                "description": "RecipientID, the status exclude and amount of records as input",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "order"
+                ],
+                "summary": "Get order details by RecipientID while status is not input status",
+                "parameters": [
+                    {
+                        "description": "get an order list with amount of records exclude input status by its RecipientID",
+                        "name": "orderInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetOrderListByUserIDInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.GetOrderListByUserIDOutput"
                             }
                         }
                     },
@@ -629,6 +727,52 @@ var doc = `{
                 }
             }
         },
+        "/user/getUserID": {
+            "post": {
+                "description": "User email as input and ID is returned",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get userID from email",
+                "parameters": [
+                    {
+                        "description": "Get userID",
+                        "name": "userInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUserIDInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.GetUserIDOutput"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/model.Message"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login/{email}/{password}": {
             "get": {
                 "description": "use email address and password to login",
@@ -666,15 +810,15 @@ var doc = `{
                         }
                     },
                     "404": {
-                        "description": "Can not find user",
+                        "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     },
                     "500": {
-                        "description": "Server Issue",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     }
                 }
@@ -712,15 +856,15 @@ var doc = `{
                         }
                     },
                     "404": {
-                        "description": "Can not find user",
+                        "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     },
                     "500": {
-                        "description": "Server Issue",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     }
                 }
@@ -758,15 +902,15 @@ var doc = `{
                         }
                     },
                     "404": {
-                        "description": "Can not find user",
+                        "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     },
                     "500": {
-                        "description": "Server Issue",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.Message"
                         }
                     }
                 }
@@ -892,18 +1036,21 @@ var doc = `{
                 }
             }
         },
-        "model.GetOrderListByDonorIDInput": {
+        "model.GetOrderListByUserIDInput": {
             "type": "object",
             "properties": {
-                "donorID": {
+                "amount": {
                     "type": "string"
                 },
                 "status": {
                     "type": "string"
+                },
+                "userID": {
+                    "type": "string"
                 }
             }
         },
-        "model.GetOrderListByDonorIDOutput": {
+        "model.GetOrderListByUserIDOutput": {
             "type": "object",
             "properties": {
                 "address": {
@@ -916,6 +1063,25 @@ var doc = `{
                     "type": "string"
                 },
                 "pickUpTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetUserIDInput": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.GetUserIDOutput": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "userID": {
                     "type": "string"
                 }
             }

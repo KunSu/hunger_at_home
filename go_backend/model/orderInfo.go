@@ -53,12 +53,13 @@ type UpdateOrderAssociateInput struct {
 	AdminID     string `json:"adminID"`
 }
 
-type GetOrderListByDonorIDInput struct {
-	DonorID string `json:"donorID"`
-	Status  string `json:"status"`
+type GetOrderListByUserIDInput struct {
+	UserID string `json:"userID"`
+	Status string `json:"status"`
+	Amount string `json:"amount"`
 }
 
-type GetOrderListByDonorIDOutput struct {
+type GetOrderListByUserIDOutput struct {
 	Note       string `json:"note"`
 	Address    string `json:"address"`
 	PickUpTime string `json:"pickUpTime"`

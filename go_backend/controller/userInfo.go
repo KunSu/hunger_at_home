@@ -27,8 +27,8 @@ func homePage(c *gin.Context) {
 // @Produce  json
 // @Param userInfo body model.SignupInput true "Add a user"
 // @Success 200 {object} model.SignupOutput
-// @Failure 500 {string} string	"Server Issue"
-// @Failure 404 {string} string	"Can not find user"
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
 // @Router /user/signup/ [post]
 func (ct *Controller) QuerySignUp(c *gin.Context) {
 
@@ -138,8 +138,8 @@ func (ct *Controller) QuerySignUp(c *gin.Context) {
 // @Param email path string true "Email"
 // @Param password path string true "Password"
 // @Success 200 {object} model.LoginOutput
-// @Failure 404 {object} string	"Can not find user"
-// @Failure 500 {object} string	"Server Issue"
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
 // @Router /user/login/{email}/{password} [get]
 func (ct *Controller) QueryLogin(c *gin.Context) {
 	//getting data from request
@@ -192,7 +192,7 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 			c.JSON(404, message)
 		} else if status == "pending" {
 			message := model.Message{
-				Message: "Such username or password is incorrect",
+				Message: "Such user account is in pending",
 			}
 			c.JSON(404, message)
 		} else {
@@ -215,8 +215,8 @@ func (ct *Controller) QueryLogin(c *gin.Context) {
 // @Produce  json
 // @Param userInfo body model.UpdateInput true "Update user status"
 // @Success 200 {object} model.SignupOutput
-// @Failure 500 {string} string	"Server Issue"
-// @Failure 404 {string} string	"Can not find user"
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
 // @Router /user/updateUserStatus/ [post]
 func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	body := c.Request.Body
@@ -265,6 +265,100 @@ func (ct *Controller) QueryUpdateUserStatus(c *gin.Context) {
 	}
 	defer updateQuery.Close()
 	defer db.Close()
+}
+
+// User ID from email
+// @Summary Get userID from email
+// @Description User email as input and ID is returned
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param userInfo body model.GetUserIDInput true "Get userID"
+// @Success 200 {object} model.GetUserIDOutput
+// @Failure 500 {object} model.Message
+// @Failure 404 {object} model.Message
+// @Router /user/getUserID [post]
+func (ct *Controller) QueryGetUserID(c *gin.Context) {
+	//getting data from request
+	body := c.Request.Body
+	value, err := ioutil.ReadAll(body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	var getUserIDInput model.GetUserIDInput
+	//TODO: Try to figure out why
+	// if err := c.ShouldBindJSON(&signup); err != nil {
+	// 	c.JSON(500, gin.H{
+	// 		"message": "Input is not in JSON format",
+	// 	})
+	// 	return
+	// }
+	er := json.Unmarshal([]byte(value), &getUserIDInput)
+	if er != nil {
+		fmt.Println(err.Error())
+	}
+	e := reflect.ValueOf(&getUserIDInput).Elem()
+	email := fmt.Sprint(e.Field(0).Interface())
+
+	// connect to the db
+	db, err := connectDB(c)
+	if err != nil {
+		message := model.Message{
+			Message: "DB has something wrong",
+		}
+		c.JSON(500, message)
+		panic(err.Error())
+	}
+
+	defer db.Close()
+	//select userID from db
+	var (
+		userID string
+		status string
+	)
+	rows, err := db.Query("SELECT id, status from user WHERE email = ?", email)
+	if err != nil {
+		fmt.Println("Login error")
+		if strings.Contains(err.Error(), "Access denied") {
+			message := model.Message{
+				Message: "DB access error, username or password is wrong",
+			}
+			c.JSON(500, message)
+			panic(err.Error())
+		}
+		message := model.Message{
+			Message: "Such username or password is incorrect",
+		}
+		c.JSON(404, message)
+		panic(err.Error())
+	} else {
+		for rows.Next() {
+			err := rows.Scan(&userID, &status)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+		if userID == "" {
+			message := model.Message{
+				Message: "No such user",
+			}
+			c.JSON(404, message)
+		} else if status == "pending" {
+			message := model.Message{
+				Message: "Such user is in pending",
+			}
+			c.JSON(404, message)
+		} else {
+			getUserIDOutput := model.GetUserIDOutput{
+				UserID: userID,
+				Status: status,
+			}
+			c.JSON(200, getUserIDOutput)
+		}
+
+	}
+	defer rows.Close()
 }
 
 //Reset Password, TODO: need to be improved later

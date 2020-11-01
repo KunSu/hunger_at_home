@@ -76,14 +76,16 @@ definitions:
       fedID:
         type: string
     type: object
-  model.GetOrderListByDonorIDInput:
+  model.GetOrderListByUserIDInput:
     properties:
-      donorID:
+      amount:
         type: string
       status:
         type: string
+      userID:
+        type: string
     type: object
-  model.GetOrderListByDonorIDOutput:
+  model.GetOrderListByUserIDOutput:
     properties:
       address:
         type: string
@@ -92,6 +94,18 @@ definitions:
       orderType:
         type: string
       pickUpTime:
+        type: string
+    type: object
+  model.GetUserIDInput:
+    properties:
+      email:
+        type: string
+    type: object
+  model.GetUserIDOutput:
+    properties:
+      status:
+        type: string
+      userID:
         type: string
     type: object
   model.LoginOutput:
@@ -494,14 +508,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: DonorID and the status exclude as input
+      description: DonorID, the status exclude and amount of records as input
       parameters:
-      - description: get an order list exclude withdraw status by its donor ID
+      - description: get an order list with amount of records exclude input status by its donor ID
         in: body
         name: orderInfo
         required: true
         schema:
-          $ref: '#/definitions/model.GetOrderListByDonorIDInput'
+          $ref: '#/definitions/model.GetOrderListByUserIDInput'
       produces:
       - application/json
       responses:
@@ -509,7 +523,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/model.GetOrderListByDonorIDOutput'
+              $ref: '#/definitions/model.GetOrderListByUserIDOutput'
             type: array
         "404":
           description: Not Found
@@ -519,7 +533,71 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/model.Message'
-      summary: Get order details by donor ID while status is not withdraw
+      summary: Get order details by donor ID while status is not input status
+      tags:
+      - order
+  /order/getOrderListByEmployeeID/:
+    post:
+      consumes:
+      - application/json
+      description: EmployeeID, the status exclude and amount of records as input
+      parameters:
+      - description: get an order list with amount of records exclude input status by its EmployeeID
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetOrderListByUserIDInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.GetOrderListByUserIDOutput'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get order details by EmployeeID while status is not input status
+      tags:
+      - order
+  /order/getOrderListByRecipientID/:
+    post:
+      consumes:
+      - application/json
+      description: RecipientID, the status exclude and amount of records as input
+      parameters:
+      - description: get an order list with amount of records exclude input status by its RecipientID
+        in: body
+        name: orderInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetOrderListByUserIDInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.GetOrderListByUserIDOutput'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get order details by RecipientID while status is not input status
       tags:
       - order
   /order/updateItemTemperature/:
@@ -612,6 +690,36 @@ paths:
       summary: Update the order status
       tags:
       - order
+  /user/getUserID:
+    post:
+      consumes:
+      - application/json
+      description: User email as input and ID is returned
+      parameters:
+      - description: Get userID
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/model.GetUserIDInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.GetUserIDOutput'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.Message'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.Message'
+      summary: Get userID from email
+      tags:
+      - user
   /user/login/{email}/{password}:
     get:
       consumes:
@@ -636,13 +744,13 @@ paths:
           schema:
             $ref: '#/definitions/model.LoginOutput'
         "404":
-          description: Can not find user
+          description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
         "500":
-          description: Server Issue
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
       summary: Login using an existing account
       tags:
       - user
@@ -666,13 +774,13 @@ paths:
           schema:
             $ref: '#/definitions/model.SignupOutput'
         "404":
-          description: Can not find user
+          description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
         "500":
-          description: Server Issue
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
       summary: Add a new user
       tags:
       - user
@@ -696,13 +804,13 @@ paths:
           schema:
             $ref: '#/definitions/model.SignupOutput'
         "404":
-          description: Can not find user
+          description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
         "500":
-          description: Server Issue
+          description: Internal Server Error
           schema:
-            type: string
+            $ref: '#/definitions/model.Message'
       summary: Update a status from "pending" to {status}
       tags:
       - user
