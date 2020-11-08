@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 
-class HomePage extends StatelessWidget {
+class EmployeePage extends StatelessWidget {
   static Route route() {
-    return MaterialPageRoute<HomePage>(
+    return MaterialPageRoute<EmployeePage>(
       builder: (context) => BlocProvider.value(
         value: BlocProvider.of<AuthenticationBloc>(context),
-        child: HomePage(),
+        child: EmployeePage(),
       ),
     );
   }
@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      appBar: AppBar(title: const Text('Employee')),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
