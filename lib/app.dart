@@ -1,6 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';
+import 'package:fe/register/bloc/register_bloc.dart';
+import 'package:fe/register/register.dart';
+import 'package:fe/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
@@ -76,7 +79,7 @@ class _AppViewState extends State<AppView> {
                 break;
               case AuthenticationStatus.unauthenticated:
                 _navigator.pushAndRemoveUntil<void>(
-                  LoginPage.route(),
+                  WelcomePage.route(),
                   (route) => false,
                 );
                 break;
@@ -95,16 +98,22 @@ class _AppViewState extends State<AppView> {
                 authenticationRepository:
                     RepositoryProvider.of<AuthenticationRepository>(context),
               ),
+              child: WelcomePage(),
+            ),
+        '/login': (context) => BlocProvider.value(
+              value: LoginBloc(
+                authenticationRepository:
+                    RepositoryProvider.of<AuthenticationRepository>(context),
+              ),
               child: LoginPage(),
             ),
-        // '/home': (context) => BlocProvider.value(
-        //       value: BlocProvider.of<AuthenticationBloc>(context),
-        //       child: HomePage(),
-        //     ),
-        // '/donor': (context) => BlocProvider.value(
-        //       value: BlocProvider.of<AuthenticationBloc>(context),
-        //       child: DonorPage(),
-        //     ),
+        '/register': (context) => BlocProvider.value(
+              value: RegisterBloc(
+                authenticationRepository:
+                    RepositoryProvider.of<AuthenticationRepository>(context),
+              ),
+              child: RegisterPage(),
+            ),
         // '/employee': (context) => BlocProvider.value(
         //   value: BlocProvider.of<AuthenticationBloc>(context),
         //   child: EmployeePage(),
