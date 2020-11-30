@@ -1,4 +1,4 @@
-import 'package:fe/constants.dart';
+import 'package:fe/components/constants.dart';
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {

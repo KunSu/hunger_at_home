@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
 import 'package:fe/catalog/bloc/catalog_bloc.dart';
+import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';
 import 'package:fe/register/bloc/register_bloc.dart';
@@ -11,8 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/home/home.dart';
 import 'package:fe/login/login.dart';
-
-import 'constants.dart';
 
 class App extends StatelessWidget {
   const App({

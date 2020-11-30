@@ -1,6 +1,6 @@
+import 'package:fe/components/constants.dart';
 import 'package:fe/components/view/background.dart';
 import 'package:fe/components/view/rounded_botton.dart';
-import 'package:fe/constants.dart';
 import 'package:fe/login/login.dart';
 import 'package:fe/register/register.dart';
 import 'package:flutter/material.dart';

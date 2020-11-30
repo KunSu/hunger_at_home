@@ -19,25 +19,6 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Welcome')),
       body: Body(),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: <Widget>[
-      //       RaisedButton(
-      //         child: const Text('Login'),
-      //         onPressed: () {
-      //           Navigator.pushNamed(context, '/login');
-      //         },
-      //       ),
-      //       RaisedButton(
-      //         child: const Text('Register'),
-      //         onPressed: () {
-      //           Navigator.pushNamed(context, '/register');
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

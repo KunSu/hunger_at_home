@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/login/login.dart';
 import 'package:flutter/material.dart';
 
+import 'body.dart';
+
 class LoginPage extends StatelessWidget {
   static String routeName = '/login';
 
@@ -22,10 +24,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(12),
-        child: LoginForm(),
-      ),
+      body: Body(),
     );
   }
 }
