@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:authentication_repository/authentication_repository.dart';
+import 'package:http/http.dart';
 import 'package:meta/meta.dart';
-
-import '../authentication_repository.dart';
 
 enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 
@@ -24,14 +25,27 @@ class AuthenticationRepository {
     assert(username != null);
     assert(password != null);
 
-    _user = User(username);
+    // var url = 'http://localhost:8080/api/v1/user/login';
+
+    // var headers = <String, String>{'Content-type': 'application/json'};
+    // var jsonData = '{"email": "$username", "password": "$password"}';
+
+    // var response = await post(url, headers: headers, body: jsonData);
+    // // check the status code for the result
+    // var statusCode = response.statusCode;
+    // print('statusCode:$statusCode');
+    // // this API passes back the id of the new item added to the body
+    // var body = response.body;
+    // print(body);
+
+    _user = User(id: '1', username: username, useridentity: 'donor');
     await Future.delayed(
       const Duration(milliseconds: 300),
       () => _controller.add(AuthenticationStatus.authenticated),
     );
   }
 
-  Future<void> register({
+  void register({
     @required String username,
     @required String password,
     @required String lastname,
@@ -46,11 +60,30 @@ class AuthenticationRepository {
     assert(phonenumber != null);
     assert(useridentity != null);
 
-    _user = User(username);
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-      () => _controller.add(AuthenticationStatus.authenticated),
-    );
+    // set up POST request arguments
+    var url = 'http://localhost:8080/api/v1/user/signup';
+
+    var headers = <String, String>{'Content-type': 'application/json'};
+    var jsonData =
+        '{"email": "$username", "password": "$password", "firstName": "$firstname", "lastName": "$lastname", "phoneNumber": "$phonenumber", "userIdentity": "$useridentity", "companyID": "1", "secureQuestion": "NA", "secureAnswer": "NA"}';
+    print('jsonData: $jsonData');
+    var response = await post(url, headers: headers, body: jsonData);
+    // check the status code for the result
+    var statusCode = response.statusCode;
+    print('statusCode:$statusCode');
+    // this API passes back the id of the new item added to the body
+    var body = response.body;
+    print(body);
+    // print(body.);
+    _user = User(id: username, username: username, useridentity: useridentity);
+
+    print(_user.id);
+    if (_user != null) {
+      print('working');
+      _controller.add(AuthenticationStatus.authenticated);
+    } else {
+      // TODO: error
+    }
   }
 
   void logOut() {
@@ -60,6 +93,17 @@ class AuthenticationRepository {
   User getUser() {
     return _user;
   }
+
+  // Future<void> _createUserAPI({
+  //   @required String username,
+  //   @required String password,
+  //   @required String lastname,
+  //   @required String firstname,
+  //   @required String phonenumber,
+  //   @required String useridentity,
+  // }) async {
+
+  // }
 
   void dispose() => _controller.close();
 }

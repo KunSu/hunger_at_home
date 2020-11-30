@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const baseURL = 'http://localhost:8080/api/v1';
+const String baseURL = 'http://localhost:8080/api/v1';
 // Turn off testing model in producttion
 const bool testingModel = true;
 
