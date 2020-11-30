@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 
+import 'body.dart';
+
 class WelcomePage extends StatelessWidget {
   static Route route() {
     return MaterialPageRoute<WelcomePage>(
@@ -16,25 +18,26 @@ class WelcomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Welcome')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            RaisedButton(
-              child: const Text('Login'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
-              },
-            ),
-            RaisedButton(
-              child: const Text('Register'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/register');
-              },
-            ),
-          ],
-        ),
-      ),
+      body: Body(),
+      // body: Center(
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: <Widget>[
+      //       RaisedButton(
+      //         child: const Text('Login'),
+      //         onPressed: () {
+      //           Navigator.pushNamed(context, '/login');
+      //         },
+      //       ),
+      //       RaisedButton(
+      //         child: const Text('Register'),
+      //         onPressed: () {
+      //           Navigator.pushNamed(context, '/register');
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

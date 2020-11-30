@@ -1,4 +1,4 @@
-import 'package:fe/components/background.dart';
+import 'package:fe/components/view/background.dart';
 import 'package:fe/register/view/register_form.dart';
 import 'package:flutter/material.dart';
 

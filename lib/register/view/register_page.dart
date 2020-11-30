@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'body.dart';
 
 class RegisterPage extends StatelessWidget {
+  static String routeName = '/register';
+
   static Route route() {
     return MaterialPageRoute<RegisterPage>(
       builder: (context) => BlocProvider.value(

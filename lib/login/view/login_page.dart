@@ -4,6 +4,8 @@ import 'package:fe/login/login.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
+  static String routeName = '/login';
+
   static Route route() {
     return MaterialPageRoute<LoginPage>(
       builder: (context) => BlocProvider.value(
