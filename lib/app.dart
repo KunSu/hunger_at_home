@@ -1,17 +1,20 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/address/address.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
 import 'package:fe/catalog/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';
 import 'package:fe/register/bloc/register_bloc.dart';
-import 'package:fe/register/register.dart';
 import 'package:fe/welcome/welcome.dart';
+import 'package:fe/wizard/wizard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/home/home.dart';
 import 'package:fe/login/login.dart';
+
+import 'routes.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -115,36 +118,37 @@ class _AppViewState extends State<AppView> {
 
         initialRoute: '/',
         // TODO: confirm routing style
-        routes: {
-          '/': (context) => WelcomePage(),
-          '/login': (context) => LoginPage(),
-          '/register': (context) => RegisterPage(),
-          // '/': (context) => BlocProvider.value(
-          //       value: LoginBloc(
-          //         authenticationRepository:
-          //             RepositoryProvider.of<AuthenticationRepository>(context),
-          //       ),
-          //       child: WelcomePage(),
-          //     ),
-          // '/login': (context) => BlocProvider.value(
-          //       value: LoginBloc(
-          //         authenticationRepository:
-          //             RepositoryProvider.of<AuthenticationRepository>(context),
-          //       ),
-          //       child: LoginPage(),
-          //     ),
-          // '/register': (context) => BlocProvider.value(
-          //       value: RegisterBloc(
-          //         authenticationRepository:
-          //             RepositoryProvider.of<AuthenticationRepository>(context),
-          //       ),
-          //       child: RegisterPage(),
-          // ),
-          // '/employee': (context) => BlocProvider.value(
-          //   value: BlocProvider.of<AuthenticationBloc>(context),
-          //   child: EmployeePage(),
-          // ),
-        },
+        routes: routes,
+        // {
+        //   '/': (context) => WelcomePage(),
+        //   '/login': (context) => LoginPage(),
+        //   '/register': (context) => RegisterPage(),
+        //   '/': (context) => BlocProvider.value(
+        //         value: LoginBloc(
+        //           authenticationRepository:
+        //               RepositoryProvider.of<AuthenticationRepository>(context),
+        //         ),
+        //         child: WelcomePage(),
+        //       ),
+        //   '/login': (context) => BlocProvider.value(
+        //         value: LoginBloc(
+        //           authenticationRepository:
+        //               RepositoryProvider.of<AuthenticationRepository>(context),
+        //         ),
+        //         child: LoginPage(),
+        //       ),
+        //   '/register': (context) => BlocProvider.value(
+        //         value: RegisterBloc(
+        //           authenticationRepository:
+        //               RepositoryProvider.of<AuthenticationRepository>(context),
+        //         ),
+        //         child: RegisterPage(),
+        //   ),
+        //   '/employee': (context) => BlocProvider.value(
+        //     value: BlocProvider.of<AuthenticationBloc>(context),
+        //     child: EmployeePage(),
+        //   ),
+        // },
       ),
     );
   }

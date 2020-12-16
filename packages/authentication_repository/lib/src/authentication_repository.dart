@@ -94,16 +94,5 @@ class AuthenticationRepository {
     return _user;
   }
 
-  // Future<void> _createUserAPI({
-  //   @required String username,
-  //   @required String password,
-  //   @required String lastname,
-  //   @required String firstname,
-  //   @required String phonenumber,
-  //   @required String useridentity,
-  // }) async {
-
-  // }
-
   void dispose() => _controller.close();
 }

@@ -89,7 +89,7 @@ class _FirstnameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      buildWhen: (previous, current) => previous.firstname != current.firstname,
       builder: (context, state) {
         return TextField(
           key: const Key('RegisterForm_firstnameInput_textField'),
@@ -111,7 +111,7 @@ class _LastnameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      buildWhen: (previous, current) => previous.lastname != current.lastname,
       builder: (context, state) {
         return TextField(
           key: const Key('RegisterForm_lastnameInput_textField'),
@@ -133,7 +133,8 @@ class _PhoneNumberInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      buildWhen: (previous, current) =>
+          previous.phonenumber != current.phonenumber,
       builder: (context, state) {
         return TextField(
           key: const Key('RegisterForm_phonenumberInput_textField'),
@@ -155,7 +156,8 @@ class _UserIdentityInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
+      buildWhen: (previous, current) =>
+          previous.useridentity != current.useridentity,
       builder: (context, state) {
         return TextField(
           key: const Key('RegisterForm_useridentityInput_textField'),

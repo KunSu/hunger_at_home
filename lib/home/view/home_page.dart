@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 
 class HomePage extends StatelessWidget {
+  static String routeName = '/home';
+
   static Route route() {
     return MaterialPageRoute<HomePage>(
       builder: (context) => BlocProvider.value(

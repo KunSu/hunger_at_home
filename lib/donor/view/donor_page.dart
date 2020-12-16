@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 
+import 'body.dart';
+
 class DonorPage extends StatelessWidget {
+  static String routeName = '/donor';
+
   static Route route() {
     return MaterialPageRoute<DonorPage>(
       builder: (context) => BlocProvider.value(
@@ -16,24 +20,25 @@ class DonorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Donor')),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'UserID: ${context.bloc<AuthenticationBloc>().state.user.id}',
-            ),
-            RaisedButton(
-              child: const Text('Logout'),
-              onPressed: () {
-                context
-                    .bloc<AuthenticationBloc>()
-                    .add(AuthenticationLogoutRequested());
-              },
-            ),
-          ],
-        ),
-      ),
+      body: Body(),
+      // body: Center(
+      //   child: Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: <Widget>[
+      //       Text(
+      //         'UserID: ${context.bloc<AuthenticationBloc>().state.user.id}',
+      //       ),
+      //       RaisedButton(
+      //         child: const Text('Logout'),
+      //         onPressed: () {
+      //           context
+      //               .bloc<AuthenticationBloc>()
+      //               .add(AuthenticationLogoutRequested());
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

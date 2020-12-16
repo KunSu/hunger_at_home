@@ -5,6 +5,8 @@ import 'package:fe/authentication/authentication.dart';
 import 'body.dart';
 
 class WelcomePage extends StatelessWidget {
+  static String routeName = '/';
+
   static Route route() {
     return MaterialPageRoute<WelcomePage>(
       builder: (context) => BlocProvider.value(

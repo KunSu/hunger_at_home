@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 
 class EmployeePage extends StatelessWidget {
+  static String routeName = '/employee';
+
   static Route route() {
     return MaterialPageRoute<EmployeePage>(
       builder: (context) => BlocProvider.value(
