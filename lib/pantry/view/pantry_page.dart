@@ -1,9 +1,20 @@
+import 'package:fe/donate/donate.dart';
+import 'package:fe/donor/donor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/cart/cart.dart';
-import 'package:fe/catalog/catalog.dart';
+import 'package:fe/pantry/pantry.dart';
 
-class MyCatalog extends StatelessWidget {
+class PantryPage extends StatefulWidget {
+  static String routeName = '/pantry';
+
+  @override
+  _PantryPageState createState() => _PantryPageState();
+}
+
+class _PantryPageState extends State<PantryPage> {
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +40,39 @@ class MyCatalog extends StatelessWidget {
                   ),
                 );
               }
+
               return const Text('Something went wrong!');
             },
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            label: 'Donate',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
+      ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (_selectedIndex == 0) {
+        Navigator.pushNamed(context, DonorPage.routeName);
+      } else if (_selectedIndex == 1) {
+        Navigator.pushNamed(context, DonatePage.routeName);
+      }
+    });
   }
 }
 
@@ -72,7 +110,7 @@ class _MyAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      title: const Text('Catalog'),
+      title: const Text('Pantry'),
       floating: true,
       actions: [
         IconButton(
@@ -102,7 +140,7 @@ class _MyListItem extends StatelessWidget {
             const SizedBox(width: 24),
             Expanded(child: Text(item.name, style: textTheme)),
             const SizedBox(width: 24),
-            _AddButton(item: item),
+            // _AddButton(item: item),
           ],
         ),
       ),

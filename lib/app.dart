@@ -1,7 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
-import 'package:fe/catalog/bloc/catalog_bloc.dart';
+import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';

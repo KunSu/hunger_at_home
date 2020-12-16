@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:fe/catalog/catalog.dart';
+import 'package:fe/pantry/pantry.dart';
 
 part 'catalog_event.dart';
 part 'catalog_state.dart';

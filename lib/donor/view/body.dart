@@ -4,6 +4,9 @@
 // import 'package:fe/components/order.dart';
 // import 'package:fe/size_config.dart';
 // import 'package:fe/components/size_config.dart';
+// import 'package:fe/donor/models/models.dart';
+import 'package:fe/components/view/rounded_botton.dart';
+import 'package:fe/pantry/pantry.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +90,13 @@ class Body extends StatelessWidget {
                 ],
               ),
             ),
+            RoundedButton(
+              text: 'Pantry',
+              // color: kPrimaryColor,
+              press: () {
+                Navigator.pushNamed(context, PantryPage.routeName);
+              },
+            )
           ],
         ),
       ),

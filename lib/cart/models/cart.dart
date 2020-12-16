@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fe/catalog/catalog.dart';
+import 'package:fe/pantry/pantry.dart';
 
 @immutable
 class Cart extends Equatable {

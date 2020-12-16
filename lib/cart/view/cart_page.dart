@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/cart/cart.dart';
 
-class MyCart extends StatelessWidget {
+class CartPage extends StatelessWidget {
+  static String routeName = '/cart';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
