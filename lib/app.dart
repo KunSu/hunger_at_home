@@ -1,10 +1,12 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
+import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';
+import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/register/bloc/register_bloc.dart';
 import 'package:fe/welcome/welcome.dart';
 import 'package:fe/wizard/wizard.dart';
@@ -85,9 +87,9 @@ class _AppViewState extends State<AppView> {
             listener: (context, state) {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
-                  if ('1' == state.user.useridentity) {
+                  if ('recipient' == state.user.useridentity) {
                     _navigator.pushAndRemoveUntil<void>(
-                      HomePage.route(),
+                      RecipientPage.route(),
                       (route) => false,
                     );
                   } else if ('donor' == state.user.useridentity) {
@@ -100,7 +102,13 @@ class _AppViewState extends State<AppView> {
                       EmployeePage.route(),
                       (route) => false,
                     );
+                  } else if ('approver' == state.user.useridentity) {
+                    _navigator.pushAndRemoveUntil<void>(
+                      ApproverPage.route(),
+                      (route) => false,
+                    );
                   }
+
                   break;
                 case AuthenticationStatus.unauthenticated:
                   _navigator.pushAndRemoveUntil<void>(
