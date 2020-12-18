@@ -4,28 +4,47 @@ import 'package:fe/pantry/pantry.dart';
 
 @immutable
 class Catalog extends Equatable {
-  static const _itemNames = [
-    'Code Smell',
-    'Control Flow',
-    'Interpreter',
-    'Recursion',
-    'Sprint',
-    'Heisenbug',
-    'Spaghetti',
-    'Hydra Code',
-    'Off-By-One',
-    'Scope',
-    'Callback',
-    'Closure',
-    'Automata',
-    'Bit Shift',
-    'Currying',
+  static final _itemes = [
+    Item(
+      id: '1',
+      name: 'Avocado',
+      category: 'category',
+      // pickupDateAndTime: 'Sept 15, 2020',
+      quantityUnit: '50',
+      quantityNumber: 'lbs',
+      // address: 'address'
+    ),
+    Item(
+      id: '2',
+      name: 'Baugette',
+      category: 'category',
+      // pickupDateAndTime: 'Sept 15, 2020',
+      quantityUnit: '50',
+      quantityNumber: 'lbs',
+      // address: 'address'
+    ),
+    Item(
+      id: '3',
+      name: 'Fish',
+      category: 'category',
+      // pickupDateAndTime: 'Sept 15, 2020',
+      quantityUnit: '50',
+      quantityNumber: 'lbs',
+      // address: 'address'
+    ),
+    Item(
+      id: '4',
+      name: 'Shrimp',
+      category: 'category',
+      // pickupDateAndTime: 'Sept 15, 2020',
+      quantityUnit: '50',
+      quantityNumber: 'lbs',
+      // address: 'address'
+    ),
   ];
 
-  Item getById(int id) => Item(id, _itemNames[id % _itemNames.length]);
-
-  Item getByPosition(int position) => getById(position);
+  Item getByPosition(int position) => _itemes[position % _itemes.length];
 
   @override
-  List<Object> get props => [_itemNames];
+  List<Object> get props => [_itemes];
 }

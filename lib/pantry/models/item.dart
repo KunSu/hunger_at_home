@@ -3,14 +3,32 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Item extends Equatable {
-  Item(this.id, this.name)
-      : color = Colors.primaries[id % Colors.primaries.length];
+  Item({
+    @required this.id,
+    @required this.name,
+    @required this.category,
+    // @required this.pickupDateAndTime,
+    @required this.quantityUnit,
+    @required this.quantityNumber,
+    // @required this.address
+  });
 
-  final int id;
+  final String id;
   final String name;
-  final Color color;
-  final int price = 42;
+  final String category;
+  // final String pickupDateAndTime;
+  final String quantityUnit;
+  final String quantityNumber;
+  // final String address;
 
   @override
-  List<Object> get props => [id, name, color, price];
+  List<Object> get props => [
+        id,
+        name,
+        category,
+        // pickupDateAndTime,
+        quantityUnit,
+        quantityNumber,
+        // address
+      ];
 }

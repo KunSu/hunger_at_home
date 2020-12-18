@@ -1,3 +1,5 @@
+import 'package:fe/donate/donate.dart';
+import 'package:fe/donor/donor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/cart/cart.dart';
@@ -20,7 +22,19 @@ class CartPage extends StatelessWidget {
               ),
             ),
             const Divider(height: 4, color: Colors.black),
-            _CartTotal()
+            // _CartTotal()
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, DonorPage.routeName);
+              },
+              child: Text('Submit order'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, DonatePage.routeName);
+              },
+              child: Text('Donate more items'),
+            ),
           ],
         ),
       ),
@@ -85,7 +99,7 @@ class _CartTotal extends StatelessWidget {
                 );
               },
               color: Colors.white,
-              child: const Text('BUY'),
+              child: const Text('Add more items'),
             ),
           ],
         ),

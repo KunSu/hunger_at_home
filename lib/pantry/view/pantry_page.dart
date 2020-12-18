@@ -20,7 +20,7 @@ class _PantryPageState extends State<PantryPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _MyAppBar(),
+          MyAppBar(),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
           BlocBuilder<CatalogBloc, CatalogState>(
             builder: (context, state) {
@@ -106,7 +106,7 @@ class _AddButton extends StatelessWidget {
   }
 }
 
-class _MyAppBar extends StatelessWidget {
+class MyAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -136,10 +136,12 @@ class _MyListItem extends StatelessWidget {
         maxHeight: 48,
         child: Row(
           children: [
-            AspectRatio(aspectRatio: 1, child: ColoredBox(color: item.color)),
             const SizedBox(width: 24),
             Expanded(child: Text(item.name, style: textTheme)),
             const SizedBox(width: 24),
+            // Text(item.pickupDateAndTime),
+            Text('Quantity' + item.quantityNumber),
+            Text(item.quantityUnit),
             // _AddButton(item: item),
           ],
         ),
