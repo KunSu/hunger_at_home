@@ -1,5 +1,10 @@
+import 'package:fe/authentication/authentication.dart';
 import 'package:fe/donate/donate.dart';
 import 'package:fe/donor/donor.dart';
+import 'package:fe/order/bloc/orders_bloc.dart';
+import 'package:fe/order/models/model.dart';
+import 'package:fe/order/order.dart';
+import 'package:fe/pantry/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/cart/cart.dart';
@@ -11,32 +16,43 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Cart')),
-      body: ColoredBox(
-        color: Colors.yellow,
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: _CartList(),
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: _CartList(),
             ),
-            const Divider(height: 4, color: Colors.black),
-            // _CartTotal()
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, DonorPage.routeName);
-              },
-              child: Text('Submit order'),
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, DonatePage.routeName);
-              },
-              child: Text('Donate more items'),
-            ),
-          ],
-        ),
+          ),
+          const Divider(height: 4, color: Colors.black),
+          // _CartTotal()
+          BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+            if (state is CartLoaded) {
+              return RaisedButton(
+                onPressed: () {
+                  var order = Order(
+                    id: '1',
+                    name: 'order 1',
+                    items: state.cart.items,
+                    userID: context.read<AuthenticationBloc>().state.user.id,
+                    address: 'address',
+                    pickupDateAndTime: 'pickupDateAndTime',
+                    submitedDateAndTime: DateTime.now().toUtc().toString(),
+                  );
+                  context.read<OrdersBloc>().add(OrderAdded(order));
+                  Navigator.pushNamed(context, OrderPage.routeName);
+                },
+                child: Text('Submit order'),
+              );
+            }
+          }),
+          RaisedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, DonatePage.routeName);
+            },
+            child: Text('Donate more items'),
+          ),
+        ],
       ),
     );
   }
@@ -55,13 +71,16 @@ class _CartList extends StatelessWidget {
         if (state is CartLoaded) {
           return ListView.builder(
             itemCount: state.cart.items.length,
-            itemBuilder: (context, index) => ListTile(
-              leading: const Icon(Icons.done),
-              title: Text(
-                state.cart.items[index].name,
-                style: itemNameStyle,
-              ),
-            ),
+            itemBuilder: (context, index) =>
+                _ItemView(item: state.cart.items[index]),
+
+            // ListTile(
+            //   leading: const Icon(Icons.done),
+            //   title: Text(
+            //     state.cart.items[index].name,
+            //     style: itemNameStyle,
+            //   ),
+            // ),
           );
         }
         return const Text('Something went wrong!');
@@ -70,40 +89,16 @@ class _CartList extends StatelessWidget {
   }
 }
 
-class _CartTotal extends StatelessWidget {
+class _ItemView extends StatelessWidget {
+  const _ItemView({Key key, this.item}) : super(key: key);
+
+  final Item item;
   @override
   Widget build(BuildContext context) {
-    final hugeStyle =
-        Theme.of(context).textTheme.headline1.copyWith(fontSize: 48);
-
-    return SizedBox(
-      height: 200,
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-              if (state is CartLoading) {
-                return const CircularProgressIndicator();
-              }
-              if (state is CartLoaded) {
-                return Text('\$${state.cart.totalPrice}', style: hugeStyle);
-              }
-              return const Text('Something went wrong!');
-            }),
-            const SizedBox(width: 24),
-            FlatButton(
-              onPressed: () {
-                Scaffold.of(context).showSnackBar(
-                  const SnackBar(content: Text('Buying not supported yet.')),
-                );
-              },
-              color: Colors.white,
-              child: const Text('Add more items'),
-            ),
-          ],
-        ),
-      ),
-    );
+    // TODO: UI
+    return Column(children: [
+      Text(item.name),
+      Text(item.quantityNumber + ' ' + item.quantityUnit),
+    ]);
   }
 }

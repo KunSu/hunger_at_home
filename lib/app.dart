@@ -1,7 +1,8 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/address/address.dart';
 import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
+import 'package:fe/order/bloc/orders_bloc.dart';
+import 'package:fe/order/order_repository.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
@@ -9,11 +10,9 @@ import 'package:fe/employee/employee.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/register/bloc/register_bloc.dart';
 import 'package:fe/welcome/welcome.dart';
-import 'package:fe/wizard/wizard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
-import 'package:fe/home/home.dart';
 import 'package:fe/login/login.dart';
 
 import 'routes.dart';
@@ -60,6 +59,10 @@ class _AppViewState extends State<AppView> {
         ),
         BlocProvider<CartBloc>(
           create: (_) => CartBloc()..add(CartStarted()),
+        ),
+        BlocProvider<OrdersBloc>(
+          create: (_) => OrdersBloc(ordersRepository: OrdersRepository())
+            ..add(OrdersLoaded()),
         ),
         BlocProvider<LoginBloc>(
           create: (_) => LoginBloc(
