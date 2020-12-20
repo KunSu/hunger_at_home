@@ -10,10 +10,8 @@ class DonatePageBloc extends FormBloc<String, String> {
       fieldBlocs: [
         name,
         category,
-        // pickupDateAndTime,
         quantityNumber,
         quantityUnit,
-        // address
       ],
     );
   }
@@ -38,18 +36,6 @@ class DonatePageBloc extends FormBloc<String, String> {
       'pound',
     ],
   );
-
-  // final pickupDateAndTime = InputFieldBloc<DateTime, Object>(
-  //   name: 'pickupDateAndTime',
-  //   toJson: (value) => value.toUtc().toIso8601String(),
-  // );
-
-  // final address = SelectFieldBloc(
-  //   items: [
-  //     'address 1',
-  //     'address 2',
-  //   ],
-  // );
 
   @override
   void onSubmitting() async {
@@ -149,25 +135,7 @@ class DonatePage extends StatelessWidget {
                               labelText: 'Quantity Unit',
                               prefixIcon: Icon(Icons.sentiment_satisfied)),
                         ),
-                        // DateTimeFieldBlocBuilder(
-                        //   dateTimeFieldBloc: formBloc.pickupDateAndTime,
-                        //   canSelectTime: true,
-                        //   format: DateFormat('dd-mm-yyyy hh:mm'),
-                        //   initialDate: DateTime.now(),
-                        //   firstDate: DateTime(1900),
-                        //   lastDate: DateTime(2100),
-                        //   decoration: InputDecoration(
-                        //     labelText: 'Pick Up Date and Time',
-                        //     prefixIcon: Icon(Icons.date_range),
-                        //   ),
-                        // ),
-                        // DropdownFieldBlocBuilder(
-                        //   selectFieldBloc: formBloc.address,
-                        //   itemBuilder: (context, value) => value,
-                        //   decoration: InputDecoration(
-                        //       labelText: 'Addresses',
-                        //       prefixIcon: Icon(Icons.sentiment_satisfied)),
-                        // ),
+
                         RaisedButton(
                           onPressed: formBloc.submit,
                           child: Text('Submit'),

@@ -76,10 +76,11 @@ class _OrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: UI
     return Column(children: [
-      Text(item.name),
+      // Text(item.name),
       Text('userID ' + item.userID),
       Text('items ' + item.items[0].name),
       Text(item.address),
+      Text(item.pickupDateAndTime),
       // Text(item.quantityNumber + ' ' + item.quantityUnit),
     ]);
   }

@@ -4,40 +4,53 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Order extends Equatable {
-  Order(
-      {@required this.id,
-      @required this.name,
-      @required this.items,
-      @required this.userID,
-      @required this.address,
-      @required this.pickupDateAndTime,
-      @required this.submitedDateAndTime});
+  Order({
+    this.id,
+    this.name,
+    @required this.items,
+    this.state,
+    @required this.userID,
+    @required this.address,
+    @required this.pickupDateAndTime,
+    this.submitedDateAndTime,
+    this.deliveryTemplate,
+    this.deliveryDateAndTime,
+  });
 
   final String id;
   final String name;
   final List<Item> items;
+  final String state;
   final String userID;
   final String address;
   final String pickupDateAndTime;
   final String submitedDateAndTime;
+  final String deliveryTemplate;
+  final String deliveryDateAndTime;
 
   Order copyWith({
     String id,
     String name,
     List<Item> items,
+    String state,
     String userID,
     String address,
     String pickupDateAndTime,
     String submitedDateAndTime,
+    String deliveryTemplate,
+    String deliveryDateAndTime,
   }) {
     return Order(
       id: id ?? this.id,
       name: name ?? this.name,
       items: items ?? this.items,
+      state: state ?? this.state,
       userID: userID ?? this.userID,
       address: address ?? this.address,
       pickupDateAndTime: pickupDateAndTime ?? this.pickupDateAndTime,
       submitedDateAndTime: submitedDateAndTime ?? this.submitedDateAndTime,
+      deliveryTemplate: deliveryTemplate ?? this.deliveryTemplate,
+      deliveryDateAndTime: deliveryDateAndTime ?? this.deliveryDateAndTime,
     );
   }
 
@@ -46,10 +59,13 @@ class Order extends Equatable {
         id,
         name,
         items,
+        state,
         userID,
         address,
         pickupDateAndTime,
         submitedDateAndTime,
+        deliveryTemplate,
+        deliveryDateAndTime,
       ];
 
   // @override
