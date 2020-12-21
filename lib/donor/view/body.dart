@@ -62,11 +62,18 @@ class Body extends StatelessWidget {
               Navigator.pushNamed(context, PantryPage.routeName);
             },
           ),
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(32),
               child: _OrderList(),
             ),
+          ),
+          RoundedButton(
+            text: 'Orders',
+            press: () {
+              Navigator.pushNamed(context, OrderPage.routeName);
+            },
           ),
         ],
       ),

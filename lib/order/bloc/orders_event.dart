@@ -49,7 +49,3 @@ class OrderDeleted extends OrdersEvent {
   @override
   String toString() => 'OrderDeleted { order: $order }';
 }
-
-class ClearCompleted extends OrdersEvent {}
-
-class ToggleAll extends OrdersEvent {}

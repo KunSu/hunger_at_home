@@ -17,9 +17,12 @@ class OrderDetailPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Order details')),
       body: Column(
         children: [
-          Text('ID: ${order.id}'),
+          Text('Company: ${order.company}'),
+          Text('Pick Up Date: ${order.pickupDateAndTime}'),
+          Text('Contact: ${order.phoneNumber}'),
           Text('Address: ${order.address}'),
-          Text('Pick Up: ${order.pickupDateAndTime}'),
+          Text('State: ${order.state}'),
+
           // Text('State: ${order.state}'),
           Expanded(
             child: Padding(

@@ -1,3 +1,4 @@
+import 'package:fe/address/address.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/donate/donate.dart';
@@ -44,69 +45,75 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CartFormBloc(),
-      child: Builder(
-        builder: (context) {
-          final formBloc = BlocProvider.of<CartFormBloc>(context);
-          return Column(
-            children: [
-              DateTimeFieldBlocBuilder(
-                dateTimeFieldBloc: formBloc.pickupDateAndTime,
-                canSelectTime: true,
-                format: DateFormat('dd-mm-yyyy hh:mm'),
-                initialDate: DateTime.now(),
-                firstDate: DateTime(1900),
-                lastDate: DateTime(2100),
-                decoration: InputDecoration(
-                  labelText: 'Pick Up Date and Time',
-                  prefixIcon: Icon(Icons.date_range),
-                ),
+    return
+        // BlocProvider(
+        // create: (context) => BlocProvider.of<CartFormBloc>(context),
+        Builder(
+      builder: (context) {
+        final formBloc = BlocProvider.of<CartFormBloc>(context);
+
+        return Column(
+          children: [
+            DateTimeFieldBlocBuilder(
+              dateTimeFieldBloc: formBloc.pickupDateAndTime,
+              canSelectTime: true,
+              format: DateFormat('dd-mm-yyyy hh:mm'),
+              initialDate: DateTime.now(),
+              firstDate: DateTime(1900),
+              lastDate: DateTime(2100),
+              decoration: InputDecoration(
+                labelText: 'Pick Up Date and Time',
+                prefixIcon: Icon(Icons.date_range),
               ),
-              DropdownFieldBlocBuilder(
-                selectFieldBloc: formBloc.address,
-                itemBuilder: (context, value) => value,
-                decoration: InputDecoration(
-                    labelText: 'Addresses',
-                    prefixIcon: Icon(Icons.sentiment_satisfied)),
+            ),
+            DropdownFieldBlocBuilder(
+              selectFieldBloc: formBloc.address,
+              itemBuilder: (context, value) => value,
+              decoration: InputDecoration(
+                  labelText: 'Addresses',
+                  prefixIcon: Icon(Icons.sentiment_satisfied)),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: _CartList(),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: _CartList(),
-                ),
-              ),
-              const Divider(height: 4, color: Colors.black),
-              // _CartTotal()
-              BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-                if (state is CartLoaded) {
-                  return RaisedButton(
-                    onPressed: () {
-                      var order = Order(
-                        items: state.cart.items,
-                        userID:
-                            context.read<AuthenticationBloc>().state.user.id,
-                        address: formBloc.address.value,
-                        pickupDateAndTime:
-                            formBloc.pickupDateAndTime.value.toString(),
-                      );
-                      context.read<OrdersBloc>().add(OrderAdded(order));
-                      Navigator.pushNamed(context, OrderPage.routeName);
-                    },
-                    child: Text('Submit order'),
-                  );
-                }
-              }),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, DonatePage.routeName);
-                },
-                child: Text('Donate more items'),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+            const Divider(height: 4, color: Colors.black),
+            // _CartTotal()
+            BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+              if (state is CartLoaded) {
+                return RaisedButton(
+                  onPressed: () {
+                    var order = Order(
+                      items: state.cart.items,
+                      userID: context.read<AuthenticationBloc>().state.user.id,
+                      address: formBloc.address.value,
+                      pickupDateAndTime:
+                          formBloc.pickupDateAndTime.value.toString(),
+                    );
+                    context.read<OrdersBloc>().add(OrderAdded(order));
+                    Navigator.pushNamed(context, OrderPage.routeName);
+                  },
+                  child: Text('Submit order'),
+                );
+              }
+            }),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AddressPage.routeName);
+              },
+              child: const Text('Edit Address'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, DonatePage.routeName);
+              },
+              child: Text('Donate more items'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

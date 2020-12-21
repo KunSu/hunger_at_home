@@ -1,6 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/address/address.dart';
+import 'package:fe/address/view/body.dart';
 import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
+import 'package:fe/cart/view/body.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
 import 'package:fe/order/order_repository.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
@@ -15,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/login/login.dart';
 
+// import 'address/bloc/addresses_bloc.dart';
 import 'routes.dart';
 
 class App extends StatelessWidget {
@@ -63,6 +67,9 @@ class _AppViewState extends State<AppView> {
         BlocProvider<OrdersBloc>(
           create: (_) => OrdersBloc(ordersRepository: OrdersRepository())
             ..add(OrdersLoaded()),
+        ),
+        BlocProvider<CartFormBloc>(
+          create: (_) => CartFormBloc(),
         ),
         BlocProvider<LoginBloc>(
           create: (_) => LoginBloc(
