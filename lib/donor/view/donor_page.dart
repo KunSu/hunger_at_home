@@ -1,3 +1,4 @@
+import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
@@ -20,25 +21,8 @@ class DonorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Donor')),
+      // body: Body(),
       body: Body(),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: <Widget>[
-      //       Text(
-      //         'UserID: ${context.bloc<AuthenticationBloc>().state.user.id}',
-      //       ),
-      //       RaisedButton(
-      //         child: const Text('Logout'),
-      //         onPressed: () {
-      //           context
-      //               .bloc<AuthenticationBloc>()
-      //               .add(AuthenticationLogoutRequested());
-      //         },
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

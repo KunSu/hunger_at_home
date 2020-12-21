@@ -13,7 +13,7 @@ class Order extends Equatable {
     @required this.address,
     @required this.pickupDateAndTime,
     this.submitedDateAndTime,
-    this.deliveryTemplate,
+    this.deliveryTemperature,
     this.deliveryDateAndTime,
   });
 
@@ -25,7 +25,7 @@ class Order extends Equatable {
   final String address;
   final String pickupDateAndTime;
   final String submitedDateAndTime;
-  final String deliveryTemplate;
+  final String deliveryTemperature;
   final String deliveryDateAndTime;
 
   Order copyWith({
@@ -37,7 +37,7 @@ class Order extends Equatable {
     String address,
     String pickupDateAndTime,
     String submitedDateAndTime,
-    String deliveryTemplate,
+    String deliveryTemperature,
     String deliveryDateAndTime,
   }) {
     return Order(
@@ -49,7 +49,7 @@ class Order extends Equatable {
       address: address ?? this.address,
       pickupDateAndTime: pickupDateAndTime ?? this.pickupDateAndTime,
       submitedDateAndTime: submitedDateAndTime ?? this.submitedDateAndTime,
-      deliveryTemplate: deliveryTemplate ?? this.deliveryTemplate,
+      deliveryTemperature: deliveryTemperature ?? this.deliveryTemperature,
       deliveryDateAndTime: deliveryDateAndTime ?? this.deliveryDateAndTime,
     );
   }
@@ -64,7 +64,7 @@ class Order extends Equatable {
         address,
         pickupDateAndTime,
         submitedDateAndTime,
-        deliveryTemplate,
+        deliveryTemperature,
         deliveryDateAndTime,
       ];
 

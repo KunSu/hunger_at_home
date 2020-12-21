@@ -6,6 +6,7 @@ import 'package:fe/donor/view/donor_page.dart';
 import 'package:fe/employee/view/employee_page.dart';
 import 'package:fe/login/view/login_page.dart';
 import 'package:fe/order/order.dart';
+import 'package:fe/order_detail/view/order_detail_page.dart';
 import 'package:fe/pantry/view/pantry_page.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/register/view/register_page.dart';
@@ -25,4 +26,5 @@ final Map<String, WidgetBuilder> routes = {
   DonatePage.routeName: (context) => DonatePage(),
   OrderPage.routeName: (context) => OrderPage(),
   AddressPage.routeName: (context) => AddressPage(),
+  OrderDetailPage.routeName: (context) => OrderDetailPage(),
 };
