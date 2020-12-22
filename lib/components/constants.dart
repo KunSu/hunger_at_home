@@ -4,7 +4,7 @@ const String baseURL = 'http://localhost:8080/api/v1';
 // Turn off testing model in producttion
 const bool testingModel = true;
 
-const kPrimaryColor = Color(0xFFFF7643);
+const kPrimaryColor = Colors.blue;
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kPrimaryGradientColor = LinearGradient(
   begin: Alignment.topLeft,

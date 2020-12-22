@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fe/company/company_repository.dart';
 import 'package:fe/login/models/models.dart';
 import 'package:fe/register/models/models.dart';
 import 'package:formz/formz.dart';
@@ -25,8 +24,8 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Stream<RegisterState> mapEventToState(
     RegisterEvent event,
   ) async* {
-    if (event is RegisterUsernameChanged) {
-      yield _mapUsernameChangedToState(event, state);
+    if (event is RegisterEmailChanged) {
+      yield _mapEmailChangedToState(event, state);
     } else if (event is RegisterPasswordChanged) {
       yield _mapPasswordChangedToState(event, state);
     } else if (event is RegisterFirstnameChanged) {
@@ -44,15 +43,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   // TODO: double check with copyWith and Formz.validate
 
-  RegisterState _mapUsernameChangedToState(
-    RegisterUsernameChanged event,
+  RegisterState _mapEmailChangedToState(
+    RegisterEmailChanged event,
     RegisterState state,
   ) {
-    final username = Username.dirty(event.username);
+    final email = Email.dirty(event.email);
     return state.copyWith(
-      username: username,
+      email: email,
       status: Formz.validate([
-        username,
+        email,
         state.password,
         state.firstname,
         state.lastname,
@@ -70,7 +69,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return state.copyWith(
       password: password,
       status: Formz.validate([
-        state.username,
+        state.email,
         password,
         state.firstname,
         state.lastname,
@@ -88,7 +87,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return state.copyWith(
       firstname: firstname,
       status: Formz.validate([
-        state.username,
+        state.email,
         state.password,
         firstname,
         state.lastname,
@@ -106,7 +105,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return state.copyWith(
       lastname: lastname,
       status: Formz.validate([
-        state.username,
+        state.email,
         state.password,
         state.firstname,
         lastname,
@@ -124,7 +123,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return state.copyWith(
       phonenumber: phonenumber,
       status: Formz.validate([
-        state.username,
+        state.email,
         state.password,
         state.firstname,
         state.lastname,
@@ -142,7 +141,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     return state.copyWith(
       useridentity: useridentity,
       status: Formz.validate([
-        state.username,
+        state.email,
         state.password,
         state.firstname,
         state.lastname,
@@ -160,7 +159,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield state.copyWith(status: FormzStatus.submissionInProgress);
       try {
         await _authenticationRepository.register(
-          username: state.username.value,
+          email: state.email.value,
           password: state.password.value,
           firstname: state.firstname.value,
           lastname: state.lastname.value,

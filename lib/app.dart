@@ -1,9 +1,8 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/address/address.dart';
-import 'package:fe/address/view/body.dart';
 import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/bloc/cart_bloc.dart';
 import 'package:fe/cart/view/body.dart';
+import 'package:fe/company/company.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
 import 'package:fe/order/order_repository.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
@@ -18,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/login/login.dart';
 
-// import 'address/bloc/addresses_bloc.dart';
 import 'routes.dart';
 
 class App extends StatelessWidget {
@@ -68,6 +66,11 @@ class _AppViewState extends State<AppView> {
           create: (_) => OrdersBloc(ordersRepository: OrdersRepository())
             ..add(OrdersLoaded()),
         ),
+        BlocProvider<CompanyBloc>(
+          create: (_) => CompanyBloc(
+            companiesRepository: CompaniesRepository(),
+          ),
+        ),
         BlocProvider<CartFormBloc>(
           create: (_) => CartFormBloc(),
         ),
@@ -90,6 +93,11 @@ class _AppViewState extends State<AppView> {
         theme: ThemeData(
           primaryColor: kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         ),
         navigatorKey: _navigatorKey,
         builder: (context, child) {
@@ -133,40 +141,8 @@ class _AppViewState extends State<AppView> {
             child: child,
           );
         },
-
         initialRoute: '/',
-        // TODO: confirm routing style
         routes: routes,
-        // {
-        //   '/': (context) => WelcomePage(),
-        //   '/login': (context) => LoginPage(),
-        //   '/register': (context) => RegisterPage(),
-        //   '/': (context) => BlocProvider.value(
-        //         value: LoginBloc(
-        //           authenticationRepository:
-        //               RepositoryProvider.of<AuthenticationRepository>(context),
-        //         ),
-        //         child: WelcomePage(),
-        //       ),
-        //   '/login': (context) => BlocProvider.value(
-        //         value: LoginBloc(
-        //           authenticationRepository:
-        //               RepositoryProvider.of<AuthenticationRepository>(context),
-        //         ),
-        //         child: LoginPage(),
-        //       ),
-        //   '/register': (context) => BlocProvider.value(
-        //         value: RegisterBloc(
-        //           authenticationRepository:
-        //               RepositoryProvider.of<AuthenticationRepository>(context),
-        //         ),
-        //         child: RegisterPage(),
-        //   ),
-        //   '/employee': (context) => BlocProvider.value(
-        //     value: BlocProvider.of<AuthenticationBloc>(context),
-        //     child: EmployeePage(),
-        //   ),
-        // },
       ),
     );
   }

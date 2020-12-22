@@ -14,46 +14,56 @@ class AuthenticationRepository {
 
   Stream<AuthenticationStatus> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
-    yield AuthenticationStatus.unauthenticated;
+    yield AuthenticationStatus.unknown;
     yield* _controller.stream;
   }
 
   Future<void> logIn({
-    @required String username,
+    @required String email,
     @required String password,
   }) async {
-    assert(username != null);
+    assert(email != null);
     assert(password != null);
 
-    // var url = 'http://localhost:8080/api/v1/user/login';
+    var url = 'http://localhost:8080/api/v1/user/login';
 
-    // var headers = <String, String>{'Content-type': 'application/json'};
-    // var jsonData = '{"email": "$username", "password": "$password"}';
+    var jsonData = '{"email": "$email", "password": "$password"}';
+    var headers = <String, String>{'Content-type': 'application/json'};
 
-    // var response = await post(url, headers: headers, body: jsonData);
-    // // check the status code for the result
-    // var statusCode = response.statusCode;
-    // print('statusCode:$statusCode');
-    // // this API passes back the id of the new item added to the body
-    // var body = response.body;
-    // print(body);
-
-    _user = User(id: '1', username: username, useridentity: 'donor');
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-      () => _controller.add(AuthenticationStatus.authenticated),
+    var response = await post(
+      url,
+      headers: headers,
+      body: jsonData,
     );
+
+    var statusCode = response.statusCode;
+    print('statusCode:$statusCode');
+
+    var body = json.decode(response.body);
+    print(body);
+
+    // TODO: stateCode should not be 201
+    if (statusCode == 200 || statusCode == 201) {
+      _user = User(
+          id: body['id'],
+          email: body['email'],
+          useridentity: body['userIdentity']);
+      _controller.add(AuthenticationStatus.authenticated);
+    } else {
+      var errorMessage = body['message'];
+      throw Exception(errorMessage);
+    }
   }
 
   void register({
-    @required String username,
+    @required String email,
     @required String password,
     @required String lastname,
     @required String firstname,
     @required String phonenumber,
     @required String useridentity,
   }) async {
-    assert(username != null);
+    assert(email != null);
     assert(password != null);
     assert(lastname != null);
     assert(firstname != null);
@@ -65,7 +75,7 @@ class AuthenticationRepository {
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
-        '{"email": "$username", "password": "$password", "firstName": "$firstname", "lastName": "$lastname", "phoneNumber": "$phonenumber", "userIdentity": "$useridentity", "companyID": "1", "secureQuestion": "NA", "secureAnswer": "NA"}';
+        '{"email": "$email", "password": "$password", "firstName": "$firstname", "lastName": "$lastname", "phoneNumber": "$phonenumber", "userIdentity": "$useridentity", "companyID": "1", "secureQuestion": "NA", "secureAnswer": "NA"}';
     print('jsonData: $jsonData');
     var response = await post(url, headers: headers, body: jsonData);
     // check the status code for the result
@@ -76,8 +86,7 @@ class AuthenticationRepository {
     print(body);
     // print(body.);
     if (statusCode == 201) {
-      _user =
-          User(id: username, username: username, useridentity: useridentity);
+      _user = User(id: email, email: email, useridentity: useridentity);
 
       print(_user.id);
       if (_user != null) {

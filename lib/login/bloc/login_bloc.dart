@@ -23,8 +23,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if (event is LoginUsernameChanged) {
-      yield _mapUsernameChangedToState(event, state);
+    if (event is LoginEmailChanged) {
+      yield _mapEmailChangedToState(event, state);
     } else if (event is LoginPasswordChanged) {
       yield _mapPasswordChangedToState(event, state);
     } else if (event is LoginSubmitted) {
@@ -32,14 +32,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  LoginState _mapUsernameChangedToState(
-    LoginUsernameChanged event,
+  LoginState _mapEmailChangedToState(
+    LoginEmailChanged event,
     LoginState state,
   ) {
-    final username = Username.dirty(event.username);
+    final email = Email.dirty(event.email);
     return state.copyWith(
-      username: username,
-      status: Formz.validate([state.password, username]),
+      email: email,
+      status: Formz.validate([state.password, email]),
     );
   }
 
@@ -50,7 +50,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final password = Password.dirty(event.password);
     return state.copyWith(
       password: password,
-      status: Formz.validate([password, state.username]),
+      status: Formz.validate([password, state.email]),
     );
   }
 
@@ -62,7 +62,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield state.copyWith(status: FormzStatus.submissionInProgress);
       try {
         await _authenticationRepository.logIn(
-          username: state.username.value,
+          email: state.email.value,
           password: state.password.value,
         );
         yield state.copyWith(status: FormzStatus.submissionSuccess);

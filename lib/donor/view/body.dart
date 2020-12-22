@@ -31,7 +31,7 @@ class Body extends StatelessWidget {
               Column(
                 children: <Widget>[
                   Text(
-                    'Hi, ${context.bloc<AuthenticationBloc>().state.user.username}',
+                    'Hi, ${context.bloc<AuthenticationBloc>().state.user.email}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Container(

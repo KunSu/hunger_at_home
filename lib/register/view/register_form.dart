@@ -26,7 +26,7 @@ class RegisterForm extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             // TODO: UI
-            _UsernameInput(),
+            _EmailInput(),
             // const Padding(padding: EdgeInsets.all(12)),
             _PasswordInput(),
             // const Padding(padding: EdgeInsets.all(12)),
@@ -46,20 +46,19 @@ class RegisterForm extends StatelessWidget {
   }
 }
 
-class _UsernameInput extends StatelessWidget {
+class _EmailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.username != current.username,
+      buildWhen: (previous, current) => previous.email != current.email,
       builder: (context, state) {
         return TextField(
-          key: const Key('RegisterForm_usernameInput_textField'),
-          onChanged: (username) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterUsernameChanged(username)),
+          key: const Key('RegisterForm_emailInput_textField'),
+          onChanged: (email) =>
+              context.bloc<RegisterBloc>().add(RegisterEmailChanged(email)),
           decoration: InputDecoration(
-            labelText: 'username',
-            errorText: state.username.invalid ? 'invalid username' : null,
+            labelText: 'email',
+            errorText: state.email.invalid ? 'invalid email' : null,
           ),
         );
       },
