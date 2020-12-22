@@ -1,6 +1,7 @@
 import 'package:fe/address/address.dart';
 import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/view/cart_page.dart';
+import 'package:fe/company/view/view.dart';
 import 'package:fe/donate/donate.dart';
 import 'package:fe/donor/view/donor_page.dart';
 import 'package:fe/employee/view/employee_page.dart';
@@ -27,4 +28,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderPage.routeName: (context) => OrderPage(),
   AddressPage.routeName: (context) => AddressPage(),
   OrderDetailPage.routeName: (context) => OrderDetailPage(),
+  CompanyPage.routeName: (context) => CompanyPage(),
 };

@@ -75,14 +75,17 @@ class AuthenticationRepository {
     var body = response.body;
     print(body);
     // print(body.);
-    _user = User(id: username, username: username, useridentity: useridentity);
+    if (statusCode == 201) {
+      _user =
+          User(id: username, username: username, useridentity: useridentity);
 
-    print(_user.id);
-    if (_user != null) {
-      print('working');
-      _controller.add(AuthenticationStatus.authenticated);
-    } else {
-      // TODO: error
+      print(_user.id);
+      if (_user != null) {
+        print('working');
+        _controller.add(AuthenticationStatus.authenticated);
+      } else {
+        // TODO: error
+      }
     }
   }
 

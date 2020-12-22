@@ -1,9 +1,13 @@
+import 'package:fe/company/company.dart';
 import 'package:fe/register/bloc/register_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterForm extends StatelessWidget {
+  const RegisterForm({Key key, this.companyID}) : super(key: key);
+  final String companyID;
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<RegisterBloc, RegisterState>(
@@ -192,6 +196,7 @@ class _RegisterButton extends StatelessWidget {
                         context
                             .bloc<RegisterBloc>()
                             .add(const RegisterSubmitted());
+                        // Navigator.pushNamed(context, CompanyPage.routeName);
                       }
                     : null,
               );

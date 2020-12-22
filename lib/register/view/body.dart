@@ -3,7 +3,9 @@ import 'package:fe/register/view/register_form.dart';
 import 'package:flutter/material.dart';
 
 class Body extends StatelessWidget {
-  const Body({Key key}) : super(key: key);
+  const Body({Key key, this.companyID}) : super(key: key);
+
+  final String companyID;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class Body extends StatelessWidget {
             ],
           ),
           // SizedBox(height: size.height * 0.03),
-          RegisterForm(),
+          RegisterForm(companyID: companyID),
         ],
       ),
     ));

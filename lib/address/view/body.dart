@@ -1,5 +1,4 @@
 import 'package:fe/address/address.dart';
-import 'package:fe/address/addresses_repository.dart';
 import 'package:fe/cart/view/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

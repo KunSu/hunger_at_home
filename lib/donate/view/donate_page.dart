@@ -83,11 +83,8 @@ class DonatePage extends StatelessWidget {
                     id: '1',
                     name: formBloc.name.value,
                     category: formBloc.category.value,
-                    // pickupDateAndTime:
-                    //     formBloc.pickupDateAndTime.value.toString(),
                     quantityNumber: formBloc.quantityNumber.value,
                     quantityUnit: formBloc.quantityUnit.value,
-                    // address: formBloc.address.value,
                   );
                   context.read<CartBloc>().add(CartItemAdded(item));
                   Navigator.of(context).pushNamed('/cart');

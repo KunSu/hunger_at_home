@@ -1,3 +1,4 @@
+import 'package:fe/company/company.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/components/view/background.dart';
 import 'package:fe/components/view/rounded_botton.dart';
@@ -36,7 +37,7 @@ class Body extends StatelessWidget {
             text: 'Register',
             color: kPrimaryColor,
             press: () {
-              Navigator.pushNamed(context, RegisterPage.routeName);
+              Navigator.pushNamed(context, CompanyPage.routeName);
             },
           )
         ],
