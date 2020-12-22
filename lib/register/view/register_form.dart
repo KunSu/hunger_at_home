@@ -1,8 +1,58 @@
-import 'package:fe/company/company.dart';
-import 'package:fe/register/bloc/register_bloc.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:formz/formz.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+class RegisterFormBloc extends FormBloc<String, String> {
+  RegisterFormBloc({
+    @required this.authenticationRepository,
+  }) {
+    addFieldBlocs(
+      fieldBlocs: [
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber,
+        userIdentity,
+      ],
+    );
+  }
+
+  final AuthenticationRepository authenticationRepository;
+  final email = TextFieldBloc();
+  final password = TextFieldBloc();
+  final firstName = TextFieldBloc();
+  final lastName = TextFieldBloc();
+  final phoneNumber = TextFieldBloc();
+  final userIdentity = SelectFieldBloc(
+    items: [
+      'Donor',
+      'Recipient',
+      'Employee',
+      'Approver',
+    ],
+  );
+
+  @override
+  void onSubmitting() async {
+    try {
+      authenticationRepository.register(
+        email: email.value,
+        password: password.value,
+        firstname: firstName.value,
+        lastname: lastName.value,
+        phonenumber: phoneNumber.value,
+        useridentity: userIdentity.value,
+      );
+      emitSuccess(
+        canSubmitAgain: true,
+      );
+    } on Exception catch (_) {
+      emitFailure();
+    }
+  }
+}
 
 class RegisterForm extends StatelessWidget {
   const RegisterForm({Key key, this.companyID}) : super(key: key);
@@ -10,196 +60,84 @@ class RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterBloc, RegisterState>(
-      listener: (context, state) {
-        if (state.status.isSubmissionFailure) {
-          Scaffold.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
-            );
-        }
+    final formBloc = BlocProvider.of<RegisterFormBloc>(context);
+
+    return FormBlocListener<RegisterFormBloc, String, String>(
+      onSuccess: (context, state) {
+        // context.bloc<RegisterBloc>().add(
+        //       RegisterUserIdentityChanged(formBloc.userIdentity.value),
+        //     );
       },
-      child: Align(
-        alignment: const Alignment(0, -1 / 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // TODO: UI
-            _EmailInput(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _PasswordInput(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _FirstnameInput(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _LastnameInput(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _PhoneNumberInput(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _UserIdentityInput(), // RoleDropDownButton(),
-            // const Padding(padding: EdgeInsets.all(12)),
-            _RegisterButton(),
-          ],
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              TextFieldBlocBuilder(
+                textFieldBloc: formBloc.email,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(
+                    Icons.email,
+                  ),
+                ),
+              ),
+              TextFieldBlocBuilder(
+                textFieldBloc: formBloc.password,
+                keyboardType: TextInputType.visiblePassword,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: Icon(
+                    Icons.lock,
+                  ),
+                ),
+              ),
+              TextFieldBlocBuilder(
+                textFieldBloc: formBloc.firstName,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  labelText: 'First Name',
+                  prefixIcon: Icon(
+                    Icons.account_circle,
+                  ),
+                ),
+              ),
+              TextFieldBlocBuilder(
+                textFieldBloc: formBloc.lastName,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  labelText: 'Last Name',
+                  prefixIcon: Icon(
+                    Icons.account_circle,
+                  ),
+                ),
+              ),
+              TextFieldBlocBuilder(
+                textFieldBloc: formBloc.phoneNumber,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'Phone Number',
+                  prefixIcon: Icon(
+                    Icons.local_phone,
+                  ),
+                ),
+              ),
+              DropdownFieldBlocBuilder(
+                selectFieldBloc: formBloc.userIdentity,
+                itemBuilder: (context, value) => value,
+                decoration: const InputDecoration(
+                    labelText: 'User Indentity',
+                    prefixIcon: Icon(Icons.account_circle)),
+              ),
+              RaisedButton(
+                onPressed: formBloc.submit,
+                child: const Text('Register'),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-}
-
-class _EmailInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.email != current.email,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_emailInput_textField'),
-          onChanged: (email) =>
-              context.bloc<RegisterBloc>().add(RegisterEmailChanged(email)),
-          decoration: InputDecoration(
-            labelText: 'email',
-            errorText: state.email.invalid ? 'invalid email' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _PasswordInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.password != current.password,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_passwordInput_textField'),
-          onChanged: (password) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterPasswordChanged(password)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'password',
-            errorText: state.password.invalid ? 'invalid password' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _FirstnameInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.firstname != current.firstname,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_firstnameInput_textField'),
-          onChanged: (firstname) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterFirstnameChanged(firstname)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'firstname',
-            errorText: state.firstname.invalid ? 'invalid firstname' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _LastnameInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.lastname != current.lastname,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_lastnameInput_textField'),
-          onChanged: (lastname) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterLastnameChanged(lastname)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'lastname',
-            errorText: state.lastname.invalid ? 'invalid lastname' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _PhoneNumberInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) =>
-          previous.phonenumber != current.phonenumber,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_phonenumberInput_textField'),
-          onChanged: (phonenumber) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterPhoneNumberChanged(phonenumber)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'phonenumber',
-            errorText: state.phonenumber.invalid ? 'invalid phonenumber' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _UserIdentityInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) =>
-          previous.useridentity != current.useridentity,
-      builder: (context, state) {
-        return TextField(
-          key: const Key('RegisterForm_useridentityInput_textField'),
-          onChanged: (useridentity) => context
-              .bloc<RegisterBloc>()
-              .add(RegisterUserIdentityChanged(useridentity)),
-          obscureText: true,
-          decoration: InputDecoration(
-            labelText: 'useridentity',
-            errorText:
-                state.useridentity.invalid ? 'invalid useridentity' : null,
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _RegisterButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) => previous.status != current.status,
-      builder: (context, state) {
-        return state.status.isSubmissionInProgress
-            ? const CircularProgressIndicator()
-            : RaisedButton(
-                key: const Key('RegisterForm_continue_raisedButton'),
-                child: const Text('Register'),
-                onPressed: state.status.isValidated
-                    ? () {
-                        context
-                            .bloc<RegisterBloc>()
-                            .add(const RegisterSubmitted());
-                        // Navigator.pushNamed(context, CompanyPage.routeName);
-                      }
-                    : null,
-              );
-      },
     );
   }
 }

@@ -10,7 +10,6 @@ import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/employee.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
-import 'package:fe/register/bloc/register_bloc.dart';
 import 'package:fe/welcome/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -76,12 +75,6 @@ class _AppViewState extends State<AppView> {
         ),
         BlocProvider<LoginBloc>(
           create: (_) => LoginBloc(
-            authenticationRepository:
-                RepositoryProvider.of<AuthenticationRepository>(context),
-          ),
-        ),
-        BlocProvider<RegisterBloc>(
-          create: (_) => RegisterBloc(
             authenticationRepository:
                 RepositoryProvider.of<AuthenticationRepository>(context),
           ),

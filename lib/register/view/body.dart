@@ -1,6 +1,8 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/view/background.dart';
 import 'package:fe/register/view/register_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class Body extends StatelessWidget {
   const Body({Key key, this.companyID}) : super(key: key);
@@ -16,11 +18,10 @@ class Body extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Image.asset(
-            'assets/images/food_logo.png',
-            height: size.height * 0.2,
-          ),
-          // SizedBox(height: size.height * 0.03),
+          // Image.asset(
+          //   'assets/images/food_logo.png',
+          //   height: size.height * 0.2,
+          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -42,8 +43,13 @@ class Body extends StatelessWidget {
               ),
             ],
           ),
-          // SizedBox(height: size.height * 0.03),
-          RegisterForm(companyID: companyID),
+          BlocProvider(
+            create: (context) => RegisterFormBloc(
+              authenticationRepository:
+                  RepositoryProvider.of<AuthenticationRepository>(context),
+            ),
+            child: RegisterForm(companyID: companyID),
+          ),
         ],
       ),
     ));

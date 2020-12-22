@@ -70,6 +70,10 @@ class AuthenticationRepository {
     assert(phonenumber != null);
     assert(useridentity != null);
 
+    email = email.toLowerCase();
+    lastname = lastname.toLowerCase();
+    firstname = firstname.toLowerCase();
+    useridentity = useridentity.toLowerCase();
     // set up POST request arguments
     var url = 'http://localhost:8080/api/v1/user/signup';
 

@@ -28,7 +28,7 @@ class Body extends StatelessWidget {
           SizedBox(height: size.height * 0.05),
           RoundedButton(
             text: 'Log In',
-            textColor: Colors.black,
+            textColor: Colors.white,
             press: () {
               Navigator.pushNamed(context, LoginPage.routeName);
             },
