@@ -1,9 +1,7 @@
+import 'dart:convert';
 import 'dart:core';
 
-import 'package:fe/address/address.dart';
-import 'package:fe/company/bloc/company_bloc.dart';
 import 'package:fe/company/models/model.dart';
-import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:http/http.dart';
 
 class CompaniesRepository {
@@ -13,6 +11,23 @@ class CompaniesRepository {
   List<Company> companies;
   List<Company> loadCompanies() {
     return companies;
+  }
+
+  Future<List<String>> loadCompanyNames() async {
+    var url = 'http://localhost:8080/api/v1/company/companyList';
+    var response = await get(url);
+
+    if (response.statusCode == 200) {
+      var body = json.decode(response.body) as List;
+      companies.clear();
+      companies.addAll(body.map((e) => Company.fromJson(e)).toList());
+
+      return companies.map((e) => e.name).toList();
+    } else {
+      // TODO: error
+      var body = json.decode(response.body);
+      throw Exception(body['message']);
+    }
   }
 
   saveCompanies(List<Company> companies) {
@@ -37,39 +52,24 @@ class CompaniesRepository {
     String state,
     String zipCode,
   }) async {
-    // set up POST request arguments
     var url = 'http://localhost:8080/api/v1/company/companySignup';
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
         '{"companyName": "$name", "fedID": "$fedID", "einID": "$einID", "address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
-    // '{"companyName": "$name", "fedID": "$fedID", "einID": "$einID"}';
-    // print('jsonData: $jsonData');
+
     var response = await post(url, headers: headers, body: jsonData);
-    // check the status code for the result
-    var statusCode = response.statusCode;
-    print('statusCode: $statusCode');
-    // this API passes back the id of the new item added to the body
-    var body = response.body;
-    print(body);
-    // print(body.);
 
-    var newCompany = Company(
-      id: '1',
-      name: name,
-      fedID: fedID,
-      einID: einID,
-      address: address,
-      city: city,
-      state: state,
-      zipcode: zipCode,
-    );
+    if (response.statusCode == 201) {
+      var body = json.decode(response.body);
 
-    if (address != null) {
+      var newCompany = Company.fromJson(body);
       companies.add(newCompany);
+      return newCompany;
     } else {
       // TODO: error
+      var body = json.decode(response.body);
+      throw Exception(body['message']);
     }
-    return newCompany;
   }
 }

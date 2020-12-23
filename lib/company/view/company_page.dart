@@ -26,7 +26,7 @@ class CompanyPage extends StatelessWidget {
             child: const SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: _CompanyForm(),
+                child: CompanyForm(),
               ),
             ),
           );
@@ -36,12 +36,13 @@ class CompanyPage extends StatelessWidget {
   }
 }
 
-class _CompanyForm extends StatelessWidget {
-  const _CompanyForm({Key key}) : super(key: key);
+class CompanyForm extends StatelessWidget {
+  const CompanyForm({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<CompanyBloc>(context);
+    formBloc.onLoading();
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,

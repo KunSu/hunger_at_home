@@ -54,17 +54,7 @@ class CompanyBloc extends FormBloc<String, String> {
     items: ['Yes', 'No'],
   );
 
-  final companies = SelectFieldBloc(
-    items: [
-      'Bill Wilson Center',
-      'City Team',
-      'DownTown Streets Team',
-      'Home First',
-      'Life Moves',
-      'Loaves & Fishes',
-      'Salvation Army',
-    ],
-  );
+  final companies = SelectFieldBloc();
 
   final name = TextFieldBloc();
 
@@ -146,10 +136,22 @@ class CompanyBloc extends FormBloc<String, String> {
 
     if (newCompany != null) {
       companies.addItem(newCompany.name);
-      emitSuccess();
+      emitSuccess(
+        canSubmitAgain: true,
+      );
     } else {
       emitFailure();
     }
+  }
+
+  @override
+  Future<void> onLoading() async {
+    companies.clear();
+    var newCompanies = await companiesRepository.loadCompanyNames();
+    for (var s in newCompanies) {
+      companies.addItem(s);
+    }
+    emitLoaded();
   }
 
   String getCoompanyID() {

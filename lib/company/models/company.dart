@@ -14,6 +14,19 @@ class Company extends Equatable {
     this.zipcode,
   });
 
+  factory Company.fromJson(Map<String, dynamic> json) {
+    return Company(
+      id: json['companyID'],
+      name: json['companyName'],
+      fedID: json['fedID'],
+      einID: json['einID'],
+      address: json['address'],
+      city: json['city'],
+      state: json['state'],
+      zipcode: json['zipCode'],
+    );
+  }
+
   final String id;
   final String name;
   final String fedID;
