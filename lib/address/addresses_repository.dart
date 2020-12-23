@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:fe/address/address.dart';
@@ -12,48 +13,63 @@ class AddressesRepository {
     return addresses;
   }
 
+  Future<List<String>> loadAddressNames({String companyID}) async {
+    var url = 'http://localhost:8080/api/v1/company/addressList/$companyID';
+    print(url);
+    var response = await get(url);
+
+    if (response.statusCode == 200) {
+      var body = json.decode(response.body) as List;
+      addresses.clear();
+      // addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
+      // TODO: API is not working
+      addresses.addAll(
+        <Address>[
+          Address(id: '1', address: 'New Address 1'),
+          Address(id: '2', address: 'New Address 2'),
+        ],
+      );
+      return addresses.map((e) => e.address).toList();
+    } else {
+      // TODO: error
+      var body = json.decode(response.body);
+      throw Exception(body['message']);
+    }
+  }
+
+  String getAddressID(String address) {
+    for (var i = 0; i < addresses.length; i++) {
+      if (addresses[i].address == address) {
+        return addresses[i].id;
+      }
+    }
+    return '-1';
+  }
+
   saveAddresses(List<Address> addresses) {
     addresses = addresses ?? this.addresses;
   }
 
-  signUp({String address, String city, String state, String zipCode}) async {
-    // set up POST request arguments
+  Future<Address> signUp(
+      {String address, String city, String state, String zipCode}) async {
     var url = 'http://localhost:8080/api/v1/company/addressSignUp';
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
         '{"address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
-    // print('jsonData: $jsonData');
+
     var response = await post(url, headers: headers, body: jsonData);
-    // check the status code for the result
-    var statusCode = response.statusCode;
-    print('statusCode: $statusCode');
-    // this API passes back the id of the new item added to the body
-    var body = response.body;
-    print(body);
-    // print(body.);
 
-    var newAddress = Address(
-      id: '1',
-      address: address,
-      city: city,
-      state: state,
-      zipcode: zipCode,
-    );
+    if (response.statusCode == 201) {
+      var body = json.decode(response.body);
 
-    if (address != null) {
-      addresses.add(newAddress);
+      var newAdress = Address.fromJson(body);
+      addresses.add(newAdress);
+      return newAdress;
     } else {
       // TODO: error
+      var body = json.decode(response.body);
+      throw Exception(body['message']);
     }
-    // _user = User(id: username, username: username, useridentity: useridentity);
-
-    // print(_user.id);
-    // if (_user != null) {
-    //   print('working');
-    //   _controller.add(AuthenticationStatus.authenticated);
-    // } else {
-    //   // TODO: error
-    // }
   }
 }

@@ -43,86 +43,82 @@ class CompanyForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<CompanyBloc>(context);
     formBloc.onLoading();
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          RadioButtonGroupFieldBlocBuilder(
-            selectFieldBloc: formBloc.havingCompany,
-            itemBuilder: (context, value) => value,
-            decoration: const InputDecoration(
-              labelText: 'Having an existing company?',
-              prefixIcon: SizedBox(),
-            ),
+    return Column(
+      children: <Widget>[
+        RadioButtonGroupFieldBlocBuilder(
+          selectFieldBloc: formBloc.havingCompany,
+          itemBuilder: (context, value) => value,
+          decoration: const InputDecoration(
+            labelText: 'Having an existing company?',
+            prefixIcon: SizedBox(),
           ),
-          DropdownFieldBlocBuilder(
-            selectFieldBloc: formBloc.companies,
-            itemBuilder: (context, value) => value,
-            decoration: const InputDecoration(
-                labelText: 'Companies',
-                prefixIcon: Icon(Icons.sentiment_satisfied)),
+        ),
+        DropdownFieldBlocBuilder(
+          selectFieldBloc: formBloc.companies,
+          itemBuilder: (context, value) => value,
+          decoration: const InputDecoration(
+              labelText: 'Companies',
+              prefixIcon: Icon(Icons.sentiment_satisfied)),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.name,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'Company Name',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.name,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: 'Company Name',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.fedID,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: '501c3 FED ID',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.fedID,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: '501c3 FED ID',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.einID,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'EIN ID',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.einID,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: 'EIN ID',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.address,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'Address',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.address,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: 'Address',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.city,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'City',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.city,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: 'City',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
+        ),
+        DropdownFieldBlocBuilder(
+          selectFieldBloc: formBloc.usState,
+          itemBuilder: (context, value) => value,
+          decoration: const InputDecoration(
+              labelText: 'State', prefixIcon: Icon(Icons.sentiment_satisfied)),
+        ),
+        TextFieldBlocBuilder(
+          textFieldBloc: formBloc.zipCode,
+          keyboardType: TextInputType.text,
+          decoration: const InputDecoration(
+            labelText: 'ZipCode',
+            prefixIcon: Icon(Icons.sentiment_very_satisfied),
           ),
-          DropdownFieldBlocBuilder(
-            selectFieldBloc: formBloc.usState,
-            itemBuilder: (context, value) => value,
-            decoration: const InputDecoration(
-                labelText: 'State',
-                prefixIcon: Icon(Icons.sentiment_satisfied)),
-          ),
-          TextFieldBlocBuilder(
-            textFieldBloc: formBloc.zipCode,
-            keyboardType: TextInputType.text,
-            decoration: const InputDecoration(
-              labelText: 'ZipCode',
-              prefixIcon: Icon(Icons.sentiment_very_satisfied),
-            ),
-          ),
-          RaisedButton(
-            onPressed: formBloc.submit,
-            child: const Text('Register'),
-          ),
-        ],
-      ),
+        ),
+        RaisedButton(
+          onPressed: formBloc.submit,
+          child: const Text('Register'),
+        ),
+      ],
     );
   }
 }

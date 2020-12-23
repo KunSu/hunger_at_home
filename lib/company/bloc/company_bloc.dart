@@ -148,13 +148,13 @@ class CompanyBloc extends FormBloc<String, String> {
   Future<void> onLoading() async {
     companies.clear();
     var newCompanies = await companiesRepository.loadCompanyNames();
-    for (var s in newCompanies) {
-      companies.addItem(s);
+    for (var item in newCompanies) {
+      companies.addItem(item);
     }
     emitLoaded();
   }
 
   String getCoompanyID() {
-    return companiesRepository.getCompanyID(address.value);
+    return companiesRepository.getCompanyID(name.value);
   }
 }

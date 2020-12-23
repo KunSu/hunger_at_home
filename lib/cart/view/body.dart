@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/cart/cart.dart';
@@ -11,30 +12,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class CartFormBloc extends FormBloc<String, String> {
-  CartFormBloc() {
+  CartFormBloc(
+      {@required this.authenticationRepository,
+      @required this.addressesRepository}) {
     addFieldBlocs(
       fieldBlocs: [
         pickupDateAndTime,
-        address,
+        addresses,
       ],
     );
   }
+
+  final AddressesRepository addressesRepository;
+  final AuthenticationRepository authenticationRepository;
 
   final pickupDateAndTime = InputFieldBloc<DateTime, Object>(
     name: 'pickupDateAndTime',
     toJson: (value) => value.toUtc().toIso8601String(),
   );
 
-  final address = SelectFieldBloc(
-    items: [
-      'address 1',
-      'address 2',
-    ],
-  );
+  final addresses = SelectFieldBloc();
 
   @override
   void onSubmitting() async {
     emitSuccess();
+  }
+
+  @override
+  Future<void> onLoading() async {
+    addresses.clear();
+    var newAddresses = await addressesRepository.loadAddressNames(
+        companyID: authenticationRepository.getUser().companyID);
+    for (var item in newAddresses) {
+      addresses.addItem(item);
+    }
+    emitLoaded();
+  }
+
+  String getAddressID() {
+    return addressesRepository.getAddressID(addresses.value);
   }
 }
 
@@ -45,13 +61,10 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // BlocProvider(
-        // create: (context) => BlocProvider.of<CartFormBloc>(context),
-        Builder(
+    return Builder(
       builder: (context) {
         final formBloc = BlocProvider.of<CartFormBloc>(context);
-
+        formBloc.onLoading();
         return Column(
           children: [
             DateTimeFieldBlocBuilder(
@@ -67,7 +80,7 @@ class Body extends StatelessWidget {
               ),
             ),
             DropdownFieldBlocBuilder(
-              selectFieldBloc: formBloc.address,
+              selectFieldBloc: formBloc.addresses,
               itemBuilder: (context, value) => value,
               decoration: InputDecoration(
                   labelText: 'Addresses',
@@ -88,7 +101,7 @@ class Body extends StatelessWidget {
                     var order = Order(
                       items: state.cart.items,
                       userID: context.read<AuthenticationBloc>().state.user.id,
-                      address: formBloc.address.value,
+                      address: formBloc.addresses.value,
                       pickupDateAndTime:
                           formBloc.pickupDateAndTime.value.toString(),
                     );
@@ -110,6 +123,10 @@ class Body extends StatelessWidget {
                 Navigator.pushNamed(context, DonatePage.routeName);
               },
               child: Text('Donate more items'),
+            ),
+            RaisedButton(
+              onPressed: formBloc.onLoading,
+              child: const Text('Reload'),
             ),
           ],
         );

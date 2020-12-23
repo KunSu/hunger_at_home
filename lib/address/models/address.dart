@@ -12,6 +12,16 @@ class Address extends Equatable {
     this.isDeleting = false,
   });
 
+  factory Address.fromJson(Map<String, dynamic> json) {
+    return Address(
+      id: json['companyID'],
+      address: json['address'],
+      city: json['city'],
+      state: json['state'],
+      zipcode: json['zipCode'],
+    );
+  }
+
   final String id;
   final String address;
   final String city;

@@ -10,7 +10,7 @@ enum AuthenticationStatus { unknown, authenticated, unauthenticated }
 class AuthenticationRepository {
   final _controller = StreamController<AuthenticationStatus>();
 
-  User _user;
+  User user;
 
   Stream<AuthenticationStatus> get status async* {
     await Future<void>.delayed(const Duration(seconds: 1));
@@ -44,9 +44,10 @@ class AuthenticationRepository {
 
     // TODO: stateCode should not be 201
     if (statusCode == 200 || statusCode == 201) {
-      _user = User(
+      user = User(
           id: body['id'],
           email: body['email'],
+          companyID: body['companyID'],
           useridentity: body['userIdentity']);
       _controller.add(AuthenticationStatus.authenticated);
     } else {
@@ -90,10 +91,10 @@ class AuthenticationRepository {
     print(body);
     // print(body.);
     if (statusCode == 201) {
-      _user = User(id: email, email: email, useridentity: useridentity);
+      user = User(id: email, email: email, useridentity: useridentity);
 
-      print(_user.id);
-      if (_user != null) {
+      print(user.id);
+      if (user != null) {
         print('working');
         _controller.add(AuthenticationStatus.authenticated);
       } else {
@@ -107,7 +108,7 @@ class AuthenticationRepository {
   }
 
   User getUser() {
-    return _user;
+    return user;
   }
 
   void dispose() => _controller.close();

@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/address/address.dart';
 import 'package:fe/approver/view/approver_page.dart';
-import 'package:fe/cart/bloc/cart_bloc.dart';
+import 'package:fe/cart/cart.dart';
 import 'package:fe/cart/view/body.dart';
 import 'package:fe/company/company.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
@@ -71,7 +72,10 @@ class _AppViewState extends State<AppView> {
           ),
         ),
         BlocProvider<CartFormBloc>(
-          create: (_) => CartFormBloc(),
+          create: (_) => CartFormBloc(
+              addressesRepository: AddressesRepository(),
+              authenticationRepository:
+                  RepositoryProvider.of<AuthenticationRepository>(context)),
         ),
         BlocProvider<LoginBloc>(
           create: (_) => LoginBloc(

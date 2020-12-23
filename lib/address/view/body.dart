@@ -93,14 +93,13 @@ class Body extends StatelessWidget {
           final formBloc = BlocProvider.of<AddressFormBloc>(context);
           return FormBlocListener<AddressFormBloc, String, String>(
             onSuccess: (context, state) {
-              // LoadingDialog.hide(context);
               final address = Address(
                 address: formBloc.address.value,
                 city: formBloc.city.value,
                 state: formBloc.usState.value,
                 zipcode: formBloc.zipCode.value,
               );
-              context.read<CartFormBloc>().address.addItem(address.address);
+              context.read<CartFormBloc>().addresses.addItem(address.address);
               Navigator.of(context).pushNamed('/cart');
             },
             child: SingleChildScrollView(
@@ -153,51 +152,3 @@ class Body extends StatelessWidget {
     );
   }
 }
-
-// class _AddressView extends StatelessWidget {
-//   const _AddressView({Key key, this.addresses}) : super(key: key);
-
-//   final List<Address> addresses;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return addresses.isEmpty
-//         ? const Center(child: Text('no content'))
-//         : ListView.builder(
-//             itemBuilder: (BuildContext context, int index) {
-//               return _AddressTile(
-//                 address: addresses[index],
-//                 // onDeletePressed: (id) {
-//                 //   context.read<AddressCubit>().deleteItem(id);
-//                 // },
-//               );
-//             },
-//             itemCount: addresses.length,
-//           );
-//   }
-// }
-
-// class _AddressTile extends StatelessWidget {
-//   const _AddressTile({
-//     Key key,
-//     @required this.address,
-//     @required this.onDeletePressed,
-//   }) : super(key: key);
-
-//   final Address address;
-//   final ValueSetter<String> onDeletePressed;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListTile(
-//       leading: Text('#${address.id}'),
-//       title: Text(address.address),
-//       trailing: address.isDeleting
-//           ? const CircularProgressIndicator()
-//           : IconButton(
-//               icon: const Icon(Icons.delete, color: Colors.red),
-//               onPressed: () => onDeletePressed(address.id),
-//             ),
-//     );
-//   }
-// }
