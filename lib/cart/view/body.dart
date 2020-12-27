@@ -74,7 +74,7 @@ class Body extends StatelessWidget {
               initialDate: DateTime.now(),
               firstDate: DateTime(1900),
               lastDate: DateTime(2100),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Pick Up Date and Time',
                 prefixIcon: Icon(Icons.date_range),
               ),
@@ -82,51 +82,63 @@ class Body extends StatelessWidget {
             DropdownFieldBlocBuilder(
               selectFieldBloc: formBloc.addresses,
               itemBuilder: (context, value) => value,
-              decoration: InputDecoration(
-                  labelText: 'Addresses',
-                  prefixIcon: Icon(Icons.sentiment_satisfied)),
+              decoration: const InputDecoration(
+                  labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(32),
+                padding: const EdgeInsets.all(8),
                 child: _CartList(),
               ),
             ),
             const Divider(height: 4, color: Colors.black),
-            // _CartTotal()
-            BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-              if (state is CartLoaded) {
-                return RaisedButton(
-                  onPressed: () {
-                    var order = Order(
-                      items: state.cart.items,
-                      userID: context.read<AuthenticationBloc>().state.user.id,
-                      address: formBloc.addresses.value,
-                      pickupDateAndTime:
-                          formBloc.pickupDateAndTime.value.toString(),
-                    );
-                    context.read<OrdersBloc>().add(OrderAdded(order));
-                    Navigator.pushNamed(context, OrderPage.routeName);
-                  },
-                  child: Text('Submit order'),
-                );
-              }
-            }),
+            BlocBuilder<CartBloc, CartState>(
+              builder: (context, state) {
+                if (state is CartLoaded) {
+                  return RaisedButton(
+                    onPressed: () {
+                      var order = Order(
+                        items: state.cart.items,
+                        userID:
+                            context.read<AuthenticationBloc>().state.user.id,
+                        address: formBloc.addresses.value,
+                        pickupDateAndTime:
+                            formBloc.pickupDateAndTime.value.toString(),
+                      );
+
+                      context.read<OrdersBloc>().add(OrderAdded(order));
+
+                      // Reset status
+                      context.read<CartBloc>().add(CartStarted());
+                      context.read<CartFormBloc>().pickupDateAndTime.clear();
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        OrderPage.routeName,
+                        (route) => false,
+                      );
+                    },
+                    child: const Text('Submit Order'),
+                  );
+                } else {
+                  return RaisedButton(
+                    color: Colors.grey,
+                    onPressed: () {},
+                    child: const Text('Submit Order'),
+                  );
+                }
+              },
+            ),
             RaisedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AddressPage.routeName);
               },
-              child: const Text('Edit Address'),
+              child: const Text('Add New Address'),
             ),
             RaisedButton(
               onPressed: () {
                 Navigator.pushNamed(context, DonatePage.routeName);
               },
-              child: Text('Donate more items'),
-            ),
-            RaisedButton(
-              onPressed: formBloc.onLoading,
-              child: const Text('Reload'),
+              child: const Text('Donate More Items'),
             ),
           ],
         );
@@ -163,9 +175,10 @@ class _ItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: UI
-    return Column(children: [
-      Text(item.name),
-      Text(item.quantityNumber + ' ' + item.quantityUnit),
-    ]);
+    return ListTile(
+      title: Text('${item.name}'),
+      subtitle: Text(
+          '${item.category} \n${item.quantityNumber} ${item.quantityUnit}'),
+    );
   }
 }

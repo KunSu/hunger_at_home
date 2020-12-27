@@ -13,13 +13,14 @@ class CompanyPage extends StatelessWidget {
       body: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<CompanyBloc>(context);
+
           return FormBlocListener<CompanyBloc, String, String>(
             onSuccess: (context, state) {
               Navigator.pushNamed(
                 context,
                 RegisterPage.routeName,
                 arguments: CompanyIDArguments(
-                  companyID: formBloc.getCoompanyID(),
+                  companyID: formBloc.getCompanyID(),
                 ),
               );
             },

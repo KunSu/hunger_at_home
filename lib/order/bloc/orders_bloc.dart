@@ -2,19 +2,16 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fe/order/models/model.dart';
+import 'package:fe/order/order.dart';
 import 'package:meta/meta.dart';
-
-// TODO: repo
-import '../order_repository.dart';
 
 part 'orders_event.dart';
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
-  final OrdersRepository ordersRepository;
-
   OrdersBloc({@required this.ordersRepository}) : super(OrdersLoadInProgress());
+
+  final OrdersRepository ordersRepository;
 
   @override
   Stream<OrdersState> mapEventToState(OrdersEvent event) async* {
@@ -31,7 +28,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   Stream<OrdersState> _mapOrdersLoadedToState() async* {
     try {
-      final orders = await this.ordersRepository.loadOrders();
+      // ordersRepository.init();
+      final orders = ordersRepository.loadOrders();
       yield OrdersLoadSuccess(
         orders,
       );
@@ -42,10 +40,22 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   Stream<OrdersState> _mapOrderAddedToState(OrderAdded event) async* {
     if (state is OrdersLoadSuccess) {
-      final List<Order> updatedOrders =
-          List.from((state as OrdersLoadSuccess).orders)..add(event.order);
-      yield OrdersLoadSuccess(updatedOrders);
-      _saveOrders(updatedOrders);
+      try {
+        await ordersRepository.signUp(
+          // addressID: addressesRepository.getAddressID(
+          //   event.order.address,
+          // ),
+          addressID: '11',
+          order: event.order,
+        );
+
+        final List<Order> updatedOrders =
+            List.from((state as OrdersLoadSuccess).orders)..add(event.order);
+        yield OrdersLoadSuccess(updatedOrders);
+        _saveOrders(updatedOrders);
+      } catch (_) {
+        yield OrdersLoadFailure();
+      }
     }
   }
 

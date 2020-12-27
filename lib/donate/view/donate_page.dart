@@ -1,47 +1,8 @@
 import 'package:fe/cart/cart.dart';
+import 'package:fe/donate/bloc/donate_bloc.dart';
 import 'package:fe/pantry/models/models.dart';
-import 'package:fe/pantry/view/pantry_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-
-class DonatePageBloc extends FormBloc<String, String> {
-  DonatePageBloc() {
-    addFieldBlocs(
-      fieldBlocs: [
-        name,
-        category,
-        quantityNumber,
-        quantityUnit,
-      ],
-    );
-  }
-
-  final name = TextFieldBloc();
-
-  final category = SelectFieldBloc(
-    items: [
-      'Fruits',
-      'Veggies',
-      'Meat',
-      'Seafood',
-      'Dry',
-    ],
-  );
-
-  final quantityNumber = TextFieldBloc();
-  final quantityUnit = SelectFieldBloc(
-    items: [
-      'pallet',
-      'case',
-      'pound',
-    ],
-  );
-
-  @override
-  void onSubmitting() async {
-    emitSuccess();
-  }
-}
 
 class DonatePage extends StatelessWidget {
   static String routeName = '/donate';
@@ -49,10 +10,10 @@ class DonatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DonatePageBloc(),
+      create: (context) => DonateBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = BlocProvider.of<DonatePageBloc>(context);
+          final formBloc = BlocProvider.of<DonateBloc>(context);
 
           return Theme(
             data: Theme.of(context).copyWith(
@@ -73,7 +34,7 @@ class DonatePage extends StatelessWidget {
                   ),
                 ],
               ),
-              body: FormBlocListener<DonatePageBloc, String, String>(
+              body: FormBlocListener<DonateBloc, String, String>(
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },
@@ -104,38 +65,38 @@ class DonatePage extends StatelessWidget {
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.name,
                           keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Item Name',
-                            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                            prefixIcon: Icon(Icons.assignment),
                           ),
                         ),
                         // TODO: the DropdownField has bug
                         DropdownFieldBlocBuilder(
                           selectFieldBloc: formBloc.category,
                           itemBuilder: (context, value) => value,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               labelText: 'category',
-                              prefixIcon: Icon(Icons.sentiment_satisfied)),
+                              prefixIcon: Icon(Icons.category)),
                         ),
                         TextFieldBlocBuilder(
                           textFieldBloc: formBloc.quantityNumber,
                           keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Quantity',
-                            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                            prefixIcon: Icon(Icons.edit),
                           ),
                         ),
                         DropdownFieldBlocBuilder(
                           selectFieldBloc: formBloc.quantityUnit,
                           itemBuilder: (context, value) => value,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               labelText: 'Quantity Unit',
-                              prefixIcon: Icon(Icons.sentiment_satisfied)),
+                              prefixIcon: Icon(Icons.edit)),
                         ),
 
                         RaisedButton(
                           onPressed: formBloc.submit,
-                          child: Text('Submit'),
+                          child: const Text('Submit'),
                         ),
                       ],
                     ),

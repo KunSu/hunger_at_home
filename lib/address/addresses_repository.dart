@@ -21,14 +21,7 @@ class AddressesRepository {
     if (response.statusCode == 200) {
       var body = json.decode(response.body) as List;
       addresses.clear();
-      // addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
-      // TODO: API is not working
-      addresses.addAll(
-        <Address>[
-          Address(id: '1', address: 'New Address 1'),
-          Address(id: '2', address: 'New Address 2'),
-        ],
-      );
+      addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
       return addresses.map((e) => e.address).toList();
     } else {
       // TODO: error
@@ -53,11 +46,12 @@ class AddressesRepository {
   Future<Address> signUp(
       {String address, String city, String state, String zipCode}) async {
     var url = 'http://localhost:8080/api/v1/company/addressSignUp';
+    print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
         '{"address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
-
+    print(jsonData);
     var response = await post(url, headers: headers, body: jsonData);
 
     if (response.statusCode == 201) {

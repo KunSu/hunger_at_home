@@ -1,5 +1,7 @@
+import 'package:fe/components/view/buttom_navigation_bar.dart';
 import 'package:fe/donate/donate.dart';
 import 'package:fe/donor/donor.dart';
+import 'package:fe/pantry/models/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/cart/cart.dart';
@@ -20,7 +22,9 @@ class _PantryPageState extends State<PantryPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          MyAppBar(),
+          const MyAppBar(
+            title: 'Pantry',
+          ),
           const SliverToBoxAdapter(child: SizedBox(height: 12)),
           BlocBuilder<CatalogBloc, CatalogState>(
             builder: (context, state) {
@@ -46,33 +50,11 @@ class _PantryPageState extends State<PantryPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Donate',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+      bottomNavigationBar: MyBottomNavigationBar(
+        homeRouteName: DonorPage.routeName,
+        itemRouteName: DonatePage.routeName,
       ),
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (_selectedIndex == 0) {
-        Navigator.pushNamed(context, DonorPage.routeName);
-      } else if (_selectedIndex == 1) {
-        Navigator.pushNamed(context, DonatePage.routeName);
-      }
-    });
   }
 }
 
@@ -102,22 +84,6 @@ class _AddButton extends StatelessWidget {
         }
         return const Text('Something went wrong!');
       },
-    );
-  }
-}
-
-class MyAppBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      title: const Text('Pantry'),
-      floating: true,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.shopping_cart),
-          onPressed: () => Navigator.of(context).pushNamed('/cart'),
-        ),
-      ],
     );
   }
 }

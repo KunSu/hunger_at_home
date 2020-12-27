@@ -154,7 +154,7 @@ class CompanyBloc extends FormBloc<String, String> {
     emitLoaded();
   }
 
-  String getCoompanyID() {
+  String getCompanyID() {
     return companiesRepository.getCompanyID(name.value);
   }
 }

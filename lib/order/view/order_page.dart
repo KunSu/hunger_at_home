@@ -1,12 +1,17 @@
-import 'package:fe/components/view/rounded_botton.dart';
+import 'package:fe/components/view/buttom_navigation_bar.dart';
+import 'package:fe/components/view/order_list.dart';
+import 'package:fe/donate/view/donate_page.dart';
 import 'package:fe/donor/donor.dart';
-import 'package:fe/order/bloc/orders_bloc.dart';
-import 'package:fe/order/models/model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderPage extends StatelessWidget {
   static String routeName = '/order';
+
+  static Route route() {
+    return MaterialPageRoute<OrderPage>(
+      builder: (context) => OrderPage(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,57 +21,16 @@ class OrderPage extends StatelessWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: _OrderList(),
+              padding: const EdgeInsets.all(8),
+              child: OrderList(),
             ),
-          ),
-          RoundedButton(
-            text: 'Home',
-            press: () {
-              Navigator.pushNamed(context, DonorPage.routeName);
-            },
           ),
         ],
       ),
+      bottomNavigationBar: MyBottomNavigationBar(
+        homeRouteName: DonorPage.routeName,
+        itemRouteName: DonatePage.routeName,
+      ),
     );
-  }
-}
-
-class _OrderList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
-      builder: (context, state) {
-        if (state is OrdersLoadInProgress) {
-          return const CircularProgressIndicator();
-        }
-        if (state is OrdersLoadSuccess) {
-          return ListView.builder(
-            itemCount: state.orders.length,
-            itemBuilder: (context, index) =>
-                _OrderView(item: state.orders[index]),
-          );
-        }
-        return const Text('Something went wrong!');
-      },
-    );
-  }
-}
-
-class _OrderView extends StatelessWidget {
-  const _OrderView({Key key, this.item}) : super(key: key);
-
-  final Order item;
-  @override
-  Widget build(BuildContext context) {
-    // TODO: UI
-    return Column(children: [
-      // Text(item.name),
-      Text('userID ' + item.userID),
-      Text('items ' + item.items[0].name),
-      Text(item.address),
-      Text(item.pickupDateAndTime),
-      // Text(item.quantityNumber + ' ' + item.quantityUnit),
-    ]);
   }
 }

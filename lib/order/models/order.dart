@@ -9,7 +9,7 @@ class Order extends Equatable {
     this.name,
     @required this.items,
     this.state,
-    @required this.userID,
+    this.userID,
     @required this.address,
     this.company,
     this.phoneNumber,
@@ -18,6 +18,23 @@ class Order extends Equatable {
     this.deliveryTemperature,
     this.deliveryDateAndTime,
   });
+
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      id: json['orderID'],
+      name: json[''],
+      items: json['orderItems'],
+      state: json['status'],
+      userID: json[''],
+      address: json['address'],
+      company: json[''],
+      phoneNumber: json[''],
+      pickupDateAndTime: json['pickUpTime'],
+      submitedDateAndTime: json[''],
+      deliveryTemperature: json[''],
+      deliveryDateAndTime: json[''],
+    );
+  }
 
   final String id;
   final String name;

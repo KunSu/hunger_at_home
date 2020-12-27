@@ -63,8 +63,9 @@ class _AppViewState extends State<AppView> {
           create: (_) => CartBloc()..add(CartStarted()),
         ),
         BlocProvider<OrdersBloc>(
-          create: (_) => OrdersBloc(ordersRepository: OrdersRepository())
-            ..add(OrdersLoaded()),
+          create: (_) => OrdersBloc(
+            ordersRepository: OrdersRepository(),
+          )..add(OrdersLoaded()),
         ),
         BlocProvider<CompanyBloc>(
           create: (_) => CompanyBloc(

@@ -25,6 +25,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
   final firstName = TextFieldBloc();
   final lastName = TextFieldBloc();
   final phoneNumber = TextFieldBloc();
+
   final userIdentity = SelectFieldBloc(
     items: [
       'Donor',
@@ -33,6 +34,8 @@ class RegisterFormBloc extends FormBloc<String, String> {
       'Approver',
     ],
   );
+
+  String comapnyID;
 
   @override
   void onSubmitting() async {
@@ -44,12 +47,13 @@ class RegisterFormBloc extends FormBloc<String, String> {
         lastname: lastName.value,
         phonenumber: phoneNumber.value,
         useridentity: userIdentity.value,
+        comapnyID: comapnyID,
       );
       emitSuccess(
         canSubmitAgain: true,
       );
     } on Exception catch (_) {
-      emitFailure();
+      emitFailure(failureResponse: 'Registraion fail');
     }
   }
 }
@@ -61,6 +65,7 @@ class RegisterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<RegisterFormBloc>(context);
+    formBloc.comapnyID = companyID;
 
     return FormBlocListener<RegisterFormBloc, String, String>(
       onSuccess: (context, state) {

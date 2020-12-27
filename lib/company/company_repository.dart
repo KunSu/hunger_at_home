@@ -15,6 +15,8 @@ class CompaniesRepository {
 
   Future<List<String>> loadCompanyNames() async {
     var url = 'http://localhost:8080/api/v1/company/companyList';
+    print(url);
+
     var response = await get(url);
 
     if (response.statusCode == 200) {
@@ -34,9 +36,10 @@ class CompaniesRepository {
     companies = companies ?? this.companies;
   }
 
-  String getCompanyID(String address) {
+  String getCompanyID(String name) {
+    print(name);
     for (var i = 0; i < companies.length; i++) {
-      if (companies[i].address == address) {
+      if (companies[i].name == name) {
         return companies[i].id;
       }
     }
@@ -53,6 +56,7 @@ class CompaniesRepository {
     String zipCode,
   }) async {
     var url = 'http://localhost:8080/api/v1/company/companySignup';
+    print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
