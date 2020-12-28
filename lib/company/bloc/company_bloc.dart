@@ -6,6 +6,7 @@ class CompanyBloc extends FormBloc<String, String> {
   CompanyBloc({
     @required this.companiesRepository,
   }) {
+    _companyID = '-1';
     addFieldBlocs(
       fieldBlocs: [
         havingCompany,
@@ -27,6 +28,7 @@ class CompanyBloc extends FormBloc<String, String> {
           ],
         );
         if (current.value == 'Yes') {
+          await onLoading();
           addFieldBlocs(
             fieldBlocs: [companies],
           );
@@ -50,22 +52,51 @@ class CompanyBloc extends FormBloc<String, String> {
   final CompaniesRepository companiesRepository;
 
   final havingCompany = SelectFieldBloc(
-    validators: [FieldBlocValidators.required],
+    validators: [
+      FieldBlocValidators.required,
+    ],
     items: ['Yes', 'No'],
   );
 
-  final companies = SelectFieldBloc();
+  final companies = SelectFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
-  final name = TextFieldBloc();
+  final name = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
-  final fedID = TextFieldBloc();
-  final einID = TextFieldBloc();
+  final fedID = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+  final einID = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
-  final address = TextFieldBloc();
+  final address = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
-  final city = TextFieldBloc();
+  final city = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
   final usState = SelectFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
     items: [
       'Alabama',
       'Alaska',
@@ -120,41 +151,62 @@ class CompanyBloc extends FormBloc<String, String> {
     ],
   );
 
-  final zipCode = TextFieldBloc();
+  final zipCode = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+  var _companyID;
 
   @override
   void onSubmitting() async {
-    var newCompany = await companiesRepository.signUp(
-      name: name.value,
-      fedID: fedID.value,
-      einID: einID.value,
-      address: address.value,
-      city: city.value,
-      state: usState.value,
-      zipCode: zipCode.value,
-    );
+    if (havingCompany.value == 'No') {
+      try {
+        var newCompany = await companiesRepository.signUp(
+          name: name.value,
+          fedID: fedID.value,
+          einID: einID.value,
+          address: address.value,
+          city: city.value,
+          state: usState.value,
+          zipCode: zipCode.value,
+        );
 
-    if (newCompany != null) {
-      companies.addItem(newCompany.name);
-      emitSuccess(
-        canSubmitAgain: true,
-      );
-    } else {
-      emitFailure();
+        _companyID = newCompany.id;
+        companies.addItem(newCompany.name);
+        emitSuccess(
+          canSubmitAgain: true,
+        );
+      } catch (e) {
+        emitFailure(failureResponse: e.toString());
+      }
+    } else if (havingCompany.value == 'Yes') {
+      _companyID = companiesRepository.getCompanyID(companies.value);
+      if (_companyID != -1) {
+        emitSuccess(
+          canSubmitAgain: true,
+        );
+      } else {
+        emitFailure();
+      }
     }
   }
 
   @override
   Future<void> onLoading() async {
-    companies.clear();
-    var newCompanies = await companiesRepository.loadCompanyNames();
-    for (var item in newCompanies) {
-      companies.addItem(item);
+    try {
+      var newCompanies = await companiesRepository.loadCompanyNames();
+      companies.clear();
+      for (var item in newCompanies) {
+        companies.addItem(item);
+      }
+      emitLoaded();
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
     }
-    emitLoaded();
   }
 
   String getCompanyID() {
-    return companiesRepository.getCompanyID(name.value);
+    return _companyID;
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fe/address/addresses_repository.dart';
 import 'package:fe/order/order.dart';
 import 'package:meta/meta.dart';
 
@@ -9,8 +10,11 @@ part 'orders_event.dart';
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
-  OrdersBloc({@required this.ordersRepository}) : super(OrdersLoadInProgress());
+  OrdersBloc(
+      {@required this.addressesRepository, @required this.ordersRepository})
+      : super(OrdersLoadInProgress());
 
+  final AddressesRepository addressesRepository;
   final OrdersRepository ordersRepository;
 
   @override
@@ -28,7 +32,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   Stream<OrdersState> _mapOrdersLoadedToState() async* {
     try {
-      // ordersRepository.init();
+      // TODO: confirm
+      // await ordersRepository.init();
       final orders = ordersRepository.loadOrders();
       yield OrdersLoadSuccess(
         orders,
@@ -41,11 +46,11 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   Stream<OrdersState> _mapOrderAddedToState(OrderAdded event) async* {
     if (state is OrdersLoadSuccess) {
       try {
+        print('event.order.address: $event.order.address');
         await ordersRepository.signUp(
-          // addressID: addressesRepository.getAddressID(
-          //   event.order.address,
-          // ),
-          addressID: '11',
+          addressID: addressesRepository.getAddressID(
+            event.order.address,
+          ),
           order: event.order,
         );
 

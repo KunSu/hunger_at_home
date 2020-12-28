@@ -24,6 +24,13 @@ class CompanyPage extends StatelessWidget {
                 ),
               );
             },
+            onFailure: (context, state) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.failureResponse),
+                ),
+              );
+            },
             child: const SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(8.0),
@@ -43,7 +50,7 @@ class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<CompanyBloc>(context);
-    formBloc.onLoading();
+    // formBloc.onLoading();
     return Column(
       children: <Widget>[
         RadioButtonGroupFieldBlocBuilder(

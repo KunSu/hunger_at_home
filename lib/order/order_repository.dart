@@ -17,9 +17,10 @@ class OrdersRepository {
     orders = orders ?? this.orders;
   }
 
+// TODO: getAllOrders and POST Order
   Future<List<Order>> init({String userID}) async {
     var url =
-        'http://localhost:8080/api/v1/order/getOrderListByDonorID/$userID/all/100';
+        'http://localhost:8080/api/v1/order/getOrderListByDonorID/$userID/all/10';
     print(url);
     var response = await get(url);
 
@@ -43,7 +44,7 @@ class OrdersRepository {
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
         '{"addressID": "$addressID", "note": "NA", "orderType": "donation", "pickUpTime": "${order.pickupDateAndTime}", "status": "pending"}';
-
+    print(jsonData);
     var response = await post(url, headers: headers, body: jsonData);
 
     if (response.statusCode == 201 || response.statusCode == 200) {

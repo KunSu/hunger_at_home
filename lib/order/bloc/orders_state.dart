@@ -10,9 +10,9 @@ abstract class OrdersState extends Equatable {
 class OrdersLoadInProgress extends OrdersState {}
 
 class OrdersLoadSuccess extends OrdersState {
-  final List<Order> orders;
-
   const OrdersLoadSuccess([this.orders = const []]);
+
+  final List<Order> orders;
 
   @override
   List<Object> get props => [orders];

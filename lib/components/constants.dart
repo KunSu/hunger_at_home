@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 
-const String baseURL = 'http://localhost:8080/api/v1';
-// Turn off testing model in producttion
-const bool testingModel = true;
-
 const kPrimaryColor = Colors.blue;
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kPrimaryGradientColor = LinearGradient(

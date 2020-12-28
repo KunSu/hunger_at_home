@@ -20,13 +20,37 @@ class RegisterFormBloc extends FormBloc<String, String> {
   }
 
   final AuthenticationRepository authenticationRepository;
-  final email = TextFieldBloc();
-  final password = TextFieldBloc();
-  final firstName = TextFieldBloc();
-  final lastName = TextFieldBloc();
-  final phoneNumber = TextFieldBloc();
+  final email = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+      FieldBlocValidators.email,
+    ],
+  );
+  final password = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+  final firstName = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+  final lastName = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+  final phoneNumber = TextFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
 
   final userIdentity = SelectFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
     items: [
       'Donor',
       'Recipient',
@@ -40,7 +64,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
   @override
   void onSubmitting() async {
     try {
-      authenticationRepository.register(
+      await authenticationRepository.register(
         email: email.value,
         password: password.value,
         firstname: firstName.value,
@@ -52,8 +76,8 @@ class RegisterFormBloc extends FormBloc<String, String> {
       emitSuccess(
         canSubmitAgain: true,
       );
-    } on Exception catch (_) {
-      emitFailure(failureResponse: 'Registraion fail');
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
     }
   }
 }
@@ -72,6 +96,13 @@ class RegisterForm extends StatelessWidget {
         // context.bloc<RegisterBloc>().add(
         //       RegisterUserIdentityChanged(formBloc.userIdentity.value),
         //     );
+      },
+      onFailure: (context, state) {
+        Scaffold.of(context).showSnackBar(
+          SnackBar(
+            content: Text(state.failureResponse),
+          ),
+        );
       },
       child: SingleChildScrollView(
         child: Padding(

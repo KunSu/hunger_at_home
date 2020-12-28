@@ -8,6 +8,7 @@ class OrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OrdersBloc, OrdersState>(
       builder: (context, state) {
+        print(state.toString());
         if (state is OrdersLoadInProgress) {
           return const CircularProgressIndicator();
         }
@@ -16,7 +17,6 @@ class OrderList extends StatelessWidget {
             return const Text('You do not have any order yet');
           }
           return ListView.builder(
-            // scrollDirection: Axis.horizontal,
             itemCount: state.orders.length,
             itemBuilder: (context, index) =>
                 OrderView(order: state.orders[index]),

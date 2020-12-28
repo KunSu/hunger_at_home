@@ -18,6 +18,7 @@ class CompaniesRepository {
     print(url);
 
     var response = await get(url);
+    var body = json.decode(response.body);
 
     if (response.statusCode == 200) {
       var body = json.decode(response.body) as List;
@@ -26,9 +27,7 @@ class CompaniesRepository {
 
       return companies.map((e) => e.name).toList();
     } else {
-      // TODO: error
-      var body = json.decode(response.body);
-      throw Exception(body['message']);
+      throw (body['message']);
     }
   }
 
@@ -37,7 +36,6 @@ class CompaniesRepository {
   }
 
   String getCompanyID(String name) {
-    print(name);
     for (var i = 0; i < companies.length; i++) {
       if (companies[i].name == name) {
         return companies[i].id;
@@ -63,17 +61,14 @@ class CompaniesRepository {
         '{"companyName": "$name", "fedID": "$fedID", "einID": "$einID", "address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
 
     var response = await post(url, headers: headers, body: jsonData);
+    var body = json.decode(response.body);
 
     if (response.statusCode == 201) {
-      var body = json.decode(response.body);
-
       var newCompany = Company.fromJson(body);
       companies.add(newCompany);
       return newCompany;
     } else {
-      // TODO: error
-      var body = json.decode(response.body);
-      throw Exception(body['message']);
+      throw (body['message']);
     }
   }
 }

@@ -3,8 +3,13 @@ import 'package:bloc/bloc.dart';
 import 'package:fe/app.dart';
 import 'package:fe/simple_bloc_observer.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_config/flutter_config.dart';
 
-void main() {
+Future<void> main() async {
+  // Load config
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterConfig.loadEnvVariables();
+
   Bloc.observer = SimpleBlocObserver();
   runApp(App(
     authenticationRepository: AuthenticationRepository(),

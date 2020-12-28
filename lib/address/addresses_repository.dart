@@ -20,6 +20,8 @@ class AddressesRepository {
 
     if (response.statusCode == 200) {
       var body = json.decode(response.body) as List;
+      print(body);
+
       addresses.clear();
       addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
       return addresses.map((e) => e.address).toList();

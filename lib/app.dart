@@ -36,7 +36,20 @@ class App extends StatelessWidget {
         create: (_) => AuthenticationBloc(
           authenticationRepository: authenticationRepository,
         ),
-        child: AppView(),
+        child: MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<AddressesRepository>(
+              create: (context) => AddressesRepository(),
+            ),
+            // RepositoryProvider<RepositoryB>(
+            //   create: (context) => RepositoryB(),
+            // ),
+            // RepositoryProvider<RepositoryC>(
+            //   create: (context) => RepositoryC(),
+            // ),
+          ],
+          child: AppView(),
+        ),
       ),
     );
   }
@@ -65,6 +78,8 @@ class _AppViewState extends State<AppView> {
         BlocProvider<OrdersBloc>(
           create: (_) => OrdersBloc(
             ordersRepository: OrdersRepository(),
+            addressesRepository:
+                RepositoryProvider.of<AddressesRepository>(context),
           )..add(OrdersLoaded()),
         ),
         BlocProvider<CompanyBloc>(
@@ -74,7 +89,8 @@ class _AppViewState extends State<AppView> {
         ),
         BlocProvider<CartFormBloc>(
           create: (_) => CartFormBloc(
-              addressesRepository: AddressesRepository(),
+              addressesRepository:
+                  RepositoryProvider.of<AddressesRepository>(context),
               authenticationRepository:
                   RepositoryProvider.of<AuthenticationRepository>(context)),
         ),

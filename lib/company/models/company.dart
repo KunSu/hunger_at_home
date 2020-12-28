@@ -16,7 +16,7 @@ class Company extends Equatable {
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
-      id: json['id'],
+      id: json['companyID'],
       name: json['companyName'],
       fedID: json['fedID'],
       einID: json['einID'],

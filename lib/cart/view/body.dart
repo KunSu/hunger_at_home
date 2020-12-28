@@ -105,7 +105,8 @@ class Body extends StatelessWidget {
                         pickupDateAndTime:
                             formBloc.pickupDateAndTime.value.toString(),
                       );
-
+                      print(
+                          'formBloc.addresses.value: ${formBloc.addresses.value}');
                       context.read<OrdersBloc>().add(OrderAdded(order));
 
                       // Reset status
