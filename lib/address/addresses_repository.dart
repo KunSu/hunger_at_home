@@ -26,9 +26,8 @@ class AddressesRepository {
       addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
       return addresses.map((e) => e.address).toList();
     } else {
-      // TODO: error
       var body = json.decode(response.body);
-      throw Exception(body['message']);
+      throw (body['message']);
     }
   }
 
@@ -46,26 +45,27 @@ class AddressesRepository {
   }
 
   Future<Address> signUp(
-      {String address, String city, String state, String zipCode}) async {
+      {String userID,
+      String address,
+      String city,
+      String state,
+      String zipCode}) async {
     var url = 'http://localhost:8080/api/v1/company/addressSignUp';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
-        '{"address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
+        '{"address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode", "userID": "$userID"}';
     print(jsonData);
     var response = await post(url, headers: headers, body: jsonData);
 
+    var body = json.decode(response.body);
     if (response.statusCode == 201) {
-      var body = json.decode(response.body);
-
       var newAdress = Address.fromJson(body);
       addresses.add(newAdress);
       return newAdress;
     } else {
-      // TODO: error
-      var body = json.decode(response.body);
-      throw Exception(body['message']);
+      throw (body['message']);
     }
   }
 }

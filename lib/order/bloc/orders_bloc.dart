@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fe/address/addresses_repository.dart';
@@ -10,10 +11,13 @@ part 'orders_event.dart';
 part 'orders_state.dart';
 
 class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
-  OrdersBloc(
-      {@required this.addressesRepository, @required this.ordersRepository})
-      : super(OrdersLoadInProgress());
+  OrdersBloc({
+    @required this.authenticationRepository,
+    @required this.addressesRepository,
+    @required this.ordersRepository,
+  }) : super(OrdersLoadInProgress());
 
+  final AuthenticationRepository authenticationRepository;
   final AddressesRepository addressesRepository;
   final OrdersRepository ordersRepository;
 
@@ -32,34 +36,25 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
 
   Stream<OrdersState> _mapOrdersLoadedToState() async* {
     try {
-      // TODO: confirm
-      // await ordersRepository.init();
+      await ordersRepository.reload(userID: authenticationRepository.user.id);
       final orders = ordersRepository.loadOrders();
       yield OrdersLoadSuccess(
         orders,
       );
-    } catch (_) {
-      yield OrdersLoadFailure();
+    } catch (e) {
+      yield OrdersLoadFailure(e.toString());
     }
   }
 
   Stream<OrdersState> _mapOrderAddedToState(OrderAdded event) async* {
     if (state is OrdersLoadSuccess) {
       try {
-        print('event.order.address: $event.order.address');
-        await ordersRepository.signUp(
-          addressID: addressesRepository.getAddressID(
-            event.order.address,
-          ),
-          order: event.order,
-        );
-
         final List<Order> updatedOrders =
             List.from((state as OrdersLoadSuccess).orders)..add(event.order);
         yield OrdersLoadSuccess(updatedOrders);
         _saveOrders(updatedOrders);
       } catch (_) {
-        yield OrdersLoadFailure();
+        yield const OrdersLoadFailure('Internal Error');
       }
     }
   }

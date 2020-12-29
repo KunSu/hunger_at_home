@@ -41,9 +41,9 @@ class App extends StatelessWidget {
             RepositoryProvider<AddressesRepository>(
               create: (context) => AddressesRepository(),
             ),
-            // RepositoryProvider<RepositoryB>(
-            //   create: (context) => RepositoryB(),
-            // ),
+            RepositoryProvider<OrdersRepository>(
+              create: (context) => OrdersRepository(),
+            ),
             // RepositoryProvider<RepositoryC>(
             //   create: (context) => RepositoryC(),
             // ),
@@ -77,9 +77,11 @@ class _AppViewState extends State<AppView> {
         ),
         BlocProvider<OrdersBloc>(
           create: (_) => OrdersBloc(
-            ordersRepository: OrdersRepository(),
+            ordersRepository: RepositoryProvider.of<OrdersRepository>(context),
             addressesRepository:
                 RepositoryProvider.of<AddressesRepository>(context),
+            authenticationRepository:
+                RepositoryProvider.of<AuthenticationRepository>(context),
           )..add(OrdersLoaded()),
         ),
         BlocProvider<CompanyBloc>(
@@ -92,7 +94,9 @@ class _AppViewState extends State<AppView> {
               addressesRepository:
                   RepositoryProvider.of<AddressesRepository>(context),
               authenticationRepository:
-                  RepositoryProvider.of<AuthenticationRepository>(context)),
+                  RepositoryProvider.of<AuthenticationRepository>(context),
+              ordersRepository:
+                  RepositoryProvider.of<OrdersRepository>(context)),
         ),
         BlocProvider<LoginBloc>(
           create: (_) => LoginBloc(

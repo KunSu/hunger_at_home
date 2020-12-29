@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
-import 'package:fe/pantry/models/models.dart';
+import 'package:fe/order/models/model.dart';
 import 'package:flutter/material.dart';
 
 @immutable
 class Order extends Equatable {
   Order({
     this.id,
-    this.name,
+    this.type,
     @required this.items,
     this.state,
     this.userID,
@@ -22,8 +22,8 @@ class Order extends Equatable {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['orderID'],
-      name: json[''],
-      items: json['orderItems'],
+      type: json['orderType'],
+      items: [],
       state: json['status'],
       userID: json[''],
       address: json['address'],
@@ -37,7 +37,7 @@ class Order extends Equatable {
   }
 
   final String id;
-  final String name;
+  final String type;
   final List<Item> items;
   final String state;
   final String userID;
@@ -51,7 +51,7 @@ class Order extends Equatable {
 
   Order copyWith({
     String id,
-    String name,
+    String type,
     List<Item> items,
     String state,
     String userID,
@@ -65,7 +65,7 @@ class Order extends Equatable {
   }) {
     return Order(
       id: id ?? this.id,
-      name: name ?? this.name,
+      type: type ?? this.type,
       items: items ?? this.items,
       state: state ?? this.state,
       userID: userID ?? this.userID,
@@ -82,7 +82,7 @@ class Order extends Equatable {
   @override
   List<Object> get props => [
         id,
-        name,
+        type,
         items,
         state,
         userID,

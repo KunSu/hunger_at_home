@@ -21,4 +21,11 @@ class OrdersLoadSuccess extends OrdersState {
   String toString() => 'OrdersLoadSuccess { orders: $orders }';
 }
 
-class OrdersLoadFailure extends OrdersState {}
+class OrdersLoadFailure extends OrdersState {
+  const OrdersLoadFailure(this.error);
+
+  final String error;
+
+  @override
+  List<Object> get props => [error];
+}

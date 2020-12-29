@@ -1,6 +1,6 @@
 import 'package:fe/cart/cart.dart';
 import 'package:fe/donate/bloc/donate_bloc.dart';
-import 'package:fe/pantry/models/models.dart';
+import 'package:fe/order/models/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 

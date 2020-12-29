@@ -8,12 +8,11 @@ class OrderList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OrdersBloc, OrdersState>(
       builder: (context, state) {
-        print(state.toString());
         if (state is OrdersLoadInProgress) {
           return const CircularProgressIndicator();
         }
         if (state is OrdersLoadSuccess) {
-          if (state.orders.isEmpty) {
+          if (state.orders == null || state.orders.isEmpty) {
             return const Text('You do not have any order yet');
           }
           return ListView.builder(
@@ -36,7 +35,7 @@ class OrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: UI
     return ListTile(
-      title: Text('Order: ${order.items[0].name}'),
+      title: Text('Order #: ${order.id}'),
       subtitle: Text(
           'Address: ${order.address} \nPick Up: ${order.pickupDateAndTime}'),
       trailing: Container(

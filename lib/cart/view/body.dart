@@ -1,6 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
-import 'package:fe/authentication/authentication.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/donate/donate.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
@@ -14,7 +13,8 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 class CartFormBloc extends FormBloc<String, String> {
   CartFormBloc(
       {@required this.authenticationRepository,
-      @required this.addressesRepository}) {
+      @required this.addressesRepository,
+      @required this.ordersRepository}) {
     addFieldBlocs(
       fieldBlocs: [
         pickupDateAndTime,
@@ -23,30 +23,62 @@ class CartFormBloc extends FormBloc<String, String> {
     );
   }
 
+  final OrdersRepository ordersRepository;
   final AddressesRepository addressesRepository;
   final AuthenticationRepository authenticationRepository;
 
   final pickupDateAndTime = InputFieldBloc<DateTime, Object>(
+    validators: [
+      FieldBlocValidators.required,
+    ],
     name: 'pickupDateAndTime',
     toJson: (value) => value.toUtc().toIso8601String(),
   );
 
-  final addresses = SelectFieldBloc();
+  final addresses = SelectFieldBloc(
+    validators: [
+      FieldBlocValidators.required,
+    ],
+  );
+
+  List<Item> items;
+  Order order;
 
   @override
   void onSubmitting() async {
-    emitSuccess();
+    try {
+      order = await ordersRepository.signUp(
+        userID: authenticationRepository.user.id,
+        addressID: addressesRepository.getAddressID(
+          addresses.value,
+        ),
+        orderType: 'donation',
+        pickUpTime: pickupDateAndTime.value.toString(),
+        status: 'pending',
+        orderItems: items,
+      );
+      emitSuccess(
+        canSubmitAgain: true,
+      );
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
+    }
   }
 
   @override
   Future<void> onLoading() async {
-    addresses.clear();
-    var newAddresses = await addressesRepository.loadAddressNames(
-        companyID: authenticationRepository.getUser().companyID);
-    for (var item in newAddresses) {
-      addresses.addItem(item);
+    try {
+      var newAddresses = await addressesRepository.loadAddressNames(
+          companyID: authenticationRepository.getUser().companyID);
+
+      addresses.clear();
+      for (var item in newAddresses) {
+        addresses.addItem(item);
+      }
+      emitLoaded();
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
     }
-    emitLoaded();
   }
 
   String getAddressID() {
@@ -65,83 +97,85 @@ class Body extends StatelessWidget {
       builder: (context) {
         final formBloc = BlocProvider.of<CartFormBloc>(context);
         formBloc.onLoading();
-        return Column(
-          children: [
-            DateTimeFieldBlocBuilder(
-              dateTimeFieldBloc: formBloc.pickupDateAndTime,
-              canSelectTime: true,
-              format: DateFormat('dd-mm-yyyy hh:mm'),
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime(2100),
-              decoration: const InputDecoration(
-                labelText: 'Pick Up Date and Time',
-                prefixIcon: Icon(Icons.date_range),
-              ),
-            ),
-            DropdownFieldBlocBuilder(
-              selectFieldBloc: formBloc.addresses,
-              itemBuilder: (context, value) => value,
-              decoration: const InputDecoration(
-                  labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: _CartList(),
-              ),
-            ),
-            const Divider(height: 4, color: Colors.black),
-            BlocBuilder<CartBloc, CartState>(
-              builder: (context, state) {
-                if (state is CartLoaded) {
-                  return RaisedButton(
-                    onPressed: () {
-                      var order = Order(
-                        items: state.cart.items,
-                        userID:
-                            context.read<AuthenticationBloc>().state.user.id,
-                        address: formBloc.addresses.value,
-                        pickupDateAndTime:
-                            formBloc.pickupDateAndTime.value.toString(),
-                      );
-                      print(
-                          'formBloc.addresses.value: ${formBloc.addresses.value}');
-                      context.read<OrdersBloc>().add(OrderAdded(order));
+        return FormBlocListener<CartFormBloc, String, String>(
+          onSuccess: (context, state) {
+            context.read<OrdersBloc>().add(OrderAdded(formBloc.order));
 
-                      // Reset status
-                      context.read<CartBloc>().add(CartStarted());
-                      context.read<CartFormBloc>().pickupDateAndTime.clear();
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        OrderPage.routeName,
-                        (route) => false,
-                      );
-                    },
-                    child: const Text('Submit Order'),
-                  );
-                } else {
-                  return RaisedButton(
-                    color: Colors.grey,
-                    onPressed: () {},
-                    child: const Text('Submit Order'),
-                  );
-                }
-              },
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, AddressPage.routeName);
-              },
-              child: const Text('Add New Address'),
-            ),
-            RaisedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, DonatePage.routeName);
-              },
-              child: const Text('Donate More Items'),
-            ),
-          ],
+            // Reset status
+            context.read<CartBloc>().add(CartStarted());
+            context.read<CartFormBloc>().pickupDateAndTime.clear();
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              OrderPage.routeName,
+              (route) => false,
+            );
+          },
+          onFailure: (context, state) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.failureResponse),
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              DateTimeFieldBlocBuilder(
+                dateTimeFieldBloc: formBloc.pickupDateAndTime,
+                canSelectTime: true,
+                format: DateFormat('dd-mm-yyyy hh:mm'),
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2100),
+                decoration: const InputDecoration(
+                  labelText: 'Pick Up Date and Time',
+                  prefixIcon: Icon(Icons.date_range),
+                ),
+              ),
+              DropdownFieldBlocBuilder(
+                selectFieldBloc: formBloc.addresses,
+                itemBuilder: (context, value) => value,
+                decoration: const InputDecoration(
+                    labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: _CartList(),
+                ),
+              ),
+              const Divider(height: 4, color: Colors.black),
+              BlocBuilder<CartBloc, CartState>(
+                builder: (context, state) {
+                  if (state is CartLoaded) {
+                    formBloc.items = state.cart.items;
+                    return RaisedButton(
+                      onPressed: formBloc.submit,
+                      child: const Text('Submit Order'),
+                    );
+                  } else {
+                    // TODO: better handling
+                    return RaisedButton(
+                      color: Colors.grey,
+                      onPressed: () {},
+                      child: const Text('Submit Order'),
+                    );
+                  }
+                },
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, AddressPage.routeName);
+                },
+                child: const Text('Add New Address'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, DonatePage.routeName);
+                },
+                child: const Text('Donate More Items'),
+              ),
+            ],
+          ),
         );
       },
     );

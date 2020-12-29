@@ -1,9 +1,11 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:meta/meta.dart';
 
 class AddressBloc extends FormBloc<String, String> {
   AddressBloc({
+    @required this.authenticationRepository,
     @required this.addressesRepository,
   }) {
     addFieldBlocs(
@@ -15,6 +17,8 @@ class AddressBloc extends FormBloc<String, String> {
       ],
     );
   }
+
+  final AuthenticationRepository authenticationRepository;
   final AddressesRepository addressesRepository;
 
   final address = TextFieldBloc(
@@ -95,19 +99,19 @@ class AddressBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
-    var newAddress = await addressesRepository.signUp(
-      address: address.value,
-      city: city.value,
-      state: usState.value,
-      zipCode: zipCode.value,
-    );
-
-    if (newAddress != null) {
-      emitSuccess(
-        canSubmitAgain: true,
+    try {
+      await addressesRepository.signUp(
+        address: address.value,
+        city: city.value,
+        state: usState.value,
+        zipCode: zipCode.value,
+        userID: authenticationRepository.user.id,
       );
-    } else {
-      emitFailure();
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
     }
+    emitSuccess(
+      canSubmitAgain: true,
+    );
   }
 }

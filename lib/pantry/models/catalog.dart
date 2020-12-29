@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:fe/order/models/model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fe/pantry/pantry.dart';
 
 @immutable
 class Catalog extends Equatable {

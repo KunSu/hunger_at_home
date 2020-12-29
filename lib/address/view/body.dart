@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/address/bloc/address_bloc.dart';
 import 'package:fe/cart/view/body.dart';
@@ -11,7 +12,9 @@ class Body extends StatelessWidget {
     return BlocProvider(
       create: (_) => AddressBloc(
           addressesRepository:
-              RepositoryProvider.of<AddressesRepository>(context)),
+              RepositoryProvider.of<AddressesRepository>(context),
+          authenticationRepository:
+              RepositoryProvider.of<AuthenticationRepository>(context)),
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<AddressBloc>(context);

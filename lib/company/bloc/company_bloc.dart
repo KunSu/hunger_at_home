@@ -187,7 +187,7 @@ class CompanyBloc extends FormBloc<String, String> {
           canSubmitAgain: true,
         );
       } else {
-        emitFailure();
+        emitFailure(failureResponse: 'Server Internal Error');
       }
     }
   }
