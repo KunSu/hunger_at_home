@@ -1,8 +1,8 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
 import 'package:fe/components/view/order_list.dart';
-import 'package:fe/donate/view/donate_page.dart';
-import 'package:fe/donor/donor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderPage extends StatelessWidget {
   static String routeName = '/order';
@@ -28,8 +28,9 @@ class OrderPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: MyBottomNavigationBar(
-        homeRouteName: DonorPage.routeName,
-        itemRouteName: DonatePage.routeName,
+        identity: RepositoryProvider.of<AuthenticationRepository>(context)
+            .user
+            .userIdentity,
       ),
     );
   }

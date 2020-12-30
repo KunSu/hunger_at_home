@@ -1,6 +1,5 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
-import 'package:fe/donate/donate.dart';
-import 'package:fe/donor/donor.dart';
 import 'package:fe/order/models/model.dart';
 import 'package:fe/pantry/models/appbar.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +15,6 @@ class PantryPage extends StatefulWidget {
 }
 
 class _PantryPageState extends State<PantryPage> {
-  int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,8 +49,9 @@ class _PantryPageState extends State<PantryPage> {
         ],
       ),
       bottomNavigationBar: MyBottomNavigationBar(
-        homeRouteName: DonorPage.routeName,
-        itemRouteName: DonatePage.routeName,
+        identity: RepositoryProvider.of<AuthenticationRepository>(context)
+            .user
+            .userIdentity,
       ),
     );
   }

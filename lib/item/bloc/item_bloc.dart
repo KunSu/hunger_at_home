@@ -1,7 +1,8 @@
+import 'package:fe/order/models/model.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-class DonateBloc extends FormBloc<String, String> {
-  DonateBloc() {
+class ItemBloc extends FormBloc<String, String> {
+  ItemBloc() {
     addFieldBlocs(
       fieldBlocs: [
         name,
@@ -46,9 +47,16 @@ class DonateBloc extends FormBloc<String, String> {
       'pound',
     ],
   );
+  Item item;
 
   @override
   void onSubmitting() async {
+    item = Item(
+      name: name.value,
+      category: category.value,
+      quantityNumber: quantityNumber.value,
+      quantityUnit: quantityUnit.value,
+    );
     emitSuccess(
       canSubmitAgain: true,
     );

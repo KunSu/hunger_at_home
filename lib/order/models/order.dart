@@ -8,7 +8,7 @@ class Order extends Equatable {
     this.id,
     this.type,
     @required this.items,
-    this.state,
+    this.status,
     this.userID,
     @required this.address,
     this.company,
@@ -24,7 +24,7 @@ class Order extends Equatable {
       id: json['orderID'],
       type: json['orderType'],
       items: [],
-      state: json['status'],
+      status: json['status'],
       userID: json[''],
       address: json['address'],
       company: json[''],
@@ -39,7 +39,7 @@ class Order extends Equatable {
   final String id;
   final String type;
   final List<Item> items;
-  final String state;
+  final String status;
   final String userID;
   final String address;
   final String company;
@@ -53,7 +53,7 @@ class Order extends Equatable {
     String id,
     String type,
     List<Item> items,
-    String state,
+    String status,
     String userID,
     String address,
     String company,
@@ -67,7 +67,7 @@ class Order extends Equatable {
       id: id ?? this.id,
       type: type ?? this.type,
       items: items ?? this.items,
-      state: state ?? this.state,
+      status: status ?? this.status,
       userID: userID ?? this.userID,
       address: address ?? this.address,
       company: company ?? this.company,
@@ -84,7 +84,7 @@ class Order extends Equatable {
         id,
         type,
         items,
-        state,
+        status,
         userID,
         address,
         company,

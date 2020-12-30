@@ -59,7 +59,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
     ],
   );
 
-  String comapnyID;
+  String companyID;
 
   @override
   void onSubmitting() async {
@@ -67,11 +67,11 @@ class RegisterFormBloc extends FormBloc<String, String> {
       await authenticationRepository.register(
         email: email.value,
         password: password.value,
-        firstname: firstName.value,
-        lastname: lastName.value,
-        phonenumber: phoneNumber.value,
-        useridentity: userIdentity.value,
-        comapnyID: comapnyID,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        phoneNumber: phoneNumber.value,
+        userIdentity: userIdentity.value,
+        companyID: companyID,
       );
       emitSuccess(
         canSubmitAgain: true,
@@ -89,7 +89,7 @@ class RegisterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<RegisterFormBloc>(context);
-    formBloc.comapnyID = companyID;
+    formBloc.companyID = companyID;
 
     return FormBlocListener<RegisterFormBloc, String, String>(
       onSuccess: (context, state) {

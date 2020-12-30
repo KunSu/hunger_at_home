@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -46,23 +45,23 @@ class AuthenticationRepository {
     // if (FlutterConfig.get('TESTING_MODEL') == true) {
     //   print('Tessting Login');
     //   var id = '-1';
-    //   var useridentity = '';
+    //   var userIdentity = '';
     //   switch (email) {
     //     case 'donor@gmail.com':
     //       id = '1';
-    //       useridentity = 'donor';
+    //       userIdentity = 'donor';
     //       break;
     //     case 'employee@gmail.com':
     //       id = '2';
-    //       useridentity = 'employee';
+    //       userIdentity = 'employee';
     //       break;
     //     case 'recipient@gmail.com':
     //       id = '3';
-    //       useridentity = 'recipient';
+    //       userIdentity = 'recipient';
     //       break;
     //     case 'approver@gmail.com':
     //       id = '4';
-    //       useridentity = 'approver';
+    //       userIdentity = 'approver';
     //       break;
     //     default:
     //       return Future.error ('UserName or Password error');
@@ -73,17 +72,18 @@ class AuthenticationRepository {
     //     id: id,
     //     email: email,
     //     companyID: '1',
-    //     useridentity: useridentity,
+    //     userIdentity: userIdentity,
     //   );
     //   _controller.add(AuthenticationStatus.authenticated);
     // }
     // TODO: stateCode should not be 201
     if (statusCode == 200 || statusCode == 201) {
-      user = User(
-          id: body['id'],
-          email: body['email'],
-          companyID: body['companyID'],
-          useridentity: body['userIdentity']);
+      // user = User(
+      //     id: body['id'],
+      //     email: body['email'],
+      //     companyID: body['companyID'],
+      //     userIdentity: body['userIdentity']);
+      user = User.fromJson(body);
       _controller.add(AuthenticationStatus.authenticated);
     } else {
       throw (body['message']);
@@ -93,29 +93,36 @@ class AuthenticationRepository {
   Future<void> register({
     @required String email,
     @required String password,
-    @required String lastname,
-    @required String firstname,
-    @required String phonenumber,
-    @required String useridentity,
-    @required String comapnyID,
+    @required String lastName,
+    @required String firstName,
+    @required String phoneNumber,
+    @required String userIdentity,
+    @required String companyID,
   }) async {
     assert(email != null);
     assert(password != null);
-    assert(lastname != null);
-    assert(firstname != null);
-    assert(phonenumber != null);
-    assert(useridentity != null);
-    assert(comapnyID != null);
+    assert(lastName != null);
+    assert(firstName != null);
+    assert(phoneNumber != null);
+    assert(userIdentity != null);
+    assert(companyID != null);
 
-    print('comapnyID: $comapnyID');
-    useridentity = useridentity.toLowerCase();
+    print('companyID: $companyID');
+    userIdentity = userIdentity.toLowerCase();
 
     var url = 'http://localhost:8080/api/v1/user/signup';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
-    var jsonData =
-        '{"email": "$email", "password": "$password", "firstName": "$firstname", "lastName": "$lastname", "phoneNumber": "$phonenumber", "userIdentity": "$useridentity", "companyID": "$comapnyID", "secureQuestion": "NA", "secureAnswer": "NA"}';
+    var jsonData = '''{
+      "companyID": "$companyID",
+      "email": "$email",
+      "firstName": "$firstName",
+      "lastName": "$lastName",
+      "password": "$password",
+      "phoneNumber": "$phoneNumber",
+      "userIdentity": "$userIdentity"
+    }''';
 
     var response = await post(url, headers: headers, body: jsonData);
 
@@ -125,12 +132,13 @@ class AuthenticationRepository {
     print(body);
 
     if (statusCode == 201) {
-      user = User(
-        id: body['id'],
-        email: body['email'],
-        companyID: body['companyID'],
-        useridentity: body['userIdentity'],
-      );
+      // user = User(
+      //   id: body['id'],
+      //   email: body['email'],
+      //   companyID: body['companyID'],
+      //   userIdentity: body['userIdentity'],
+      // );
+      user = User.fromJson(body);
       _controller.add(AuthenticationStatus.authenticated);
     } else {
       throw (body['message']);

@@ -14,7 +14,7 @@ class Body extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: Column(
               children: [
-                const Text('Upcoming pickup schedule'),
+                const Text('Request List'),
                 // OrderList(),
               ],
             ),

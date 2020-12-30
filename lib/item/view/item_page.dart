@@ -1,19 +1,20 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/cart/cart.dart';
-import 'package:fe/donate/bloc/donate_bloc.dart';
-import 'package:fe/order/models/model.dart';
+import 'package:fe/components/view/buttom_navigation_bar.dart';
+import 'package:fe/item/bloc/item_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-class DonatePage extends StatelessWidget {
-  static String routeName = '/donate';
+class ItemPage extends StatelessWidget {
+  static String routeName = '/item';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DonateBloc(),
+      create: (context) => ItemBloc(),
       child: Builder(
         builder: (context) {
-          final formBloc = BlocProvider.of<DonateBloc>(context);
+          final formBloc = BlocProvider.of<ItemBloc>(context);
 
           return Theme(
             data: Theme.of(context).copyWith(
@@ -25,7 +26,7 @@ class DonatePage extends StatelessWidget {
             ),
             child: Scaffold(
               appBar: AppBar(
-                title: const Text('Donate'),
+                title: const Text('Item'),
                 // floating: true,
                 actions: [
                   IconButton(
@@ -34,20 +35,20 @@ class DonatePage extends StatelessWidget {
                   ),
                 ],
               ),
-              body: FormBlocListener<DonateBloc, String, String>(
+              body: FormBlocListener<ItemBloc, String, String>(
                 onSubmitting: (context, state) {
                   LoadingDialog.show(context);
                 },
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
-                  final item = Item(
-                    id: '1',
-                    name: formBloc.name.value,
-                    category: formBloc.category.value,
-                    quantityNumber: formBloc.quantityNumber.value,
-                    quantityUnit: formBloc.quantityUnit.value,
-                  );
-                  context.read<CartBloc>().add(CartItemAdded(item));
+                  // final item = Item(
+                  //   name: formBloc.name.value,
+                  //   category: formBloc.category.value,
+                  //   quantityNumber: formBloc.quantityNumber.value,
+                  //   quantityUnit: formBloc.quantityUnit.value,
+                  // );
+
+                  context.read<CartBloc>().add(CartItemAdded(formBloc.item));
                   Navigator.of(context).pushNamed('/cart');
                 },
                 onFailure: (context, state) {
@@ -70,7 +71,6 @@ class DonatePage extends StatelessWidget {
                             prefixIcon: Icon(Icons.assignment),
                           ),
                         ),
-                        // TODO: the DropdownField has bug
                         DropdownFieldBlocBuilder(
                           selectFieldBloc: formBloc.category,
                           itemBuilder: (context, value) => value,
@@ -93,7 +93,6 @@ class DonatePage extends StatelessWidget {
                               labelText: 'Quantity Unit',
                               prefixIcon: Icon(Icons.edit)),
                         ),
-
                         RaisedButton(
                           onPressed: formBloc.submit,
                           child: const Text('Submit'),
@@ -102,6 +101,12 @@ class DonatePage extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
+              bottomNavigationBar: MyBottomNavigationBar(
+                identity:
+                    RepositoryProvider.of<AuthenticationRepository>(context)
+                        .user
+                        .userIdentity,
               ),
             ),
           );

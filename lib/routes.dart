@@ -2,7 +2,7 @@ import 'package:fe/address/address.dart';
 import 'package:fe/approver/view/approver_page.dart';
 import 'package:fe/cart/view/cart_page.dart';
 import 'package:fe/company/view/view.dart';
-import 'package:fe/donate/donate.dart';
+import 'package:fe/item/item.dart';
 import 'package:fe/donor/view/donor_page.dart';
 import 'package:fe/employee/view/employee_page.dart';
 import 'package:fe/login/view/login_page.dart';
@@ -14,6 +14,8 @@ import 'package:fe/register/view/register_page.dart';
 import 'package:fe/welcome/view/welcome_page.dart';
 import 'package:flutter/material.dart';
 
+import 'account/view/account_page.dart';
+
 final Map<String, WidgetBuilder> routes = {
   WelcomePage.routeName: (context) => WelcomePage(),
   LoginPage.routeName: (context) => LoginPage(),
@@ -24,9 +26,10 @@ final Map<String, WidgetBuilder> routes = {
   ApproverPage.routeName: (context) => ApproverPage(),
   PantryPage.routeName: (context) => PantryPage(),
   CartPage.routeName: (context) => CartPage(),
-  DonatePage.routeName: (context) => DonatePage(),
+  ItemPage.routeName: (context) => ItemPage(),
   OrderPage.routeName: (context) => OrderPage(),
   AddressPage.routeName: (context) => AddressPage(),
   OrderDetailPage.routeName: (context) => OrderDetailPage(),
   CompanyPage.routeName: (context) => CompanyPage(),
+  AccountPage.routeName: (context) => AccountPage(),
 };

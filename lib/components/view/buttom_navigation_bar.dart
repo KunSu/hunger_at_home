@@ -1,36 +1,58 @@
+import 'package:fe/account/account.dart';
+import 'package:fe/donor/donor.dart';
+import 'package:fe/item/view/item_page.dart';
+import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:flutter/material.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
-  MyBottomNavigationBar(
-      {Key key, @required this.homeRouteName, @required this.itemRouteName})
-      : super(key: key);
-  final String homeRouteName;
-  final String itemRouteName;
+  MyBottomNavigationBar({
+    Key key,
+    @required this.identity,
+  }) : super(key: key);
+  final String identity;
 
   @override
   _MyBottomNavigationBarState createState() => _MyBottomNavigationBarState(
-      homeRouteName: homeRouteName, itemRouteName: itemRouteName);
+        identity: identity,
+      );
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
-  _MyBottomNavigationBarState(
-      {@required this.homeRouteName, @required this.itemRouteName});
+  _MyBottomNavigationBarState({
+    @required this.identity,
+  });
 
   int _selectedIndex = 0;
-  final String homeRouteName;
-  final String itemRouteName;
+
+  final String identity;
 
   @override
   Widget build(BuildContext context) {
+    final currentRoute = ModalRoute.of(context).settings.name;
+    switch (currentRoute) {
+      case '/account':
+        _selectedIndex = 1;
+        break;
+      case '/item':
+        _selectedIndex = 2;
+        break;
+      default:
+        _selectedIndex = 0;
+        break;
+    }
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
         ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Account',
+        ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.business),
-          label: 'Donate',
+          icon: const Icon(Icons.business),
+          label: identity == 'donor' ? 'Donate' : 'Request',
         ),
       ],
       currentIndex: _selectedIndex,
@@ -40,14 +62,18 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   }
 
   void _onItemTapped(int index) {
+    var _homeRouteName =
+        identity == 'donor' ? DonorPage.routeName : RecipientPage.routeName;
     setState(() {
       _selectedIndex = index;
       if (_selectedIndex == 0) {
-        if (ModalRoute.of(context).settings.name != homeRouteName) {
-          Navigator.pushNamed(context, homeRouteName);
+        if (ModalRoute.of(context).settings.name != _homeRouteName) {
+          Navigator.pushReplacementNamed(context, _homeRouteName);
         }
       } else if (_selectedIndex == 1) {
-        Navigator.pushNamed(context, itemRouteName);
+        Navigator.pushReplacementNamed(context, AccountPage.routeName);
+      } else if (_selectedIndex == 2) {
+        Navigator.pushReplacementNamed(context, ItemPage.routeName);
       }
     });
   }

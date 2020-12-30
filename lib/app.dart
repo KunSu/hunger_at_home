@@ -123,22 +123,22 @@ class _AppViewState extends State<AppView> {
             listener: (context, state) {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
-                  if ('recipient' == state.user.useridentity) {
+                  if ('recipient' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       RecipientPage.route(),
                       (route) => false,
                     );
-                  } else if ('donor' == state.user.useridentity) {
+                  } else if ('donor' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       DonorPage.route(),
                       (route) => false,
                     );
-                  } else if ('employee' == state.user.useridentity) {
+                  } else if ('employee' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       EmployeePage.route(),
                       (route) => false,
                     );
-                  } else if ('approver' == state.user.useridentity) {
+                  } else if ('approver' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       ApproverPage.route(),
                       (route) => false,

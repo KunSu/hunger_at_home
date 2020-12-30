@@ -1,20 +1,20 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/cart/cart.dart';
-import 'package:fe/donate/donate.dart';
+import 'package:fe/item/item.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
 import 'package:fe/order/models/model.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/pantry/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class CartFormBloc extends FormBloc<String, String> {
-  CartFormBloc(
-      {@required this.authenticationRepository,
-      @required this.addressesRepository,
-      @required this.ordersRepository}) {
+  CartFormBloc({
+    @required this.authenticationRepository,
+    @required this.addressesRepository,
+    @required this.ordersRepository,
+  }) {
     addFieldBlocs(
       fieldBlocs: [
         pickupDateAndTime,
@@ -52,7 +52,9 @@ class CartFormBloc extends FormBloc<String, String> {
         addressID: addressesRepository.getAddressID(
           addresses.value,
         ),
-        orderType: 'donation',
+        orderType: authenticationRepository.user.userIdentity == 'donor'
+            ? 'donation'
+            : 'request',
         pickUpTime: pickupDateAndTime.value.toString(),
         status: 'pending',
         orderItems: items,
@@ -68,8 +70,13 @@ class CartFormBloc extends FormBloc<String, String> {
   @override
   Future<void> onLoading() async {
     try {
-      var newAddresses = await addressesRepository.loadAddressNames(
-          companyID: authenticationRepository.getUser().companyID);
+      var companyID = authenticationRepository.user.companyID;
+      print(authenticationRepository.user.userIdentity);
+      if (authenticationRepository.user.userIdentity == 'recipient') {
+        companyID = '0'; // Hunger At Home default id
+      }
+      var newAddresses =
+          await addressesRepository.loadAddressNames(companyID: companyID);
 
       addresses.clear();
       for (var item in newAddresses) {
@@ -93,6 +100,9 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
+        .user
+        .userIdentity;
     return Builder(
       builder: (context) {
         final formBloc = BlocProvider.of<CartFormBloc>(context);
@@ -162,17 +172,21 @@ class Body extends StatelessWidget {
                   }
                 },
               ),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AddressPage.routeName);
-                },
-                child: const Text('Add New Address'),
+              Visibility(
+                visible: identity == 'donor',
+                child: RaisedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AddressPage.routeName);
+                  },
+                  child: const Text('Add New Address'),
+                ),
               ),
               RaisedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, DonatePage.routeName);
+                  Navigator.pushNamed(context, ItemPage.routeName);
                 },
-                child: const Text('Donate More Items'),
+                child: Text(
+                    "${identity == 'donor' ? 'Donate' : 'Request'} More Items"),
               ),
             ],
           ),

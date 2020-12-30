@@ -60,6 +60,7 @@ class OrderDetailPage extends StatelessWidget {
                 Expanded(
                   child: Container(
                     // padding: const EdgeInsets.all(8.0),
+                    // height: 10.0,
                     margin: const EdgeInsets.all(8.0),
                     child: _ItemList(order: order),
                     decoration: BoxDecoration(
