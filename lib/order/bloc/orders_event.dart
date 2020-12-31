@@ -15,9 +15,9 @@ class OrdersStarted extends OrdersEvent {
 class OrdersLoaded extends OrdersEvent {}
 
 class OrderAdded extends OrdersEvent {
-  final Order order;
-
   const OrderAdded(this.order);
+
+  final Order order;
 
   @override
   List<Object> get props => [order];
@@ -27,9 +27,9 @@ class OrderAdded extends OrdersEvent {
 }
 
 class OrderUpdated extends OrdersEvent {
-  final Order order;
-
   const OrderUpdated(this.order);
+
+  final Order order;
 
   @override
   List<Object> get props => [order];
@@ -39,9 +39,9 @@ class OrderUpdated extends OrdersEvent {
 }
 
 class OrderDeleted extends OrdersEvent {
-  final Order order;
-
   const OrderDeleted(this.order);
+
+  final Order order;
 
   @override
   List<Object> get props => [order];
