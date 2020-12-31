@@ -1,7 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/address/bloc/address_bloc.dart';
-import 'package:fe/cart/view/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -20,13 +19,6 @@ class Body extends StatelessWidget {
           final formBloc = BlocProvider.of<AddressBloc>(context);
           return FormBlocListener<AddressBloc, String, String>(
             onSuccess: (context, state) {
-              final address = Address(
-                address: formBloc.address.value,
-                city: formBloc.city.value,
-                state: formBloc.usState.value,
-                zipcode: formBloc.zipCode.value,
-              );
-              context.read<CartFormBloc>().addresses.addItem(address.address);
               Navigator.of(context).pushNamed('/cart');
             },
             child: SingleChildScrollView(

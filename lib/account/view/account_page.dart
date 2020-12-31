@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
+import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
 import 'package:fe/order/view/order_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,9 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
+        .user
+        .userIdentity;
     return Scaffold(
       appBar: AppBar(title: const Text('Account')),
       body: Column(
@@ -40,11 +44,17 @@ class AccountPage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        identity: RepositoryProvider.of<AuthenticationRepository>(context)
-            .user
-            .userIdentity,
-      ),
+      bottomNavigationBar: identity == 'donor' || identity == 'recipient'
+          ? MyBottomNavigationBar(
+              identity: RepositoryProvider.of<AuthenticationRepository>(context)
+                  .user
+                  .userIdentity,
+            )
+          : MyBottomNavigationBarV2(
+              identity: RepositoryProvider.of<AuthenticationRepository>(context)
+                  .user
+                  .userIdentity,
+            ),
     );
   }
 }

@@ -15,7 +15,7 @@ class OrderDetailRepository {
     @required String orderID,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/order/pickupInfo/$orderID/$userID';
+        '${FlutterConfig.get('BASE_URL')}/users/$userID/orders/$orderID/info';
     print(url);
     var response = await get(url);
 
@@ -31,10 +31,9 @@ class OrderDetailRepository {
   }
 
   Future<List<Item>> loadOrderItems({
-    // @required String userID,
     @required String orderID,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/order/itemList/$orderID';
+    var url = '${FlutterConfig.get('BASE_URL')}/orders/$orderID/items';
     print(url);
     var response = await get(url);
 

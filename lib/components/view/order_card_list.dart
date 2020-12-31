@@ -45,7 +45,6 @@ class OrderCardView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            // leading: const Icon(Icons.album),
             title: Text('Order #: ${order.id}'),
             subtitle: RichText(
               text: TextSpan(
@@ -94,14 +93,11 @@ class OrderCardView extends StatelessWidget {
                       OrderPickupPage.routeName,
                       arguments: ScreenArguments(order: order),
                     );
-                    // var newOrder = order.copyWith(status: 'pickup');
-                    // BlocProvider.of<OrdersBloc>(context)
-                    //     .add(OrderUpdated(newOrder));
                   },
                 ),
               ),
               Visibility(
-                visible: order.status == 'received' && identity == 'employee',
+                visible: order.status == 'pickuped' && identity == 'employee',
                 child: TextButton(
                   child: const Text('Deliver'),
                   onPressed: () {

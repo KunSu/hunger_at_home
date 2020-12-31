@@ -47,14 +47,34 @@ class OrderActionView extends StatelessWidget {
             title: Text('Order #: ${order.id}'),
             subtitle: RichText(
               text: TextSpan(
-                text: 'Order date: ${order.submitedDateAndTime}\n',
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
-                  TextSpan(
-                    text: 'Order date: ${order.submitedDateAndTime}\n',
+                  const TextSpan(
+                    text: 'Order date: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   TextSpan(
-                    text: 'Pick up date: ${order.pickupDateAndTime}\n',
+                    text: '${order.submitedDateAndTime}\n',
+                  ),
+                  const TextSpan(
+                    text: 'Address: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${order.address}\n',
+                  ),
+                  const TextSpan(
+                    text: 'Pick up date: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${order.pickupDateAndTime}\n',
                   ),
                   TextSpan(
                     text: 'status: ${order.status}\n',
@@ -90,7 +110,7 @@ class OrderActionView extends StatelessWidget {
                 child: TextButton(
                   child: const Text('Approve'),
                   onPressed: () {
-                    var newOrder = order.copyWith(status: 'on-going');
+                    var newOrder = order.copyWith(status: 'approved');
                     BlocProvider.of<OrdersBloc>(context)
                         .add(OrderUpdated(newOrder));
                   },
@@ -111,7 +131,9 @@ class OrderActionView extends StatelessWidget {
                 visible: order.status == 'approved' && identity == 'recipient',
                 child: TextButton(
                   child: const Text('Recived'),
-                  onPressed: () {},
+                  onPressed: () {
+                    _showMyDialog(context, order);
+                  },
                 ),
               ),
               Visibility(
@@ -134,4 +156,39 @@ class OrderActionView extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _showMyDialog(context, order) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirmation'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              const Text('Please confirm if you have received the order.'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () {
+              var newOrder = order.copyWith(status: 'received');
+              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

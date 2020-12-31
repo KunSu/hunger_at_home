@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:fe/address/address.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart';
 
 class AddressesRepository {
@@ -14,7 +15,7 @@ class AddressesRepository {
   }
 
   Future<List<String>> loadAddressNames({String companyID}) async {
-    var url = 'http://localhost:8080/api/v1/company/addressList/$companyID';
+    var url = '${FlutterConfig.get('BASE_URL')}/companies/$companyID/addresses';
     print(url);
     var response = await get(url);
 
@@ -50,12 +51,13 @@ class AddressesRepository {
       String city,
       String state,
       String zipCode}) async {
-    var url = 'http://localhost:8080/api/v1/company/addressSignUp';
+    var url = '${FlutterConfig.get('BASE_URL')}/address';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
         '{"address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode", "userID": "$userID"}';
+
     print(jsonData);
     var response = await post(url, headers: headers, body: jsonData);
 

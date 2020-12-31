@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -25,7 +26,7 @@ class AuthenticationRepository {
     assert(email != null);
     assert(password != null);
 
-    var url = 'http://localhost:8080/api/v1/user/login/${email}/${password}';
+    var url = '${FlutterConfig.get('BASE_URL')}/user/$email/$password';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -33,7 +34,6 @@ class AuthenticationRepository {
     var response = await get(
       url,
       headers: headers,
-      // body: jsonData,
     );
 
     var statusCode = response.statusCode;
@@ -42,47 +42,8 @@ class AuthenticationRepository {
     var body = json.decode(response.body);
     print(body);
 
-    // if (FlutterConfig.get('TESTING_MODEL') == true) {
-    //   print('Tessting Login');
-    //   var id = '-1';
-    //   var userIdentity = '';
-    //   switch (email) {
-    //     case 'donor@gmail.com':
-    //       id = '1';
-    //       userIdentity = 'donor';
-    //       break;
-    //     case 'employee@gmail.com':
-    //       id = '2';
-    //       userIdentity = 'employee';
-    //       break;
-    //     case 'recipient@gmail.com':
-    //       id = '3';
-    //       userIdentity = 'recipient';
-    //       break;
-    //     case 'approver@gmail.com':
-    //       id = '4';
-    //       userIdentity = 'approver';
-    //       break;
-    //     default:
-    //       return Future.error ('UserName or Password error');
-    //       break;
-    //   }
-
-    //   user = User(
-    //     id: id,
-    //     email: email,
-    //     companyID: '1',
-    //     userIdentity: userIdentity,
-    //   );
-    //   _controller.add(AuthenticationStatus.authenticated);
-    // }
     // TODO: stateCode should not be 201
     if (statusCode == 200 || statusCode == 201) {
-      // user = User(
-      //     id: body['id'],
-      //     email: body['email'],
-      //     companyID: body['companyID'],
-      //     userIdentity: body['userIdentity']);
       user = User.fromJson(body);
       _controller.add(AuthenticationStatus.authenticated);
     } else {
@@ -110,7 +71,7 @@ class AuthenticationRepository {
     print('companyID: $companyID');
     userIdentity = userIdentity.toLowerCase();
 
-    var url = 'http://localhost:8080/api/v1/user/signup';
+    var url = '${FlutterConfig.get('BASE_URL')}/user/signup';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -132,12 +93,6 @@ class AuthenticationRepository {
     print(body);
 
     if (statusCode == 201) {
-      // user = User(
-      //   id: body['id'],
-      //   email: body['email'],
-      //   companyID: body['companyID'],
-      //   userIdentity: body['userIdentity'],
-      // );
       user = User.fromJson(body);
       _controller.add(AuthenticationStatus.authenticated);
     } else {

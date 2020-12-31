@@ -45,13 +45,4 @@ class User extends Equatable {
         phoneNumber,
         userIdentity,
       ];
-
-  // Map<String, dynamic> toJson() => _$UserToJson(this);
-
-  // Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-  //       'id': instance.id,
-  //       'email': instance.email,
-  //       'companyID': instance.companyID,
-  //       'useridentity': instance.useridentity,
-  //     };
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:fe/company/models/model.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart';
 
 class CompaniesRepository {
@@ -14,7 +15,7 @@ class CompaniesRepository {
   }
 
   Future<List<String>> loadCompanyNames() async {
-    var url = 'http://localhost:8080/api/v1/company/companyList';
+    var url = '${FlutterConfig.get('BASE_URL')}/companies';
     print(url);
 
     var response = await get(url);
@@ -53,12 +54,12 @@ class CompaniesRepository {
     String state,
     String zipCode,
   }) async {
-    var url = 'http://localhost:8080/api/v1/company/companySignup';
+    var url = '${FlutterConfig.get('BASE_URL')}/company';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
     var jsonData =
-        '{"companyName": "$name", "fedID": "$fedID", "einID": "$einID", "address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
+        '{"name": "$name", "fedID": "$fedID", "einID": "$einID", "address": "$address", "city": "$city", "state": "$state", "zipCode": "$zipCode"}';
 
     var response = await post(url, headers: headers, body: jsonData);
     var body = json.decode(response.body);

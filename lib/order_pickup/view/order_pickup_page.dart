@@ -86,7 +86,7 @@ class _OrderPickupCheck extends StatelessWidget {
             userID: RepositoryProvider.of<AuthenticationRepository>(context)
                 .user
                 .id,
-            status: 'received');
+            status: 'pickuped');
 
         BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
         Navigator.pushNamed(context, OrderPage.routeName);
@@ -117,7 +117,7 @@ class _OrderPickupCheck extends StatelessWidget {
             ),
             RaisedButton(
               onPressed: formBloc.submit,
-              child: const Text('Received'),
+              child: const Text('Pick Up'),
             ),
           ],
         ),

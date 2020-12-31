@@ -73,7 +73,7 @@ class CartFormBloc extends FormBloc<String, String> {
       var companyID = authenticationRepository.user.companyID;
       print(authenticationRepository.user.userIdentity);
       if (authenticationRepository.user.userIdentity == 'recipient') {
-        companyID = '0'; // Hunger At Home default id
+        companyID = '1'; // Hunger At Home default id
       }
       var newAddresses =
           await addressesRepository.loadAddressNames(companyID: companyID);
@@ -132,7 +132,7 @@ class Body extends StatelessWidget {
               DateTimeFieldBlocBuilder(
                 dateTimeFieldBloc: formBloc.pickupDateAndTime,
                 canSelectTime: true,
-                format: DateFormat('dd-mm-yyyy hh:mm'),
+                format: DateFormat('dd-MM-yyyy hh:mm'),
                 initialDate: DateTime.now(),
                 firstDate: DateTime(1900),
                 lastDate: DateTime(2100),

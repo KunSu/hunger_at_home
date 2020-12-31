@@ -14,8 +14,8 @@ class Item extends Equatable {
   factory Item.fromJson(Map<String, dynamic> json) {
     return Item(
       id: json['id'],
-      name: json['foodName'],
-      category: json['foodCategory'],
+      name: json['name'],
+      category: json['category'],
       quantityUnit: json['unit'],
       quantityNumber: json['quantity'],
     );
@@ -23,9 +23,9 @@ class Item extends Equatable {
 
   Map<String, dynamic> toJSON() {
     final Map<String, dynamic> data = Map<String, dynamic>();
-    // data['id'] = id;
-    data['foodName'] = name;
-    data['foodCategory'] = category;
+    data['id'] = id;
+    data['name'] = name;
+    data['category'] = category;
     data['unit'] = quantityUnit;
     data['quantity'] = quantityNumber;
     data['expireDate'] = '2019-09-09';
