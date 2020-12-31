@@ -1,5 +1,5 @@
 import 'package:fe/account/account.dart';
-import 'package:fe/approver/view/approver_page.dart';
+import 'package:fe/admin/view/admin_page.dart';
 import 'package:fe/donor/donor.dart';
 import 'package:fe/employee/view/employee_page.dart';
 import 'package:fe/item/view/item_page.dart';
@@ -76,7 +76,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
         _homeRouteName = RecipientPage.routeName;
         break;
       case 'admin':
-        _homeRouteName = ApproverPage.routeName;
+        _homeRouteName = AdminPage.routeName;
         break;
       default:
         break;

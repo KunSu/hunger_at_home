@@ -34,7 +34,7 @@ class OrdersRepository {
         url =
             'http://localhost:8080/api/v1/order/getOrderListByRecipientID/${user.id}/all/100';
         break;
-      case 'admin':
+      case 'approver':
         url =
             'http://localhost:8080/api/v1/order/getOrderListByDonorID/${user.id}/all/100';
         break;

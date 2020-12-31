@@ -10,18 +10,15 @@ class Body extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           const UserInfo(),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Column(
-              children: [
-                const Text('Upcoming pickup schedule'),
-              ],
-            ),
-          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: OrderCardList(),
+              child: Column(
+                children: [
+                  const Text('Upcoming pickup schedule'),
+                  OrderCardList(),
+                ],
+              ),
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
-import 'package:fe/approver/view/approver_page.dart';
+import 'package:fe/admin/view/admin_page.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/cart/view/body.dart';
 import 'package:fe/company/company.dart';
@@ -140,7 +140,7 @@ class _AppViewState extends State<AppView> {
                     );
                   } else if ('approver' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
-                      ApproverPage.route(),
+                      AdminPage.route(),
                       (route) => false,
                     );
                   }
