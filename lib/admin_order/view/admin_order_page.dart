@@ -173,7 +173,7 @@ class AdminOrderActionView extends StatelessWidget {
                 child: TextButton(
                   child: const Text('Withdraw'),
                   onPressed: () {
-                    _orderUpdateDialog(
+                    OrderUpdateDialog(
                         context: context,
                         order: order,
                         text:
@@ -189,7 +189,7 @@ class AdminOrderActionView extends StatelessWidget {
                 child: TextButton(
                   child: const Text('Receive'),
                   onPressed: () {
-                    _orderUpdateDialog(
+                    OrderUpdateDialog(
                         context: context,
                         order: order,
                         text: 'Please confirm if you have received the order.',
@@ -205,7 +205,7 @@ class AdminOrderActionView extends StatelessWidget {
                   child: const Text('Pick up'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      _orderUpdateDialog(
+                      OrderUpdateDialog(
                           context: context,
                           order: order,
                           text:
@@ -229,7 +229,7 @@ class AdminOrderActionView extends StatelessWidget {
                   child: const Text('Deliver'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      _orderUpdateDialog(
+                      OrderUpdateDialog(
                           context: context,
                           order: order,
                           text:
@@ -254,7 +254,7 @@ class AdminOrderActionView extends StatelessWidget {
   }
 }
 
-Future<void> _orderUpdateDialog({
+Future<void> OrderUpdateDialog({
   @required BuildContext context,
   @required Order order,
   @required String title,

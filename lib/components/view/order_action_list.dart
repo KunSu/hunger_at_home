@@ -1,7 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/admin_order/view/admin_order_page.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
+import 'package:fe/order_delivery/view/order_delivery_page.dart';
 import 'package:fe/order_detail/view/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -9,23 +11,56 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 class OrderActionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrdersBloc, OrdersState>(
-      builder: (context, state) {
-        if (state is OrdersLoadInProgress) {
-          return const CircularProgressIndicator();
-        }
-        if (state is OrdersLoadSuccess) {
-          if (state.orders == null || state.orders.isEmpty) {
-            return const Text('You do not have any order yet');
-          }
-          return ListView.builder(
-            itemCount: state.orders.length,
-            itemBuilder: (context, index) =>
-                OrderActionView(order: state.orders[index]),
+    return BlocListener<OrdersBloc, OrdersState>(
+      listener: (context, state) {
+        if (state is OrdersLoadFailure) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+            ),
           );
         }
-        return const Text('Something went wrong!');
       },
+      child: BlocBuilder<OrdersBloc, OrdersState>(
+        builder: (context, state) {
+          if (state is OrdersLoadInProgress) {
+            return const CircularProgressIndicator();
+          }
+          if (state is OrdersLoadSuccess) {
+            if (state.orders == null || state.orders.isEmpty) {
+              return const Text('You do not have any order yet');
+            }
+            return ListView.builder(
+              itemCount: state.orders.length,
+              itemBuilder: (context, index) =>
+                  OrderActionView(order: state.orders[index]),
+            );
+          }
+          if (state is OrdersLoadFailure) {
+            return FutureBuilder<List<Order>>(
+              future: RepositoryProvider.of<OrdersRepository>(context).reload(
+                user: RepositoryProvider.of<AuthenticationRepository>(context)
+                    .user,
+                status: ' ',
+              ),
+              builder: (context, AsyncSnapshot<List<Order>> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) =>
+                        AdminOrderActionView(order: snapshot.data[index]),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error);
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            );
+          }
+          return const Text('Something went wrong');
+        },
+      ),
     );
   }
 }
@@ -113,46 +148,64 @@ class OrderActionView extends StatelessWidget {
               Visibility(
                 visible: order.status == 'pending',
                 child: TextButton(
-                  child: const Text('Approve'),
-                  onPressed: () {
-                    var newOrder = order.copyWith(status: 'approved');
-                    BlocProvider.of<OrdersBloc>(context)
-                        .add(OrderUpdated(newOrder));
-                  },
-                ),
-              ),
-              Visibility(
-                visible: order.status == 'pending',
-                child: TextButton(
                   child: const Text('Withdraw'),
                   onPressed: () {
-                    // TODO
-                    /* ... */
-                    // newOrder = order.copyWith(status: )
+                    OrderUpdateDialog(
+                        context: context,
+                        order: order,
+                        text:
+                            'Please confirm if you want to withdraw the order.',
+                        title: 'Confirmation',
+                        status: 'withdraw');
                   },
                 ),
               ),
               Visibility(
-                visible: order.status == 'approved' && identity == 'recipient',
-                child: TextButton(
-                  child: const Text('Recived'),
-                  onPressed: () {
-                    _showMyDialog(context, order);
-                  },
-                ),
-              ),
-              Visibility(
-                visible: order.status == 'approved' && identity == 'employee',
+                visible: order.status == 'approved' &&
+                    (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Pick up'),
-                  onPressed: () {/* ... */},
+                  onPressed: () {
+                    if (identity == 'admin') {
+                      OrderUpdateDialog(
+                          context: context,
+                          order: order,
+                          text:
+                              'Please confirm if you have pickuped the order.',
+                          title: 'Confirmation',
+                          status: 'pickuped');
+                    } else {
+                      Navigator.pushNamed(
+                        context,
+                        OrderDeliveryPage.routeName,
+                        arguments: ScreenArguments(order: order),
+                      );
+                    }
+                  },
                 ),
               ),
               Visibility(
-                visible: order.status == 'received' && identity == 'employee',
+                visible: order.status == 'pickuped' &&
+                    (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
-                  child: const Text('Delivered'),
-                  onPressed: () {/* ... */},
+                  child: const Text('Deliver'),
+                  onPressed: () {
+                    if (identity == 'admin') {
+                      OrderUpdateDialog(
+                          context: context,
+                          order: order,
+                          text:
+                              'Please confirm if you have delivered the order.',
+                          title: 'Confirmation',
+                          status: 'delivered');
+                    } else {
+                      Navigator.pushNamed(
+                        context,
+                        OrderDeliveryPage.routeName,
+                        arguments: ScreenArguments(order: order),
+                      );
+                    }
+                  },
                 ),
               ),
             ],
