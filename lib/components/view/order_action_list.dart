@@ -208,6 +208,21 @@ class OrderActionView extends StatelessWidget {
                   },
                 ),
               ),
+              // Visibility(
+              //   visible: order.status == 'approved' &&
+              //       (identity == 'recipient' || identity == 'admin'),
+              //   child: TextButton(
+              //     child: const Text('Receive'),
+              //     onPressed: () {
+              //       OrderUpdateDialog(
+              //           context: context,
+              //           order: order,
+              //           text: 'Please confirm if you have received the order.',
+              //           title: 'Confirmation',
+              //           status: 'received');
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ],

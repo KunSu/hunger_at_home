@@ -33,10 +33,6 @@ class AccountPage extends StatelessWidget {
                 Navigator.pushNamed(
                   context,
                   OrderPage.routeName,
-                  // arguments: ScreenArguments(
-                  //   screenTitle: 'Orders',
-                  //   status: ' ',
-                  // ),
                 );
               },
             ),

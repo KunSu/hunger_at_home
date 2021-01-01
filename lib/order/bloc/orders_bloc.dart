@@ -63,28 +63,28 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   }
 
   Stream<OrdersState> _mapOrderUpdatedToState(OrderUpdated event) async* {
-    if (state is OrdersLoadSuccess) {
-      Order newOrder;
+    // if (state is OrdersLoadSuccess) {
+    Order newOrder;
 
-      // TODO: error handle
-      try {
-        await ordersRepository
-            .update(
-              userID: authenticationRepository.user.id,
-              orderID: event.order.id,
-              status: event.order.status,
-            )
-            .then((value) => newOrder = event.order);
-        final List<Order> updatedOrders =
-            (state as OrdersLoadSuccess).orders.map((order) {
-          return order.id == event.order.id ? newOrder : order;
-        }).toList();
-        yield OrdersLoadSuccess(updatedOrders);
-        _saveOrders(updatedOrders);
-      } catch (e) {
-        yield OrdersLoadFailure(e.toString());
-      }
+    // TODO: error handle
+    try {
+      await ordersRepository
+          .update(
+            userID: authenticationRepository.user.id,
+            orderID: event.order.id,
+            status: event.order.status,
+          )
+          .then((value) => newOrder = event.order);
+      final List<Order> updatedOrders =
+          (state as OrdersLoadSuccess).orders.map((order) {
+        return order.id == event.order.id ? newOrder : order;
+      }).toList();
+      yield OrdersLoadSuccess(updatedOrders);
+      _saveOrders(updatedOrders);
+    } catch (e) {
+      yield OrdersLoadFailure(e.toString());
     }
+    // }
   }
 
   Stream<OrdersState> _mapOrderDeletedToState(OrderDeleted event) async* {

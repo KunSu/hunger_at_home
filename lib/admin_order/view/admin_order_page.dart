@@ -79,9 +79,15 @@ class AdminOrderActionList extends StatelessWidget {
   }
 }
 
-class AdminOrderActionView extends StatelessWidget {
+class AdminOrderActionView extends StatefulWidget {
   const AdminOrderActionView({Key key, this.order}) : super(key: key);
   final Order order;
+
+  @override
+  _AdminOrderActionViewState createState() => _AdminOrderActionViewState();
+}
+
+class _AdminOrderActionViewState extends State<AdminOrderActionView> {
   @override
   Widget build(BuildContext context) {
     final identity = RepositoryProvider.of<AuthenticationRepository>(context)
@@ -92,7 +98,7 @@ class AdminOrderActionView extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: Text('Order #: ${order.id}'),
+            title: Text('Order #: ${widget.order.id}'),
             subtitle: RichText(
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
@@ -104,7 +110,7 @@ class AdminOrderActionView extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: '${order.submitedDateAndTime}\n',
+                    text: '${widget.order.submitedDateAndTime}\n',
                   ),
                   const TextSpan(
                     text: 'Address: ',
@@ -113,7 +119,7 @@ class AdminOrderActionView extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: '${order.address}\n',
+                    text: '${widget.order.address}\n',
                   ),
                   const TextSpan(
                     text: 'Pick up date: ',
@@ -122,10 +128,10 @@ class AdminOrderActionView extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: '${order.pickupDateAndTime}\n',
+                    text: '${widget.order.pickupDateAndTime}\n',
                   ),
                   TextSpan(
-                    text: 'status: ${order.status}\n',
+                    text: 'Status: ${widget.order.status}\n',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.blueAccent,
@@ -144,7 +150,7 @@ class AdminOrderActionView extends StatelessWidget {
                   Navigator.pushNamed(
                     context,
                     OrderDetailPage.routeName,
-                    arguments: ScreenArguments(order: order),
+                    arguments: ScreenArguments(order: widget.order),
                   );
                 },
               ),
@@ -153,29 +159,31 @@ class AdminOrderActionView extends StatelessWidget {
                 onPressed: () {
                   ContactDialog(
                     context: context,
-                    order: order,
+                    order: widget.order,
                   );
                 },
               ),
               Visibility(
-                visible: order.status == 'pending' && identity == 'admin',
+                visible:
+                    widget.order.status == 'pending' && identity == 'admin',
                 child: TextButton(
                   child: const Text('Approve'),
                   onPressed: () {
-                    var newOrder = order.copyWith(status: 'approved');
+                    var newOrder = widget.order.copyWith(status: 'approved');
                     BlocProvider.of<OrdersBloc>(context)
                         .add(OrderUpdated(newOrder));
+                    (context as Element).reassemble();
                   },
                 ),
               ),
               Visibility(
-                visible: order.status == 'pending',
+                visible: widget.order.status == 'pending',
                 child: TextButton(
                   child: const Text('Withdraw'),
                   onPressed: () {
                     OrderUpdateDialog(
                         context: context,
-                        order: order,
+                        order: widget.order,
                         text:
                             'Please confirm if you want to withdraw the order.',
                         title: 'Confirmation',
@@ -184,14 +192,14 @@ class AdminOrderActionView extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: order.status == 'approved' &&
+                visible: widget.order.status == 'approved' &&
                     (identity == 'recipient' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Receive'),
                   onPressed: () {
                     OrderUpdateDialog(
                         context: context,
-                        order: order,
+                        order: widget.order,
                         text: 'Please confirm if you have received the order.',
                         title: 'Confirmation',
                         status: 'received');
@@ -199,7 +207,7 @@ class AdminOrderActionView extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: order.status == 'approved' &&
+                visible: widget.order.status == 'approved' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Pick up'),
@@ -207,7 +215,7 @@ class AdminOrderActionView extends StatelessWidget {
                     if (identity == 'admin') {
                       OrderUpdateDialog(
                           context: context,
-                          order: order,
+                          order: widget.order,
                           text:
                               'Please confirm if you have pickuped the order.',
                           title: 'Confirmation',
@@ -216,14 +224,14 @@ class AdminOrderActionView extends StatelessWidget {
                       Navigator.pushNamed(
                         context,
                         OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: order),
+                        arguments: ScreenArguments(order: widget.order),
                       );
                     }
                   },
                 ),
               ),
               Visibility(
-                visible: order.status == 'pickuped' &&
+                visible: widget.order.status == 'pickuped' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Deliver'),
@@ -231,7 +239,7 @@ class AdminOrderActionView extends StatelessWidget {
                     if (identity == 'admin') {
                       OrderUpdateDialog(
                           context: context,
-                          order: order,
+                          order: widget.order,
                           text:
                               'Please confirm if you have delivered the order.',
                           title: 'Confirmation',
@@ -240,7 +248,7 @@ class AdminOrderActionView extends StatelessWidget {
                       Navigator.pushNamed(
                         context,
                         OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: order),
+                        arguments: ScreenArguments(order: widget.order),
                       );
                     }
                   },
