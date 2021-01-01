@@ -83,7 +83,7 @@ class OrdersRepository {
       for (var item in body['items'] as List) {
         newOrder.items.add(Item.fromJson(item));
       }
-      orders.add(newOrder);
+      // orders.add(newOrder);
       return newOrder;
     } else {
       throw (body['message']);
