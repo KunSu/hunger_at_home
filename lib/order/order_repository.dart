@@ -63,14 +63,13 @@ class OrdersRepository {
     var url = '${FlutterConfig.get('BASE_URL')}/order';
     print(url);
 
-    // TODO: waiting for Zijian
     var headers = <String, String>{'Content-type': 'application/json'};
 
     final Map<String, dynamic> jsonData = Map<String, dynamic>();
     jsonData['addressID'] = addressID;
     jsonData['note'] = 'NA';
     jsonData['pickUpTime'] = pickUpTime;
-    jsonData['Items'] = orderItems.map((e) => e.toJSON()).toList();
+    jsonData['items'] = orderItems.map((e) => e.toJSON()).toList();
     jsonData['userID'] = userID;
 
     print(json.encode(jsonData));
@@ -81,7 +80,7 @@ class OrdersRepository {
     if (response.statusCode == 201) {
       var newOrder = Order.fromJson(body);
       //TODO: simplify
-      for (var item in body['Items'] as List) {
+      for (var item in body['items'] as List) {
         newOrder.items.add(Item.fromJson(item));
       }
       orders.add(newOrder);

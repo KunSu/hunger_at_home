@@ -1,10 +1,10 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/components/models/screen_arguments.dart';
+import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_detail/view/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-
-import 'order_list.dart';
 
 class OrderActionList extends StatelessWidget {
   @override
@@ -103,7 +103,12 @@ class OrderActionView extends StatelessWidget {
               ),
               TextButton(
                 child: const Text('Contact'),
-                onPressed: () {/* ... */},
+                onPressed: () {
+                  ContactDialog(
+                    context: context,
+                    order: order,
+                  );
+                },
               ),
               Visibility(
                 visible: order.status == 'pending',

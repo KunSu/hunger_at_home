@@ -29,6 +29,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
   final password = TextFieldBloc(
     validators: [
       FieldBlocValidators.required,
+      FieldBlocValidators.passwordMin6Chars,
     ],
   );
   final firstName = TextFieldBloc(
@@ -55,7 +56,7 @@ class RegisterFormBloc extends FormBloc<String, String> {
       'Donor',
       'Recipient',
       'Employee',
-      'Approver',
+      'Admin',
     ],
   );
 
@@ -121,7 +122,7 @@ class RegisterForm extends StatelessWidget {
               ),
               TextFieldBlocBuilder(
                 textFieldBloc: formBloc.password,
-                keyboardType: TextInputType.visiblePassword,
+                suffixButton: SuffixButton.obscureText,
                 decoration: const InputDecoration(
                   labelText: 'Password',
                   prefixIcon: Icon(

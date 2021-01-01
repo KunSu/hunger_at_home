@@ -71,7 +71,7 @@ class AuthenticationRepository {
     print('companyID: $companyID');
     userIdentity = userIdentity.toLowerCase();
 
-    var url = '${FlutterConfig.get('BASE_URL')}/user/signup';
+    var url = '${FlutterConfig.get('BASE_URL')}/user';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};

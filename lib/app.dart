@@ -2,10 +2,8 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/admin/view/admin_page.dart';
 import 'package:fe/cart/cart.dart';
-import 'package:fe/cart/view/body.dart';
 import 'package:fe/company/company.dart';
-import 'package:fe/order/bloc/orders_bloc.dart';
-import 'package:fe/order/order_repository.dart';
+import 'package:fe/order/order.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
@@ -44,9 +42,6 @@ class App extends StatelessWidget {
             RepositoryProvider<OrdersRepository>(
               create: (context) => OrdersRepository(),
             ),
-            // RepositoryProvider<RepositoryC>(
-            //   create: (context) => RepositoryC(),
-            // ),
           ],
           child: AppView(),
         ),
@@ -138,7 +133,7 @@ class _AppViewState extends State<AppView> {
                       EmployeePage.route(),
                       (route) => false,
                     );
-                  } else if ('approver' == state.user.userIdentity) {
+                  } else if ('admin' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       AdminPage.route(),
                       (route) => false,

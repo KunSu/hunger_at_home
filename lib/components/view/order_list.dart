@@ -1,3 +1,4 @@
+import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_detail/order_detail.dart';
 import 'package:flutter/material.dart';
@@ -55,10 +56,4 @@ class OrderView extends StatelessWidget {
       ),
     );
   }
-}
-
-class ScreenArguments {
-  ScreenArguments({this.order});
-
-  final Order order;
 }

@@ -10,22 +10,23 @@ class ItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Item>>(
-        future: OrderDetailRepository().loadOrderItems(
-          // userID:
-          //     RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-          orderID: order.id,
-        ),
-        builder: (context, AsyncSnapshot<List<Item>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) =>
-                  ItemView(item: snapshot.data[index]),
-            );
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
+      future: OrderDetailRepository().loadOrderItems(
+        // userID:
+        //     RepositoryProvider.of<AuthenticationRepository>(context).user.id,
+        orderID: order.id,
+      ),
+      builder: (context, AsyncSnapshot<List<Item>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) =>
+                ItemView(item: snapshot.data[index]),
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:fe/address/address.dart';
 import 'package:fe/admin/view/admin_page.dart';
+import 'package:fe/admin_order/view/admin_order_page.dart';
 import 'package:fe/cart/view/cart_page.dart';
 import 'package:fe/company/view/view.dart';
 import 'package:fe/item/item.dart';
@@ -36,4 +37,5 @@ final Map<String, WidgetBuilder> routes = {
   AccountPage.routeName: (context) => AccountPage(),
   OrderPickupPage.routeName: (context) => OrderPickupPage(),
   OrderDeliveryPage.routeName: (context) => OrderDeliveryPage(),
+  AdminOrderPage.routeName: (context) => AdminOrderPage(),
 };

@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_config/flutter_config.dart';
 
 Future<void> main() async {
-  // Load config
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
 
