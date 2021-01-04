@@ -1,5 +1,4 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/admin/admin.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
@@ -24,21 +23,19 @@ class AdminOrderPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(screenTitle)),
-      body: RepositoryProvider(
-        create: (context) => AdminRepository(),
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: AdminOrderActionList(
-                  orderType: orderType,
-                  status: status,
-                ),
+      // TODO: init OrdersRepository right here
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: AdminOrderActionList(
+                orderType: orderType,
+                status: status,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -55,26 +52,81 @@ class AdminOrderActionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Order>>(
-      future: RepositoryProvider.of<AdminRepository>(context).loadOrders(
-        userID:
-            RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-        orderType: orderType,
-        status: status,
-      ),
-      builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) =>
-                AdminOrderActionView(order: snapshot.data[index]),
+    // return FutureBuilder<List<Order>>(
+    //   future: RepositoryProvider.of<AdminRepository>(context).loadOrders(
+    //     userID:
+    //         RepositoryProvider.of<AuthenticationRepository>(context).user.id,
+    //     orderType: orderType,
+    //     status: status,
+    //   ),
+    //   builder: (context, AsyncSnapshot<List<Order>> snapshot) {
+    //     if (snapshot.hasData) {
+    //       return ListView.builder(
+    //         itemCount: snapshot.data.length,
+    //         itemBuilder: (context, index) =>
+    //             AdminOrderActionView(order: snapshot.data[index]),
+    //       );
+    //     } else if (snapshot.hasError) {
+    //       return Text(snapshot.error);
+    //     } else {
+    //       return const CircularProgressIndicator();
+    //     }
+    //   },
+    // );
+
+    return BlocListener<OrdersBloc, OrdersState>(
+      listener: (context, state) {
+        if (state is OrdersLoadFailure) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.error),
+            ),
           );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error);
-        } else {
-          return const CircularProgressIndicator();
         }
       },
+      child: BlocBuilder<OrdersBloc, OrdersState>(
+        builder: (context, state) {
+          if (state is OrdersLoadInProgress) {
+            return const CircularProgressIndicator();
+          }
+          if (state is OrdersLoadSuccess) {
+            if (state.orders == null || state.orders.isEmpty) {
+              return const Text('You do not have any order yet');
+            }
+            return ListView.builder(
+              itemCount: state.orders.length,
+              itemBuilder: (context, index) =>
+                  AdminOrderActionView(order: state.orders[index]),
+            );
+          }
+          if (state is OrdersLoadFailure) {
+            return FutureBuilder<List<Order>>(
+              future: RepositoryProvider.of<OrdersRepository>(context)
+                  .loadOrdersByAdmin(
+                userID: RepositoryProvider.of<AuthenticationRepository>(context)
+                    .user
+                    .id,
+                orderType: orderType,
+                status: status,
+              ),
+              builder: (context, AsyncSnapshot<List<Order>> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) =>
+                        AdminOrderActionView(order: snapshot.data[index]),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            );
+          }
+          return const Text('Something went wrong');
+        },
+      ),
     );
   }
 }
@@ -220,6 +272,8 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                               'Please confirm if you have pickuped the order.',
                           title: 'Confirmation',
                           status: 'pickuped');
+
+                      // (context as Element).reassemble();
                     } else {
                       Navigator.pushNamed(
                         context,
@@ -293,8 +347,8 @@ Future<void> OrderUpdateDialog({
             child: const Text('Yes'),
             onPressed: () {
               var newOrder = order.copyWith(status: status);
-              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
               Navigator.of(context).pop();
+              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
             },
           ),
         ],

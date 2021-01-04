@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/cart/cart.dart';
+import 'package:fe/components/view/display_error.dart';
 import 'package:fe/item/item.dart';
 import 'package:fe/order/bloc/orders_bloc.dart';
 import 'package:fe/order/models/model.dart';
@@ -121,10 +122,9 @@ class Body extends StatelessWidget {
             );
           },
           onFailure: (context, state) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.failureResponse),
-              ),
+            DisplayError(
+              context: context,
+              error: state.failureResponse,
             );
           },
           child: Column(

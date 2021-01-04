@@ -18,10 +18,6 @@ class Body extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          // Image.asset(
-          //   'assets/images/food_logo.png',
-          //   height: size.height * 0.2,
-          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -32,11 +28,11 @@ class Body extends StatelessWidget {
               Column(
                 children: <Widget>[
                   const Text(
-                    'Welcome Back',
+                    'Create Account',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const Text(
-                    'Login with your account',
+                    'and start saving food',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],

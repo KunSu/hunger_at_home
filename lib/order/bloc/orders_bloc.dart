@@ -35,15 +35,29 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   }
 
   Stream<OrdersState> _mapOrdersLoadedToState() async* {
+    List<Order> orders;
+    final identity = authenticationRepository.user.userIdentity;
     try {
-      await ordersRepository.reload(
-        user: authenticationRepository.user,
-        status: ' ',
-      );
-      final orders = ordersRepository.loadOrders();
-      yield OrdersLoadSuccess(
-        orders,
-      );
+      if (identity == 'admin') {
+        await ordersRepository
+            .loadOrdersByAdmin(
+                userID: authenticationRepository.user.id,
+                orderType: 'donation',
+                status: ' ')
+            .then((value) => orders = value);
+        yield OrdersLoadSuccess(
+          orders,
+        );
+      } else {
+        await ordersRepository.reload(
+          user: authenticationRepository.user,
+          status: ' ',
+        );
+        orders = ordersRepository.loadOrders();
+        yield OrdersLoadSuccess(
+          orders,
+        );
+      }
     } catch (e) {
       yield OrdersLoadFailure(e.toString());
     }
@@ -63,9 +77,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   }
 
   Stream<OrdersState> _mapOrderUpdatedToState(OrderUpdated event) async* {
-    // if (state is OrdersLoadSuccess) {
-    Order newOrder;
 
+    Order newOrder;
     // TODO: error handle
     try {
       await ordersRepository
@@ -84,7 +97,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     } catch (e) {
       yield OrdersLoadFailure(e.toString());
     }
-    // }
   }
 
   Stream<OrdersState> _mapOrderDeletedToState(OrderDeleted event) async* {

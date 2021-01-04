@@ -112,7 +112,7 @@ class AccountPage extends StatelessWidget {
                 )),
             onTap: () {
               context
-                  .bloc<AuthenticationBloc>()
+                  .read<AuthenticationBloc>()
                   .add(AuthenticationLogoutRequested());
             },
           ),
