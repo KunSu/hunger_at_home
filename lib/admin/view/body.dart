@@ -49,14 +49,18 @@ class _AdminOrderList extends StatelessWidget {
         status: ' ',
       ),
       builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-        if (snapshot.hasData) {
+        // TODO: Add pull to refresh
+        if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        } else if (snapshot.hasData) {
+          if (snapshot.data == null || snapshot.data.isEmpty) {
+            return const Text('You do not have any order yet');
+          }
           return ListView.builder(
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) =>
                 _AdminOrderView(order: snapshot.data[index]),
           );
-        } else if (snapshot.hasError) {
-          return Text(snapshot.error.toString());
         } else {
           return const CircularProgressIndicator();
         }

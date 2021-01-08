@@ -47,6 +47,11 @@ class CartFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
+    if (items.isEmpty) {
+      emitFailure(failureResponse: 'Item can not be empty');
+      return;
+    }
+
     try {
       order = await ordersRepository.signUp(
         userID: authenticationRepository.user.id,
