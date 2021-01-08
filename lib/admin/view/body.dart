@@ -46,7 +46,7 @@ class _AdminOrderList extends StatelessWidget {
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
         orderType: orderType,
-        status: ' ',
+        status: <String>{},
       ),
       builder: (context, AsyncSnapshot<List<Order>> snapshot) {
         // TODO: Add pull to refresh

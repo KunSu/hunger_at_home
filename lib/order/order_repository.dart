@@ -111,22 +111,31 @@ class OrdersRepository {
   Future<List<Order>> loadOrdersByAdmin({
     @required String userID,
     @required String orderType,
-    @required String status,
+    @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/$orderType/status/$status';
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/$orderType/status/ ';
     print(url);
     var response = await get(url);
 
     var body = json.decode(response.body) as List;
     print(body);
 
+    var orders = <Order>[];
     if (response.statusCode == 200) {
-      var orders = body.map((e) => Order.fromJson(e)).toList();
-      return orders;
-    } else {
-      return [];
+      // TODO: backend API handle mutiple status
+      if (status.isNotEmpty) {
+        for (dynamic e in body) {
+          var newOrder = Order.fromJson(e);
+          if (status.contains(newOrder.status)) {
+            orders.add(newOrder);
+          }
+        }
+      } else {
+        orders = body.map((e) => Order.fromJson(e)).toList();
+      }
     }
+    return orders;
   }
 
   Future<List<Item>> loadOrderItems({

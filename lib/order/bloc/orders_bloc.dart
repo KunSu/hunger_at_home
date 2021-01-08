@@ -39,12 +39,11 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     final identity = authenticationRepository.user.userIdentity;
     try {
       if (identity == 'admin') {
-        await ordersRepository
-            .loadOrdersByAdmin(
-                userID: authenticationRepository.user.id,
-                orderType: 'donation',
-                status: ' ')
-            .then((value) => orders = value);
+        await ordersRepository.loadOrdersByAdmin(
+          userID: authenticationRepository.user.id,
+          orderType: 'donation',
+          status: <String>{},
+        ).then((value) => orders = value);
         yield OrdersLoadSuccess(
           orders,
         );
@@ -77,7 +76,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   }
 
   Stream<OrdersState> _mapOrderUpdatedToState(OrderUpdated event) async* {
-
     Order newOrder;
     // TODO: error handle
     try {

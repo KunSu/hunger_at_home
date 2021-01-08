@@ -10,6 +10,6 @@ class ScreenArguments {
 
   final String screenTitle;
   final String orderType;
-  final String status;
+  final Set<String> status;
   final Order order;
 }

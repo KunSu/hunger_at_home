@@ -48,86 +48,87 @@ class AdminOrderActionList extends StatelessWidget {
     this.status,
   }) : super(key: key);
   final String orderType;
-  final String status;
+  final Set<String> status;
 
   @override
   Widget build(BuildContext context) {
-    // return FutureBuilder<List<Order>>(
-    //   future: RepositoryProvider.of<AdminRepository>(context).loadOrders(
-    //     userID:
-    //         RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-    //     orderType: orderType,
-    //     status: status,
-    //   ),
-    //   builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-    //     if (snapshot.hasData) {
-    //       return ListView.builder(
-    //         itemCount: snapshot.data.length,
-    //         itemBuilder: (context, index) =>
-    //             AdminOrderActionView(order: snapshot.data[index]),
-    //       );
-    //     } else if (snapshot.hasError) {
-    //       return Text(snapshot.error);
-    //     } else {
-    //       return const CircularProgressIndicator();
-    //     }
-    //   },
-    // );
-
-    return BlocListener<OrdersBloc, OrdersState>(
-      listener: (context, state) {
-        if (state is OrdersLoadFailure) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.error),
-            ),
+    return FutureBuilder<List<Order>>(
+      future:
+          RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
+        userID:
+            RepositoryProvider.of<AuthenticationRepository>(context).user.id,
+        orderType: orderType,
+        status: status,
+      ),
+      builder: (context, AsyncSnapshot<List<Order>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) =>
+                AdminOrderActionView(order: snapshot.data[index]),
           );
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error);
+        } else {
+          return const CircularProgressIndicator();
         }
       },
-      child: BlocBuilder<OrdersBloc, OrdersState>(
-        builder: (context, state) {
-          if (state is OrdersLoadInProgress) {
-            return const CircularProgressIndicator();
-          }
-          if (state is OrdersLoadSuccess) {
-            if (state.orders == null || state.orders.isEmpty) {
-              return const Text('You do not have any order yet');
-            }
-            return ListView.builder(
-              itemCount: state.orders.length,
-              itemBuilder: (context, index) =>
-                  AdminOrderActionView(order: state.orders[index]),
-            );
-          }
-          if (state is OrdersLoadFailure) {
-            return FutureBuilder<List<Order>>(
-              future: RepositoryProvider.of<OrdersRepository>(context)
-                  .loadOrdersByAdmin(
-                userID: RepositoryProvider.of<AuthenticationRepository>(context)
-                    .user
-                    .id,
-                orderType: orderType,
-                status: status,
-              ),
-              builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) =>
-                        AdminOrderActionView(order: snapshot.data[index]),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text(snapshot.error.toString());
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            );
-          }
-          return const Text('Something went wrong');
-        },
-      ),
     );
+
+    // return BlocListener<OrdersBloc, OrdersState>(
+    //   listener: (context, state) {
+    //     if (state is OrdersLoadFailure) {
+    //       Scaffold.of(context).showSnackBar(
+    //         SnackBar(
+    //           content: Text(state.error),
+    //         ),
+    //       );
+    //     }
+    //   },
+    //   child: BlocBuilder<OrdersBloc, OrdersState>(
+    //     builder: (context, state) {
+    //       if (state is OrdersLoadInProgress) {
+    //         return const CircularProgressIndicator();
+    //       }
+    //       if (state is OrdersLoadSuccess) {
+    //         if (state.orders == null || state.orders.isEmpty) {
+    //           return const Text('You do not have any order yet');
+    //         }
+    //         return ListView.builder(
+    //           itemCount: state.orders.length,
+    //           itemBuilder: (context, index) =>
+    //               AdminOrderActionView(order: state.orders[index]),
+    //         );
+    //       }
+    //       if (state is OrdersLoadFailure) {
+    //         return FutureBuilder<List<Order>>(
+    //           future: RepositoryProvider.of<OrdersRepository>(context)
+    //               .loadOrdersByAdmin(
+    //             userID: RepositoryProvider.of<AuthenticationRepository>(context)
+    //                 .user
+    //                 .id,
+    //             orderType: orderType,
+    //             status: status,
+    //           ),
+    //           builder: (context, AsyncSnapshot<List<Order>> snapshot) {
+    //             if (snapshot.hasData) {
+    //               return ListView.builder(
+    //                 itemCount: snapshot.data.length,
+    //                 itemBuilder: (context, index) =>
+    //                     AdminOrderActionView(order: snapshot.data[index]),
+    //               );
+    //             } else if (snapshot.hasError) {
+    //               return Text(snapshot.error.toString());
+    //             } else {
+    //               return const CircularProgressIndicator();
+    //             }
+    //           },
+    //         );
+    //       }
+    //       return const Text('Something went wrong');
+    //     },
+    //   ),
+    // );
   }
 }
 

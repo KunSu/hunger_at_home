@@ -53,7 +53,7 @@ class AccountPage extends StatelessWidget {
                   arguments: ScreenArguments(
                     screenTitle: 'Donation orders',
                     orderType: 'donation',
-                    status: ' ',
+                    status: <String>{},
                   ),
                 );
               },
@@ -75,7 +75,7 @@ class AccountPage extends StatelessWidget {
                   arguments: ScreenArguments(
                     screenTitle: 'Request orders',
                     orderType: 'request',
-                    status: ' ',
+                    status: <String>{},
                   ),
                 );
               },
@@ -97,7 +97,7 @@ class AccountPage extends StatelessWidget {
                   arguments: ScreenArguments(
                     screenTitle: 'Driver orders',
                     orderType: 'donation',
-                    status: ' ',
+                    status: <String>{'approved', 'pickuped', 'delivered'},
                   ),
                 );
               },
