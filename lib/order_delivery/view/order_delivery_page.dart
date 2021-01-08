@@ -104,20 +104,12 @@ class _OrderDeliveryCheck extends StatelessWidget {
                 prefixIcon: Icon(Icons.access_time),
               ),
             ),
-            TextFieldBlocBuilder(
-              textFieldBloc: formBloc.temperature,
-              decoration: const InputDecoration(
-                labelText: 'Delivery temperature',
-                prefixIcon: Icon(Icons.text_fields),
+            CheckboxFieldBlocBuilder(
+              booleanFieldBloc: formBloc.temperature,
+              body: Container(
+                alignment: Alignment.centerLeft,
+                child: const Text('Delivery Temperature Check'),
               ),
-            ),
-            DropdownFieldBlocBuilder(
-              selectFieldBloc: formBloc.unit,
-              decoration: const InputDecoration(
-                labelText: 'Delivery temperature unit',
-                prefixIcon: Icon(Icons.text_fields),
-              ),
-              itemBuilder: (context, value) => value,
             ),
             RaisedButton(
               onPressed: formBloc.submit,

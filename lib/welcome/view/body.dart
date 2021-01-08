@@ -41,7 +41,16 @@ class Body extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: FractionalOffset.bottomCenter,
-            child: Text('alpha version v${FlutterConfig.get('VERSION')}'),
+            child: RichText(
+              text: TextSpan(
+                style: DefaultTextStyle.of(context).style,
+                children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Copyright @ 2021 SJSU',
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ],

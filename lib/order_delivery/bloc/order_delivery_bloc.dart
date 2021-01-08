@@ -13,7 +13,6 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
       fieldBlocs: [
         time,
         temperature,
-        unit,
       ],
     );
   }
@@ -26,17 +25,10 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
     ],
   );
 
-  final temperature = TextFieldBloc(
+  final temperature = BooleanFieldBloc(
     validators: [
       FieldBlocValidators.required,
     ],
-  );
-
-  final unit = SelectFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-    items: ['Fahrenheit', 'Celsius'],
   );
 
   String orderID;
