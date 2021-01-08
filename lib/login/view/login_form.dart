@@ -47,6 +47,7 @@ class _EmailInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'Email',
             errorText: state.email.invalid ? 'invalid email' : null,
+            prefixIcon: const Icon(Icons.email),
           ),
         );
       },
@@ -68,6 +69,7 @@ class _PasswordInput extends StatelessWidget {
           decoration: InputDecoration(
             labelText: 'Password',
             errorText: state.password.invalid ? 'invalid password' : null,
+            prefixIcon: const Icon(Icons.lock),
           ),
         );
       },
