@@ -52,25 +52,25 @@ class CartFormBloc extends FormBloc<String, String> {
       return;
     }
 
-    try {
-      order = await ordersRepository.signUp(
-        userID: authenticationRepository.user.id,
-        addressID: addressesRepository.getAddressID(
-          addresses.value,
-        ),
-        orderType: authenticationRepository.user.userIdentity == 'donor'
-            ? 'donation'
-            : 'request',
-        pickUpTime: pickupDateAndTime.value.toString(),
-        status: 'pending',
-        orderItems: items,
-      );
-      emitSuccess(
-        canSubmitAgain: true,
-      );
-    } catch (e) {
-      emitFailure(failureResponse: e.toString());
-    }
+    // try {
+    //   order = await ordersRepository.signUp(
+    //     userID: authenticationRepository.user.id,
+    //     addressID: addressesRepository.getAddressID(
+    //       addresses.value,
+    //     ),
+    //     orderType: authenticationRepository.user.userIdentity == 'donor'
+    //         ? 'donation'
+    //         : 'request',
+    //     pickUpTime: pickupDateAndTime.value.toString(),
+    //     status: 'pending',
+    //     orderItems: items,
+    //   );
+    //   emitSuccess(
+    //     canSubmitAgain: true,
+    //   );
+    // } catch (e) {
+    //   emitFailure(failureResponse: e.toString());
+    // }
   }
 
   @override
@@ -115,7 +115,7 @@ class Body extends StatelessWidget {
         formBloc.onLoading();
         return FormBlocListener<CartFormBloc, String, String>(
           onSuccess: (context, state) {
-            context.read<OrdersBloc>().add(OrderAdded(formBloc.order));
+            // context.read<OrdersBloc>().add(OrderAdded(formBloc.order));
 
             // Reset status
             context.read<CartBloc>().add(CartStarted());
@@ -164,7 +164,56 @@ class Body extends StatelessWidget {
                   if (state is CartLoaded) {
                     formBloc.items = state.cart.items;
                     return RaisedButton(
-                      onPressed: formBloc.submit,
+                      onPressed: () {
+                        // TODO: Fix this logic
+                        if (formBloc.pickupDateAndTime.value == null) {
+                          formBloc.emitFailure(
+                              failureResponse:
+                                  'Pick Up Data and Time can not be empty');
+                          formBloc.emitLoaded();
+                          return;
+                        } else if (formBloc.addresses.value == null) {
+                          formBloc.emitFailure(
+                              failureResponse: 'Address can not be empty');
+                          formBloc.emitLoaded();
+                          return;
+                        } else if (formBloc.items.isEmpty) {
+                          formBloc.emitFailure(
+                              failureResponse: 'Item can not be empty');
+                          formBloc.emitLoaded();
+                          return;
+                        }
+
+                        try {
+                          formBloc.ordersRepository
+                              .signUp(
+                                userID:
+                                    formBloc.authenticationRepository.user.id,
+                                addressID:
+                                    formBloc.addressesRepository.getAddressID(
+                                  formBloc.addresses.value,
+                                ),
+                                orderType: formBloc.authenticationRepository
+                                            .user.userIdentity ==
+                                        'donor'
+                                    ? 'donation'
+                                    : 'request',
+                                pickUpTime:
+                                    formBloc.pickupDateAndTime.value.toString(),
+                                status: 'pending',
+                                orderItems: formBloc.items,
+                              )
+                              .then((order) => context
+                                  .read<OrdersBloc>()
+                                  .add(OrderAdded(order)));
+
+                          formBloc.emitSuccess(
+                            canSubmitAgain: true,
+                          );
+                        } catch (e) {
+                          formBloc.emitFailure(failureResponse: e.toString());
+                        }
+                      },
                       child: const Text('Submit Order'),
                     );
                   } else {

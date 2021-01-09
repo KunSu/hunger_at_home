@@ -22,8 +22,8 @@ class Item extends Equatable {
   }
 
   Map<String, dynamic> toJSON() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['id'] = id;
+    final data = <String, dynamic>{};
+    // data['id'] = id;
     data['name'] = name;
     data['category'] = category;
     data['unit'] = quantityUnit;
