@@ -14,14 +14,14 @@ class Body extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           const UserInfo(),
-          const Text('Request orders'),
+          const Text('Pick up orders'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: _AdminOrderList(orderType: 'donation'),
             ),
           ),
-          const Text('Pick up orders'),
+          const Text('Request orders'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
