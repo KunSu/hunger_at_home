@@ -79,7 +79,7 @@ class CartFormBloc extends FormBloc<String, String> {
       var companyID = authenticationRepository.user.companyID;
       print(authenticationRepository.user.userIdentity);
       if (authenticationRepository.user.userIdentity == 'recipient') {
-        companyID = '1'; // Hunger At Home default id
+        companyID = '1'; // Hunger at Home default id
       }
       var newAddresses =
           await addressesRepository.loadAddressNames(companyID: companyID);

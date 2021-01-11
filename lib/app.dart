@@ -103,7 +103,7 @@ class _AppViewState extends State<AppView> {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Hunger At Home',
+        title: 'Hunger at Home',
         theme: ThemeData(
           primaryColor: kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,

@@ -21,7 +21,7 @@ class Body extends StatelessWidget {
         ),
         const Text('Welcome to',
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
-        const Text('Hunger At Home',
+        const Text('Hunger at Home',
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
         SizedBox(height: size.height * 0.05),
         RoundedButton(
