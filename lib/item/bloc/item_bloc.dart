@@ -29,6 +29,7 @@ class ItemBloc extends FormBloc<String, String> {
       'Meat',
       'Seafood',
       'Dry',
+      'Others',
     ],
   );
 
