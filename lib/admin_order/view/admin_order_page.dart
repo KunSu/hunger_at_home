@@ -213,7 +213,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                     text: '${widget.order.status}\n',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: _getStatusColor(status: widget.order.status),
+                      color: getStatusColor(status: widget.order.status),
                     ),
                   ),
                 ],
@@ -381,7 +381,7 @@ Future<void> OrderUpdateDialog({
   );
 }
 
-Color _getStatusColor({String status}) {
+Color getStatusColor({String status}) {
   switch (status) {
     case 'delivered':
       return Colors.green;

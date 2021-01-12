@@ -4,6 +4,7 @@ import 'package:fe/order/models/model.dart';
 import 'package:fe/order_detail/order_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
 class OrderDetailPage extends StatelessWidget {
   const OrderDetailPage({Key key}) : super(key: key);
@@ -40,12 +41,29 @@ class OrderDetailPage extends StatelessWidget {
                       ),
                       ListTile(
                         title: const Text('Contact Number'),
-                        subtitle: Text('${snapshot.data.phoneNumber}'),
+                        subtitle: FlatButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () => url_launcher
+                              .launch('tel:+${snapshot.data.phoneNumber}'),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '${snapshot.data.phoneNumber}',
+                            ),
+                          ),
+                        ),
                       ),
                       ListTile(
                         title: const Text('Address: '),
-                        subtitle: Text(
-                            '${snapshot.data.address}, ${snapshot.data.state} ${snapshot.data.zipCode}'),
+                        subtitle: FlatButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                '${snapshot.data.address}, ${snapshot.data.city}, ${snapshot.data.state} ${snapshot.data.zipCode}'),
+                          ),
+                        ),
                       ),
                     ],
                   ),
