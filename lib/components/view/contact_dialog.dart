@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 
-Future<void> ContactDialog({
+Future<void> contactDialog({
   @required BuildContext context,
   @required Order order,
 }) async {
@@ -42,9 +42,15 @@ Future<void> ContactDialog({
                           ListTile(
                             title: const Text('Contact Number'),
                             subtitle: FlatButton(
+                              padding: EdgeInsets.zero,
                               onPressed: () => url_launcher
                                   .launch('tel:+${snapshot.data.phoneNumber}'),
-                              child: Text('${snapshot.data.phoneNumber}'),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${snapshot.data.phoneNumber}',
+                                ),
+                              ),
                             ),
                           ),
                           ListTile(

@@ -49,6 +49,7 @@ class OrderInfo extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
+                    // TODO: Phone Number is callable
                     text: '${snapshot.data.phoneNumber}\n',
                   ),
                   const TextSpan(

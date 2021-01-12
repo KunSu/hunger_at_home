@@ -145,7 +145,7 @@ class OrderActionView extends StatelessWidget {
               TextButton(
                 child: const Text('Contact'),
                 onPressed: () {
-                  ContactDialog(
+                  contactDialog(
                     context: context,
                     order: order,
                   );

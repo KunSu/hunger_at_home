@@ -237,7 +237,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
               TextButton(
                 child: const Text('Contact'),
                 onPressed: () {
-                  ContactDialog(
+                  contactDialog(
                     context: context,
                     order: widget.order,
                   );
