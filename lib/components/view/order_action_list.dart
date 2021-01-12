@@ -111,12 +111,17 @@ class OrderActionView extends StatelessWidget {
                   TextSpan(
                     text: '${order.pickupDateAndTime}\n',
                   ),
-                  TextSpan(
-                    text: 'status: ${order.status}\n',
-                    style: const TextStyle(
+                  const TextSpan(
+                    text: 'status: ',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
-                      // fontSize: 16,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${order.status}\n',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: getStatusColor(status: order.status),
                     ),
                   ),
                 ],
@@ -171,7 +176,7 @@ class OrderActionView extends StatelessWidget {
                           context: context,
                           order: order,
                           text:
-                              'Please confirm if you have pickuped the order.',
+                              'Please confirm if you have picked up the order.',
                           title: 'Confirmation',
                           status: 'pickuped');
                     } else {
