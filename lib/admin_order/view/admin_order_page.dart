@@ -203,11 +203,17 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                   TextSpan(
                     text: '${widget.order.pickupDateAndTime}\n',
                   ),
-                  TextSpan(
-                    text: 'Status: ${widget.order.status}\n',
-                    style: const TextStyle(
+                  const TextSpan(
+                    text: 'Status: ',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${widget.order.status}\n',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: _getStatusColor(status: widget.order.status),
                     ),
                   ),
                 ],
@@ -289,7 +295,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                           context: context,
                           order: widget.order,
                           text:
-                              'Please confirm if you have pickuped the order.',
+                              'Please confirm if you have picked up the order.',
                           title: 'Confirmation',
                           status: 'pickuped');
                     } else {
@@ -303,7 +309,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 ),
               ),
               Visibility(
-                visible: widget.order.status == 'pickuped' &&
+                visible: widget.order.status == 'picked up' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Deliver'),
@@ -373,4 +379,27 @@ Future<void> OrderUpdateDialog({
       );
     },
   );
+}
+
+Color _getStatusColor({String status}) {
+  switch (status) {
+    case 'delivered':
+      return Colors.green;
+      break;
+    case 'picked up':
+      return Colors.lightGreen;
+      break;
+    case 'pending':
+      return Colors.yellow[800];
+      break;
+    case 'approved':
+      return Colors.blue;
+      break;
+    case 'withdraw':
+      return Colors.red;
+      break;
+    default:
+      return Colors.blueAccent;
+      break;
+  }
 }
