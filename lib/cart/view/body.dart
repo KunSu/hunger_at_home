@@ -139,6 +139,8 @@ class Body extends StatelessWidget {
                 canSelectTime: true,
                 format: DateFormat('dd-MM-yyyy hh:mm'),
                 initialDate: DateTime.now(),
+                initialTime: TimeOfDay.fromDateTime(
+                    DateTime.now().add(const Duration(minutes: 30))),
                 firstDate: DateTime(1900),
                 lastDate: DateTime(2100),
                 decoration: const InputDecoration(
