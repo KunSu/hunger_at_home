@@ -98,7 +98,8 @@ class _OrderDeliveryCheck extends StatelessWidget {
             TimeFieldBlocBuilder(
               timeFieldBloc: formBloc.time,
               format: DateFormat('hh:mm a'),
-              initialTime: TimeOfDay.now(),
+              initialTime: TimeOfDay.fromDateTime(
+                  DateTime.now().add(const Duration(minutes: 30))),
               decoration: const InputDecoration(
                 labelText: 'Delivery time',
                 prefixIcon: Icon(Icons.access_time),

@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/models/screen_arguments.dart';
+import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
@@ -379,27 +380,4 @@ Future<void> OrderUpdateDialog({
       );
     },
   );
-}
-
-Color getStatusColor({String status}) {
-  switch (status) {
-    case 'delivered':
-      return Colors.green;
-      break;
-    case 'picked up':
-      return Colors.lightGreen;
-      break;
-    case 'pending':
-      return Colors.yellow[800];
-      break;
-    case 'approved':
-      return Colors.blue;
-      break;
-    case 'withdraw':
-      return Colors.red;
-      break;
-    default:
-      return Colors.blueAccent;
-      break;
-  }
 }

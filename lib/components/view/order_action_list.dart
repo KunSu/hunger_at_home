@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/admin_order/view/admin_order_page.dart';
 import 'package:fe/components/models/screen_arguments.dart';
+import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
@@ -112,7 +113,7 @@ class OrderActionView extends StatelessWidget {
                     text: '${order.pickupDateAndTime}\n',
                   ),
                   const TextSpan(
-                    text: 'status: ',
+                    text: 'Status: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),

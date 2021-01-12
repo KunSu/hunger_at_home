@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/models/screen_arguments.dart';
+import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
@@ -54,12 +55,14 @@ class OrderCardView extends StatelessWidget {
                   TextSpan(
                     text: 'Address: ${order.address}\n',
                   ),
+                  const TextSpan(
+                    text: 'Status: ',
+                  ),
                   TextSpan(
-                    text: 'status: ${order.status}\n',
-                    style: const TextStyle(
+                    text: '${order.status}\n',
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
-                      // fontSize: 16,
+                      color: getStatusColor(status: order.status),
                     ),
                   ),
                 ],
