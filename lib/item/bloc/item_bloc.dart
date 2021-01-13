@@ -43,9 +43,11 @@ class ItemBloc extends FormBloc<String, String> {
       FieldBlocValidators.required,
     ],
     items: [
-      'pallet',
       'case',
+      'each',
+      'pallet',
       'pound',
+      'gallons',
     ],
   );
   Item item;
