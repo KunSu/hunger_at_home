@@ -66,7 +66,7 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
     RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-        orderType: orderType,
+        orderType: 'all',
         status: status);
   }
 
@@ -116,8 +116,13 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
             }
             return ListView.builder(
               itemCount: state.orders.length,
-              itemBuilder: (context, index) =>
-                  AdminOrderActionView(order: state.orders[index]),
+              itemBuilder: (context, index) => Visibility(
+                visible: getOrderVisibility(
+                    order: state.orders[index],
+                    orderType: orderType,
+                    status: status),
+                child: AdminOrderActionView(order: state.orders[index]),
+              ),
             );
           }
           if (state is OrdersLoadFailure) {
@@ -150,6 +155,18 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
         },
       ),
     );
+  }
+
+  bool getOrderVisibility({
+    @required Order order,
+    @required String orderType,
+    @required Set<String> status,
+  }) {
+    if (order.type != orderType ||
+        (status.isNotEmpty && !status.contains(order.status))) {
+      return false;
+    }
+    return true;
   }
 }
 

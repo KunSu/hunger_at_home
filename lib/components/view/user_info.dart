@@ -21,7 +21,7 @@ class UserInfo extends StatelessWidget {
           ),
         ),
         Container(
-          width: size.width * 0.75,
+          width: size.width * 0.70,
           child: ListTile(
             title: Text(
               'Hi, ${context.bloc<AuthenticationBloc>().state.user.firstName}',

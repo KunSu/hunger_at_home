@@ -1,3 +1,4 @@
+import 'package:fe/components/constants.dart';
 import 'package:flutter/material.dart';
 
 Color getStatusColor({String status}) {
@@ -12,13 +13,13 @@ Color getStatusColor({String status}) {
       return Colors.yellow[800];
       break;
     case 'approved':
-      return Colors.blue;
+      return hahBlue;
       break;
     case 'withdraw':
-      return Colors.red;
+      return hahRed;
       break;
     default:
-      return Colors.blueAccent;
+      return hahBorderBlue;
       break;
   }
 }

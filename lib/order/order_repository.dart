@@ -113,6 +113,53 @@ class OrdersRepository {
     @required String orderType,
     @required Set<String> status,
   }) async {
+// TODO: backend API handle mutiple status
+
+    if (orderType == 'all') {
+      var url =
+          '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/donation/status/ ';
+
+      var response = await get(url);
+
+      var body = json.decode(response.body) as List;
+      var orders = <Order>[];
+      if (response.statusCode == 200) {
+        if (status.isNotEmpty) {
+          for (dynamic e in body) {
+            var newOrder = Order.fromJson(e);
+            // if (status.contains(newOrder.status)) {
+            orders.add(newOrder);
+            // }
+          }
+        } else {
+          orders = body.map((e) => Order.fromJson(e)).toList();
+        }
+      }
+
+      url =
+          '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/request/status/ ';
+      response = await get(url);
+      body = json.decode(response.body) as List;
+      if (response.statusCode == 200) {
+        if (status.isNotEmpty) {
+          for (dynamic e in body) {
+            var newOrder = Order.fromJson(e);
+            if (status.contains(newOrder.status)) {
+              orders.add(newOrder);
+            }
+          }
+        } else {
+          for (dynamic e in body) {
+            var newOrder = Order.fromJson(e);
+            // if (status.contains(newOrder.status)) {
+            orders.add(newOrder);
+            // }
+          }
+        }
+      }
+      return orders;
+    }
+
     var url =
         '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/$orderType/status/ ';
     print(url);

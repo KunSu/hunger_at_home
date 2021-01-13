@@ -41,7 +41,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       if (identity == 'admin') {
         await ordersRepository.loadOrdersByAdmin(
           userID: authenticationRepository.user.id,
-          orderType: 'donation',
+          orderType: 'all',
           status: <String>{},
         ).then((value) => orders = value);
         yield OrdersLoadSuccess(
