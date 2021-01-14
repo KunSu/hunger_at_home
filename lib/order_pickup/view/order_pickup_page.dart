@@ -86,7 +86,7 @@ class _OrderPickupCheck extends StatelessWidget {
             userID: RepositoryProvider.of<AuthenticationRepository>(context)
                 .user
                 .id,
-            status: 'pickuped');
+            status: 'pickedup');
 
         BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
         Navigator.pushNamed(context, OrderPage.routeName);

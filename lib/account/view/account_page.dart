@@ -23,12 +23,14 @@ class AccountPage extends StatelessWidget {
           Visibility(
             visible: identity != 'admin',
             child: ListTile(
-              title: const Text('Your Orders',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                    fontSize: 18,
-                  )),
+              title: const Text(
+                'Your Orders',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontSize: 18,
+                ),
+              ),
               onTap: () {
                 Navigator.pushNamed(
                   context,
@@ -97,7 +99,7 @@ class AccountPage extends StatelessWidget {
                   arguments: ScreenArguments(
                     screenTitle: 'Driver orders',
                     orderType: 'donation',
-                    status: <String>{'approved', 'pickuped', 'delivered'},
+                    status: <String>{'approved', 'pickedup', 'delivered'},
                   ),
                 );
               },

@@ -41,13 +41,6 @@ class ItemPage extends StatelessWidget {
                 },
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
-                  // final item = Item(
-                  //   name: formBloc.name.value,
-                  //   category: formBloc.category.value,
-                  //   quantityNumber: formBloc.quantityNumber.value,
-                  //   quantityUnit: formBloc.quantityUnit.value,
-                  // );
-
                   context.read<CartBloc>().add(CartItemAdded(formBloc.item));
                   Navigator.of(context).pushNamed('/cart');
                 },

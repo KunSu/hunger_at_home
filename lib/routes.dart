@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 
 import 'account/view/account_page.dart';
 import 'order_delivery/view/order_delivery_page.dart';
+import 'order_edit/view/order_edit_page.dart';
 import 'order_pickup/view/order_pickup_page.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -38,4 +39,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderPickupPage.routeName: (context) => OrderPickupPage(),
   OrderDeliveryPage.routeName: (context) => OrderDeliveryPage(),
   AdminOrderPage.routeName: (context) => AdminOrderPage(),
+  OrderEditPage.routeName: (context) => OrderEditPage(),
 };

@@ -5,6 +5,7 @@ import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
 import 'package:fe/order_detail/order_detail.dart';
+import 'package:fe/order_edit/order_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -260,6 +261,19 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                   );
                 },
               ),
+              // Visibility(
+              //   visible: identity == 'admin',
+              //   child: TextButton(
+              //     child: const Text('Edit'),
+              //     onPressed: () {
+              //       Navigator.pushNamed(
+              //         context,
+              //         OrderEditPage.routeName,
+              //         arguments: ScreenArguments(order: widget.order),
+              //       );
+              //     },
+              //   ),
+              // ),
               Visibility(
                 visible:
                     widget.order.status == 'pending' && identity == 'admin',
@@ -315,7 +329,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                           text:
                               'Please confirm if you have picked up the order.',
                           title: 'Confirmation',
-                          status: 'pickuped');
+                          status: 'pickedup');
                     } else {
                       Navigator.pushNamed(
                         context,

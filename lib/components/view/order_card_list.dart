@@ -105,7 +105,7 @@ class OrderCardView extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: order.status == 'pickuped' && identity == 'employee',
+                visible: order.status == 'pickedup' && identity == 'employee',
                 child: TextButton(
                   child: const Text('Deliver'),
                   onPressed: () {

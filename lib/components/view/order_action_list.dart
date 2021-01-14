@@ -179,7 +179,7 @@ class OrderActionView extends StatelessWidget {
                           text:
                               'Please confirm if you have picked up the order.',
                           title: 'Confirmation',
-                          status: 'pickuped');
+                          status: 'pickedup');
                     } else {
                       Navigator.pushNamed(
                         context,
@@ -191,7 +191,7 @@ class OrderActionView extends StatelessWidget {
                 ),
               ),
               Visibility(
-                visible: order.status == 'pickuped' &&
+                visible: order.status == 'pickedup' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Deliver'),
