@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
+import 'package:fe/cart/bloc/cartform_bloc.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/components/view/display_error.dart';
 import 'package:fe/item/item.dart';
@@ -9,95 +10,6 @@ import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-
-class CartFormBloc extends FormBloc<String, String> {
-  CartFormBloc({
-    @required this.authenticationRepository,
-    @required this.addressesRepository,
-    @required this.ordersRepository,
-  }) {
-    addFieldBlocs(
-      fieldBlocs: [
-        pickupDateAndTime,
-        addresses,
-      ],
-    );
-  }
-
-  final OrdersRepository ordersRepository;
-  final AddressesRepository addressesRepository;
-  final AuthenticationRepository authenticationRepository;
-
-  final pickupDateAndTime = InputFieldBloc<DateTime, Object>(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-    name: 'pickupDateAndTime',
-    toJson: (value) => value.toUtc().toIso8601String(),
-  );
-
-  final addresses = SelectFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-  );
-
-  List<Item> items;
-  Order order;
-
-  @override
-  void onSubmitting() async {
-    if (items.isEmpty) {
-      emitFailure(failureResponse: 'Item can not be empty');
-      return;
-    }
-
-    // try {
-    //   order = await ordersRepository.signUp(
-    //     userID: authenticationRepository.user.id,
-    //     addressID: addressesRepository.getAddressID(
-    //       addresses.value,
-    //     ),
-    //     orderType: authenticationRepository.user.userIdentity == 'donor'
-    //         ? 'donation'
-    //         : 'request',
-    //     pickUpTime: pickupDateAndTime.value.toString(),
-    //     status: 'pending',
-    //     orderItems: items,
-    //   );
-    //   emitSuccess(
-    //     canSubmitAgain: true,
-    //   );
-    // } catch (e) {
-    //   emitFailure(failureResponse: e.toString());
-    // }
-  }
-
-  @override
-  Future<void> onLoading() async {
-    try {
-      var companyID = authenticationRepository.user.companyID;
-      print(authenticationRepository.user.userIdentity);
-      if (authenticationRepository.user.userIdentity == 'recipient') {
-        companyID = '1'; // Hunger at Home default id
-      }
-      var newAddresses =
-          await addressesRepository.loadAddressNames(companyID: companyID);
-
-      addresses.clear();
-      for (var item in newAddresses) {
-        addresses.addItem(item);
-      }
-      emitLoaded();
-    } catch (e) {
-      emitFailure(failureResponse: e.toString());
-    }
-  }
-
-  String getAddressID() {
-    return addressesRepository.getAddressID(addresses.value);
-  }
-}
 
 class Body extends StatelessWidget {
   const Body({
@@ -132,119 +44,156 @@ class Body extends StatelessWidget {
               error: state.failureResponse,
             );
           },
-          child: Column(
-            children: [
-              DateTimeFieldBlocBuilder(
-                dateTimeFieldBloc: formBloc.pickupDateAndTime,
-                canSelectTime: true,
-                format: DateFormat('dd-MM-yyyy hh:mm'),
-                initialDate: DateTime.now(),
-                initialTime: TimeOfDay.fromDateTime(
-                    DateTime.now().add(const Duration(minutes: 30))),
-                firstDate: DateTime(1900),
-                lastDate: DateTime(2100),
-                decoration: const InputDecoration(
-                  labelText: 'Pick Up Date and Time',
-                  prefixIcon: Icon(Icons.date_range),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                RadioButtonGroupFieldBlocBuilder(
+                  selectFieldBloc: formBloc.pickupOrDropoff,
+                  itemBuilder: (context, value) => value,
+                  decoration: const InputDecoration(
+                    labelText: 'Do you want to pick up or drop off?',
+                    prefixIcon: SizedBox(),
+                  ),
                 ),
-              ),
-              DropdownFieldBlocBuilder(
-                selectFieldBloc: formBloc.addresses,
-                itemBuilder: (context, value) => value,
-                decoration: const InputDecoration(
-                    labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: _CartList(),
+                DateTimeFieldBlocBuilder(
+                  dateTimeFieldBloc: formBloc.pickupDateAndTime,
+                  canSelectTime: true,
+                  format: DateFormat('dd-MM-yyyy hh:mm'),
+                  initialDate: DateTime.now(),
+                  initialTime: TimeOfDay.fromDateTime(
+                      DateTime.now().add(const Duration(minutes: 30))),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime(2100),
+                  decoration: const InputDecoration(
+                    labelText: 'Pick Up Date and Time',
+                    prefixIcon: Icon(Icons.date_range),
+                  ),
                 ),
-              ),
-              const Divider(height: 4, color: Colors.black),
-              BlocBuilder<CartBloc, CartState>(
-                builder: (context, state) {
-                  if (state is CartLoaded) {
-                    formBloc.items = state.cart.items;
-                    return RaisedButton(
-                      onPressed: () {
-                        // TODO: Fix this logic
-                        if (formBloc.pickupDateAndTime.value == null) {
-                          formBloc.emitFailure(
-                              failureResponse:
-                                  'Pick Up Data and Time can not be empty');
-                          formBloc.emitLoaded();
-                          return;
-                        } else if (formBloc.addresses.value == null) {
-                          formBloc.emitFailure(
-                              failureResponse: 'Address can not be empty');
-                          formBloc.emitLoaded();
-                          return;
-                        } else if (formBloc.items.isEmpty) {
-                          formBloc.emitFailure(
-                              failureResponse: 'Item can not be empty');
-                          formBloc.emitLoaded();
-                          return;
-                        }
+                DropdownFieldBlocBuilder(
+                  selectFieldBloc: formBloc.addresses,
+                  itemBuilder: (context, value) => value,
+                  decoration: const InputDecoration(
+                      labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
+                ),
+                DropdownFieldBlocBuilder(
+                  selectFieldBloc: formBloc.dropoffAddress,
+                  itemBuilder: (context, value) => value,
+                  decoration: const InputDecoration(
+                      labelText: 'Drop off address',
+                      prefixIcon: Icon(Icons.edit)),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: _CartList(),
+                  ),
+                ),
+                const Divider(height: 4, color: Colors.black),
+                BlocBuilder<CartBloc, CartState>(
+                  builder: (context, state) {
+                    if (state is CartLoaded) {
+                      formBloc.items = state.cart.items;
+                      return RaisedButton(
+                        onPressed: () {
+                          // TODO: Fix this logic
+                          if (formBloc.items.isEmpty) {
+                            formBloc.emitFailure(
+                                failureResponse: 'Item can not be empty');
+                            formBloc.emitLoaded();
+                            return;
+                          }
 
-                        try {
-                          formBloc.ordersRepository
-                              .signUp(
-                                userID:
-                                    formBloc.authenticationRepository.user.id,
-                                addressID:
-                                    formBloc.addressesRepository.getAddressID(
-                                  formBloc.addresses.value,
-                                ),
-                                orderType: formBloc.authenticationRepository
-                                            .user.userIdentity ==
-                                        'donor'
-                                    ? 'donation'
-                                    : 'request',
-                                pickUpTime:
-                                    formBloc.pickupDateAndTime.value.toString(),
-                                status: 'pending',
-                                orderItems: formBloc.items,
-                              )
-                              .then((order) => context
-                                  .read<OrdersBloc>()
-                                  .add(OrderAdded(order)));
+                          if (formBloc.pickupOrDropoff.value == 'Pick up') {
+                            if (formBloc.addresses.value == null) {
+                              formBloc.emitFailure(
+                                  failureResponse: 'Address can not be empty');
+                              formBloc.emitLoaded();
+                              return;
+                            } else if (formBloc.pickupDateAndTime.value ==
+                                null) {
+                              formBloc.emitFailure(
+                                  failureResponse:
+                                      'Pick Up Data and Time can not be empty');
+                              formBloc.emitLoaded();
+                              return;
+                            }
+                          } else if (formBloc.pickupOrDropoff.value ==
+                              'Drop off') {
+                            if (formBloc.dropoffAddress.value == null) {
+                              formBloc.emitFailure(
+                                  failureResponse: 'Address can not be empty');
+                              formBloc.emitLoaded();
+                              return;
+                            }
+                          }
 
-                          formBloc.emitSuccess(
-                            canSubmitAgain: true,
-                          );
-                        } catch (e) {
-                          formBloc.emitFailure(failureResponse: e.toString());
-                        }
-                      },
-                      child: const Text('Submit Order'),
-                    );
-                  } else {
-                    // TODO: better handling
-                    return RaisedButton(
-                      color: Colors.grey,
-                      onPressed: () {},
-                      child: const Text('Submit Order'),
-                    );
-                  }
-                },
-              ),
-              Visibility(
-                visible: identity == 'donor',
-                child: RaisedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AddressPage.routeName);
+                          try {
+                            formBloc.ordersRepository
+                                .signUp(
+                                  userID:
+                                      formBloc.authenticationRepository.user.id,
+                                  addressID: formBloc.pickupOrDropoff.value ==
+                                          'Pick up'
+                                      ? formBloc.addressesRepository
+                                          .getAddressID(
+                                          formBloc.addresses.value,
+                                        )
+                                      : '1',
+                                  orderType: formBloc.authenticationRepository
+                                              .user.userIdentity ==
+                                          'donor'
+                                      ? 'donation'
+                                      : 'request',
+                                  pickUpTime:
+                                      formBloc.pickupOrDropoff.value.isEmpty
+                                          ? null
+                                          : formBloc.pickupDateAndTime.value
+                                              .toString(),
+                                  status: 'pending',
+                                  orderItems: formBloc.items,
+                                )
+                                .then((order) => context
+                                    .read<OrdersBloc>()
+                                    .add(OrderAdded(order)));
+
+                            formBloc.emitSuccess(
+                              canSubmitAgain: true,
+                            );
+                          } catch (e) {
+                            formBloc.emitFailure(failureResponse: e.toString());
+                          }
+                        },
+                        child: const Text('Submit Order'),
+                      );
+                    } else {
+                      // TODO: better handling
+                      return RaisedButton(
+                        color: Colors.grey,
+                        onPressed: () {},
+                        child: const Text('Submit Order'),
+                      );
+                    }
                   },
-                  child: const Text('Add New Address'),
                 ),
-              ),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, ItemPage.routeName);
-                },
-                child: Text(
-                    "${identity == 'donor' ? 'Donate' : 'Request'} More Items"),
-              ),
-            ],
+                Visibility(
+                  visible: identity == 'donor',
+                  child: RaisedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AddressPage.routeName);
+                    },
+                    child: const Text('Add New Address'),
+                  ),
+                ),
+                RaisedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, ItemPage.routeName);
+                  },
+                  child: Text(
+                      "${identity == 'donor' ? 'Donate' : 'Request'} More Items"),
+                ),
+              ],
+            ),
           ),
         );
       },

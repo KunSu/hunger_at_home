@@ -54,13 +54,14 @@ class OrdersRepository {
     }
   }
 
-  Future<Order> signUp(
-      {String userID,
-      String addressID,
-      String orderType,
-      String pickUpTime,
-      String status,
-      List<Item> orderItems}) async {
+  Future<Order> signUp({
+    String userID,
+    String addressID,
+    String orderType,
+    String pickUpTime,
+    String status,
+    List<Item> orderItems,
+  }) async {
     var url = '${FlutterConfig.get('BASE_URL')}/order';
     print(url);
 
@@ -69,7 +70,10 @@ class OrdersRepository {
     final Map<String, dynamic> jsonData = Map<String, dynamic>();
     jsonData['addressID'] = addressID;
     jsonData['note'] = 'NA';
-    jsonData['pickUpTime'] = pickUpTime;
+    // TODO: better handle null
+    if (pickUpTime != 'null') {
+      jsonData['pickUpTime'] = pickUpTime;
+    }
     jsonData['items'] = orderItems.map((e) => e.toJSON()).toList();
     jsonData['userID'] = userID;
 
@@ -202,4 +206,22 @@ class OrdersRepository {
       return [];
     }
   }
+
+  // Future<Order> editOrder({Order order, String orderID, String status}) async {
+  //   var url =
+  //       '${FlutterConfig.get('BASE_URL')}/users/$userID/orders/$orderID/status/$status';
+  //   print(url);
+
+  //   var headers = <String, String>{'Content-type': 'application/json'};
+
+  //   var response = await patch(url, headers: headers);
+
+  //   var body = json.decode(response.body);
+  //   if (response.statusCode == 200) {
+  //     var newOrder = Order.fromJson(body);
+  //     return newOrder;
+  //   } else {
+  //     throw (body['message']);
+  //   }
+  // }
 }
