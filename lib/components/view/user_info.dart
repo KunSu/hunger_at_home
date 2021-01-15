@@ -15,10 +15,7 @@ class UserInfo extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8),
-          child: Image.asset(
-            'assets/images/Profile Image.png',
-            height: size.height * 0.1,
-          ),
+          child: Icon(Icons.account_circle, size: size.height * 0.08),
         ),
         Container(
           width: size.width * 0.70,

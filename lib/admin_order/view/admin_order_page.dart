@@ -341,7 +341,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 ),
               ),
               Visibility(
-                visible: widget.order.status == 'picked up' &&
+                visible: widget.order.status == 'pickedup' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Deliver'),

@@ -24,6 +24,7 @@ const String kPassNullError = 'Please Enter your password';
 const String kShortPassError = 'Password is too short';
 const String kMatchPassError = "Passwords don't match";
 
+// Color
 const hahBorderBlue = Color(0xFF0a64c8);
 const hahBlue = Color(0xFF37b4eb);
 const hahSkyBlue = Color(0xFFc3ebff);
