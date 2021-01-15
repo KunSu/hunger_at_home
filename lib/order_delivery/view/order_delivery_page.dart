@@ -82,11 +82,7 @@ class _OrderDeliveryCheck extends StatelessWidget {
     final formBloc = BlocProvider.of<OrderDeliveryBloc>(context);
     return FormBlocListener<OrderDeliveryBloc, String, String>(
       onSuccess: (context, state) {
-        var newOrder = order.copyWith(
-            userID: RepositoryProvider.of<AuthenticationRepository>(context)
-                .user
-                .id,
-            status: 'delivered');
+        var newOrder = order.copyWith(status: 'delivered');
 
         BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
         Navigator.pushNamed(context, OrderPage.routeName);

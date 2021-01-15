@@ -69,9 +69,9 @@ class OrdersRepository {
 
     final Map<String, dynamic> jsonData = Map<String, dynamic>();
     jsonData['addressID'] = addressID;
+    jsonData['orderType'] = orderType;
     jsonData['note'] = 'NA';
-    // TODO: better handle null
-    if (pickUpTime != 'null') {
+    if (orderType != 'dropoff') {
       jsonData['pickUpTime'] = pickUpTime;
     }
     jsonData['items'] = orderItems.map((e) => e.toJSON()).toList();

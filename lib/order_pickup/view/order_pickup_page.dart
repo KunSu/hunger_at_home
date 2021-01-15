@@ -82,11 +82,7 @@ class _OrderPickupCheck extends StatelessWidget {
     final formBloc = BlocProvider.of<OrderPickupBloc>(context);
     return FormBlocListener<OrderPickupBloc, String, String>(
       onSuccess: (context, state) {
-        var newOrder = order.copyWith(
-            userID: RepositoryProvider.of<AuthenticationRepository>(context)
-                .user
-                .id,
-            status: 'pickedup');
+        var newOrder = order.copyWith(status: 'pickedup');
 
         BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
         Navigator.pushNamed(context, OrderPage.routeName);

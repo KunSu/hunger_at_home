@@ -96,7 +96,8 @@ class Body extends StatelessWidget {
                       formBloc.items = state.cart.items;
                       return RaisedButton(
                         onPressed: () {
-                          // TODO: Fix this logic
+                          // TODO: Better handle this logic
+
                           if (formBloc.items.isEmpty) {
                             formBloc.emitFailure(
                                 failureResponse: 'Item can not be empty');
@@ -104,7 +105,8 @@ class Body extends StatelessWidget {
                             return;
                           }
 
-                          if (formBloc.pickupOrDropoff.value == 'Pick up') {
+                          if (identity == 'recipient' ||
+                              formBloc.pickupOrDropoff.value == 'Pick up') {
                             if (formBloc.addresses.value == null) {
                               formBloc.emitFailure(
                                   failureResponse: 'Address can not be empty');
@@ -129,34 +131,7 @@ class Body extends StatelessWidget {
                           }
 
                           try {
-                            formBloc.ordersRepository
-                                .signUp(
-                                  userID:
-                                      formBloc.authenticationRepository.user.id,
-                                  addressID: formBloc.pickupOrDropoff.value ==
-                                          'Pick up'
-                                      ? formBloc.addressesRepository
-                                          .getAddressID(
-                                          formBloc.addresses.value,
-                                        )
-                                      : '1',
-                                  orderType: formBloc.authenticationRepository
-                                              .user.userIdentity ==
-                                          'donor'
-                                      ? 'donation'
-                                      : 'request',
-                                  pickUpTime:
-                                      formBloc.pickupOrDropoff.value.isEmpty
-                                          ? null
-                                          : formBloc.pickupDateAndTime.value
-                                              .toString(),
-                                  status: 'pending',
-                                  orderItems: formBloc.items,
-                                )
-                                .then((order) => context
-                                    .read<OrdersBloc>()
-                                    .add(OrderAdded(order)));
-
+                            _postOrder(formBloc: formBloc, context: context);
                             formBloc.emitSuccess(
                               canSubmitAgain: true,
                             );
@@ -234,5 +209,41 @@ class _ItemView extends StatelessWidget {
       subtitle: Text(
           '${item.category} \n${item.quantityNumber} ${item.quantityUnit}'),
     );
+  }
+}
+
+void _postOrder({CartFormBloc formBloc, BuildContext context}) {
+  if (formBloc.authenticationRepository.user.userIdentity == 'recipient') {
+    formBloc.ordersRepository
+        .signUp(
+          userID: formBloc.authenticationRepository.user.id,
+          addressID: formBloc.addressesRepository.getAddressID(
+            formBloc.addresses.value,
+          ),
+          orderType: 'request',
+          pickUpTime: formBloc.pickupDateAndTime.value.toString(),
+          status: 'pending',
+          orderItems: formBloc.items,
+        )
+        .then((order) => context.read<OrdersBloc>().add(OrderAdded(order)));
+  } else {
+    formBloc.ordersRepository
+        .signUp(
+          userID: formBloc.authenticationRepository.user.id,
+          addressID: formBloc.pickupOrDropoff.value == 'Pick up'
+              ? formBloc.addressesRepository.getAddressID(
+                  formBloc.addresses.value,
+                )
+              : '1', // Default drop off address ID is 1 for Hunger at Home
+          orderType: formBloc.pickupOrDropoff.value == 'Pick up'
+              ? 'donation'
+              : 'dropoff',
+          pickUpTime: formBloc.pickupOrDropoff.value == 'Pick up'
+              ? formBloc.pickupDateAndTime.value.toString()
+              : DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+          status: 'pending',
+          orderItems: formBloc.items,
+        )
+        .then((order) => context.read<OrdersBloc>().add(OrderAdded(order)));
   }
 }

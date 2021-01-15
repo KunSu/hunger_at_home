@@ -9,10 +9,7 @@ class Order extends Equatable {
     this.type,
     this.items,
     this.status,
-    this.userID,
     this.address,
-    this.company,
-    this.phoneNumber,
     this.pickupDateAndTime,
     this.submitedDateAndTime,
     this.deliveryTemperature,
@@ -25,10 +22,7 @@ class Order extends Equatable {
       type: json['orderType'],
       items: [],
       status: json['status'],
-      userID: json[''],
       address: json['address'],
-      company: json[''],
-      phoneNumber: json[''],
       pickupDateAndTime: json['pickUpTime'],
       submitedDateAndTime: json['timestamp'],
       deliveryTemperature: json[''],
@@ -40,10 +34,7 @@ class Order extends Equatable {
   final String type;
   final List<Item> items;
   final String status;
-  final String userID;
   final String address;
-  final String company;
-  final String phoneNumber;
   final String pickupDateAndTime;
   final String submitedDateAndTime;
   final String deliveryTemperature;
@@ -54,10 +45,7 @@ class Order extends Equatable {
     String type,
     List<Item> items,
     String status,
-    String userID,
     String address,
-    String company,
-    String phoneNumber,
     String pickupDateAndTime,
     String submitedDateAndTime,
     String deliveryTemperature,
@@ -68,10 +56,7 @@ class Order extends Equatable {
       type: type ?? this.type,
       items: items ?? this.items,
       status: status ?? this.status,
-      userID: userID ?? this.userID,
       address: address ?? this.address,
-      company: company ?? this.company,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
       pickupDateAndTime: pickupDateAndTime ?? this.pickupDateAndTime,
       submitedDateAndTime: submitedDateAndTime ?? this.submitedDateAndTime,
       deliveryTemperature: deliveryTemperature ?? this.deliveryTemperature,
@@ -85,9 +70,7 @@ class Order extends Equatable {
         type,
         items,
         status,
-        userID,
         address,
-        company,
         pickupDateAndTime,
         submitedDateAndTime,
         deliveryTemperature,

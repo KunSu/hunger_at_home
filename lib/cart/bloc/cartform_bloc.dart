@@ -11,11 +11,20 @@ class CartFormBloc extends FormBloc<String, String> {
     @required this.addressesRepository,
     @required this.ordersRepository,
   }) {
-    addFieldBlocs(
-      fieldBlocs: [
-        pickupOrDropoff,
-      ],
-    );
+    if (authenticationRepository.user.userIdentity == 'recipient') {
+      addFieldBlocs(
+        fieldBlocs: [
+          pickupDateAndTime,
+          addresses,
+        ],
+      );
+    } else {
+      addFieldBlocs(
+        fieldBlocs: [
+          pickupOrDropoff,
+        ],
+      );
+    }
 
     pickupOrDropoff.onValueChanges(
       onData: (previous, current) async* {

@@ -1,6 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/view/background.dart';
-import 'package:fe/register/view/register_form.dart';
+import 'package:fe/register/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
