@@ -25,7 +25,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Stream<CartState> _mapCartStartedToState() async* {
     yield CartLoading();
     try {
-      await Future<void>.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 0));
       yield const CartLoaded();
     } catch (_) {
       yield CartError();

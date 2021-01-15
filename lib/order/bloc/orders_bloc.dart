@@ -63,15 +63,13 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
   }
 
   Stream<OrdersState> _mapOrderAddedToState(OrderAdded event) async* {
-    if (state is OrdersLoadSuccess) {
-      try {
-        final List<Order> updatedOrders =
-            List.from((state as OrdersLoadSuccess).orders)..add(event.order);
-        yield OrdersLoadSuccess(updatedOrders);
-        _saveOrders(updatedOrders);
-      } catch (_) {
-        yield const OrdersLoadFailure('Internal Error');
-      }
+    try {
+      final List<Order> updatedOrders =
+          List.from((state as OrdersLoadSuccess).orders)..add(event.order);
+      yield OrdersLoadSuccess(updatedOrders);
+      _saveOrders(updatedOrders);
+    } catch (_) {
+      yield const OrdersLoadFailure('Internal Error');
     }
   }
 

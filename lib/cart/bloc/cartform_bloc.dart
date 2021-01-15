@@ -36,14 +36,13 @@ class CartFormBloc extends FormBloc<String, String> {
           ],
         );
         if (current.value == 'Pick up') {
-          await onLoading();
           addFieldBlocs(
             fieldBlocs: [
               pickupDateAndTime,
               addresses,
             ],
           );
-        } else {
+        } else if (current.value == 'Drop off') {
           addFieldBlocs(
             fieldBlocs: [
               dropoffAddress,
@@ -91,54 +90,60 @@ class CartFormBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
+    final identity = authenticationRepository.user.userIdentity;
     if (items.isEmpty) {
       emitFailure(failureResponse: 'Item can not be empty');
       return;
     }
 
-    // try {
-    //   order = await ordersRepository.signUp(
-    //     userID: authenticationRepository.user.id,
-    //     addressID: addressesRepository.getAddressID(
-    //       addresses.value,
-    //     ),
-    //     orderType: authenticationRepository.user.userIdentity == 'donor'
-    //         ? 'donation'
-    //         : 'request',
-    //     pickUpTime: pickupDateAndTime.value.toString(),
-    //     status: 'pending',
-    //     orderItems: items,
-    //   );
-    //   emitSuccess(
-    //     canSubmitAgain: true,
-    //   );
-    // } catch (e) {
-    //   emitFailure(failureResponse: e.toString());
-    // }
-  }
-
-  @override
-  Future<void> onLoading() async {
     try {
-      var companyID = authenticationRepository.user.companyID;
-      print(authenticationRepository.user.userIdentity);
       if (authenticationRepository.user.userIdentity == 'recipient') {
-        companyID = '1'; // Hunger at Home default id
+        await ordersRepository
+            .signUp(
+              userID: authenticationRepository.user.id,
+              addressID: addressesRepository.getAddressID(
+                addresses.value,
+              ),
+              orderType: 'request',
+              pickUpTime: pickupDateAndTime.value.toString(),
+              status: 'pending',
+              orderItems: items,
+            )
+            .then((order) => this.order = order);
+      } else {
+        await ordersRepository
+            .signUp(
+              userID: authenticationRepository.user.id,
+              addressID: pickupOrDropoff.value == 'Pick up'
+                  ? addressesRepository.getAddressID(
+                      addresses.value,
+                    )
+                  : '1', // Default drop off address ID is 1 for Hunger at Home
+              orderType:
+                  pickupOrDropoff.value == 'Pick up' ? 'donation' : 'dropoff',
+              pickUpTime: pickupOrDropoff.value == 'Pick up'
+                  ? pickupDateAndTime.value.toString()
+                  : DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+              status: 'pending',
+              orderItems: items,
+            )
+            .then((order) => this.order = order);
       }
-      var newAddresses =
-          await addressesRepository.loadAddressNames(companyID: companyID);
-
-      addresses.clear();
-      for (var item in newAddresses) {
-        addresses.addItem(item);
-      }
-      emitLoaded();
     } catch (e) {
       emitFailure(failureResponse: e.toString());
+      return;
     }
+    emitSuccess(
+      canSubmitAgain: true,
+    );
   }
 
   String getAddressID() {
     return addressesRepository.getAddressID(addresses.value);
+  }
+
+  void reset() {
+    order = null;
+    items = [];
   }
 }
