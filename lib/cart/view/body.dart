@@ -72,7 +72,7 @@ class BodyState extends State<Body> {
             );
           },
           onFailure: (context, state) {
-            DisplayError(
+            displayError(
               context: context,
               error: state.failureResponse,
             );

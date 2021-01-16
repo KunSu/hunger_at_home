@@ -3,6 +3,7 @@ import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
+import 'package:fe/order_assign/view/order_assign_page.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
 import 'package:fe/order_detail/order_detail.dart';
 import 'package:fe/order_edit/order_edit.dart';
@@ -280,9 +281,21 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 child: TextButton(
                   child: const Text('Approve'),
                   onPressed: () {
-                    var newOrder = widget.order.copyWith(status: 'approved');
-                    BlocProvider.of<OrdersBloc>(context)
-                        .add(OrderUpdated(newOrder));
+                    if (widget.order.type == 'request') {
+                      OrderUpdateDialog(
+                          context: context,
+                          order: widget.order,
+                          text:
+                              'Please confirm if you want to approve the order.',
+                          title: 'Confirmation',
+                          status: 'approved');
+                    } else {
+                      Navigator.pushNamed(
+                        context,
+                        OrderAssignPage.routeName,
+                        arguments: ScreenArguments(order: widget.order),
+                      );
+                    }
                   },
                 ),
               ),

@@ -16,6 +16,7 @@ import 'package:fe/welcome/view/welcome_page.dart';
 import 'package:flutter/material.dart';
 
 import 'account/view/account_page.dart';
+import 'order_assign/view/order_assign_page.dart';
 import 'order_delivery/view/order_delivery_page.dart';
 import 'order_edit/view/order_edit_page.dart';
 import 'order_pickup/view/order_pickup_page.dart';
@@ -40,4 +41,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderDeliveryPage.routeName: (context) => OrderDeliveryPage(),
   AdminOrderPage.routeName: (context) => AdminOrderPage(),
   OrderEditPage.routeName: (context) => OrderEditPage(),
+  OrderAssignPage.routeName: (context) => OrderAssignPage(),
 };

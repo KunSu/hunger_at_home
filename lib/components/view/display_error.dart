@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void DisplayError({
+void displayError({
   @required BuildContext context,
   @required String error,
 }) {
