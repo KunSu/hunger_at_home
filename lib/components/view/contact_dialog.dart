@@ -35,9 +35,18 @@ Future<void> contactDialog({
                             title: const Text('Company'),
                             subtitle: Text('${snapshot.data.companyName}'),
                           ),
-                          ListTile(
-                            title: const Text('Pick Up Date'),
-                            subtitle: Text('${snapshot.data.pickupTime}'),
+                          Visibility(
+                            visible: snapshot.data.orderType != 'dropoff',
+                            child: ListTile(
+                              title: const Text('Pick Up Date'),
+                              subtitle: Text('${snapshot.data.pickupTime}'),
+                            ),
+                          ),
+                          Visibility(
+                            visible: snapshot.data.orderType == 'dropoff',
+                            child: const ListTile(
+                              title: Text('Drop off order'),
+                            ),
                           ),
                           ListTile(
                             title: const Text('Contact Number'),

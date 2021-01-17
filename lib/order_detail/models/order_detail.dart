@@ -11,6 +11,7 @@ class OrderDetail extends Equatable {
     this.state,
     this.zipCode,
     this.pickupTime,
+    this.orderType,
   });
 
   factory OrderDetail.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class OrderDetail extends Equatable {
       state: json['state'],
       zipCode: json['zipCode'],
       pickupTime: json['pickupTime'],
+      orderType: json['orderType'],
     );
   }
 
@@ -32,8 +34,17 @@ class OrderDetail extends Equatable {
   final String state;
   final String zipCode;
   final String pickupTime;
+  final String orderType;
 
   @override
-  List<Object> get props =>
-      [phoneNumber, companyName, address, city, state, zipCode, pickupTime];
+  List<Object> get props => [
+        phoneNumber,
+        companyName,
+        address,
+        city,
+        state,
+        zipCode,
+        pickupTime,
+        orderType,
+      ];
 }
