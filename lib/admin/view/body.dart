@@ -18,7 +18,7 @@ class Body extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: _AdminOrderList(orderType: 'donation'),
+              child: _AdminOrderList(orderType: 'donation,dropoff'),
             ),
           ),
           const Text('Request orders'),
@@ -46,7 +46,7 @@ class _AdminOrderList extends StatelessWidget {
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
         orderType: orderType,
-        status: <String>{},
+        status: <String>['all'],
       ),
       builder: (context, AsyncSnapshot<List<Order>> snapshot) {
         // TODO: Add pull to refresh

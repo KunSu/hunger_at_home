@@ -26,15 +26,15 @@ class OrdersRepository {
     switch (user.userIdentity) {
       case 'donor':
         url =
-            '${FlutterConfig.get('BASE_URL')}/donor/${user.id}/status/$status/amount/100';
+            '${FlutterConfig.get('BASE_URL')}/donor/${user.id}/orders?status=all&amount=100';
         break;
       case 'employee':
         url =
-            '${FlutterConfig.get('BASE_URL')}/employee/${user.id}/status/$status/amount/100';
+            '${FlutterConfig.get('BASE_URL')}/employee/${user.id}/orders?status=all&amount=100';
         break;
       case 'recipient':
         url =
-            '${FlutterConfig.get('BASE_URL')}/recipient/${user.id}/status/$status/amount/100';
+            '${FlutterConfig.get('BASE_URL')}/recipient/${user.id}/orders?status=all&amount=100';
         break;
       default:
         break;
@@ -115,57 +115,11 @@ class OrdersRepository {
   Future<List<Order>> loadOrdersByAdmin({
     @required String userID,
     @required String orderType,
-    @required Set<String> status,
+    @required List<String> status,
   }) async {
-// TODO: backend API handle mutiple status
-
-    if (orderType == 'all') {
-      var url =
-          '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/donation/status/ ';
-
-      var response = await get(url);
-
-      var body = json.decode(response.body) as List;
-      var orders = <Order>[];
-      if (response.statusCode == 200) {
-        if (status.isNotEmpty) {
-          for (dynamic e in body) {
-            var newOrder = Order.fromJson(e);
-            // if (status.contains(newOrder.status)) {
-            orders.add(newOrder);
-            // }
-          }
-        } else {
-          orders = body.map((e) => Order.fromJson(e)).toList();
-        }
-      }
-
-      url =
-          '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/request/status/ ';
-      response = await get(url);
-      body = json.decode(response.body) as List;
-      if (response.statusCode == 200) {
-        if (status.isNotEmpty) {
-          for (dynamic e in body) {
-            var newOrder = Order.fromJson(e);
-            if (status.contains(newOrder.status)) {
-              orders.add(newOrder);
-            }
-          }
-        } else {
-          for (dynamic e in body) {
-            var newOrder = Order.fromJson(e);
-            // if (status.contains(newOrder.status)) {
-            orders.add(newOrder);
-            // }
-          }
-        }
-      }
-      return orders;
-    }
-
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders/$orderType/status/ ';
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=$orderType&status=${status.join(',')}';
+
     print(url);
     var response = await get(url);
 
@@ -174,17 +128,7 @@ class OrdersRepository {
 
     var orders = <Order>[];
     if (response.statusCode == 200) {
-      // TODO: backend API handle mutiple status
-      if (status.isNotEmpty) {
-        for (dynamic e in body) {
-          var newOrder = Order.fromJson(e);
-          if (status.contains(newOrder.status)) {
-            orders.add(newOrder);
-          }
-        }
-      } else {
-        orders = body.map((e) => Order.fromJson(e)).toList();
-      }
+      orders = body.map((e) => Order.fromJson(e)).toList();
     }
     return orders;
   }

@@ -42,7 +42,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
         await ordersRepository.loadOrdersByAdmin(
           userID: authenticationRepository.user.id,
           orderType: 'all',
-          status: <String>{},
+          status: <String>['all'],
         ).then((value) => orders = value);
         yield OrdersLoadSuccess(
           orders,

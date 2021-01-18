@@ -51,7 +51,7 @@ class AdminOrderActionList extends StatefulWidget {
     this.status,
   }) : super(key: key);
   final String orderType;
-  final Set<String> status;
+  final List<String> status;
 
   @override
   _AdminOrderActionListState createState() =>
@@ -61,7 +61,7 @@ class AdminOrderActionList extends StatefulWidget {
 class _AdminOrderActionListState extends State<AdminOrderActionList> {
   _AdminOrderActionListState({this.orderType, this.status});
   final String orderType;
-  final Set<String> status;
+  final List<String> status;
 
   @override
   void didChangeDependencies() {
@@ -162,7 +162,7 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
   bool getOrderVisibility({
     @required Order order,
     @required String orderType,
-    @required Set<String> status,
+    @required List<String> status,
   }) {
     if (order.type != orderType ||
         (status.isNotEmpty && !status.contains(order.status))) {
