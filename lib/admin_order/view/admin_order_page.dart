@@ -281,7 +281,13 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 child: TextButton(
                   child: const Text('Approve'),
                   onPressed: () {
-                    if (widget.order.type == 'request') {
+                    if (widget.order.type == 'donation') {
+                      Navigator.pushNamed(
+                        context,
+                        OrderAssignPage.routeName,
+                        arguments: ScreenArguments(order: widget.order),
+                      );
+                    } else {
                       OrderUpdateDialog(
                           context: context,
                           order: widget.order,
@@ -289,12 +295,6 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                               'Please confirm if you want to approve the order.',
                           title: 'Confirmation',
                           status: 'approved');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderAssignPage.routeName,
-                        arguments: ScreenArguments(order: widget.order),
-                      );
                     }
                   },
                 ),
@@ -316,6 +316,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
               ),
               Visibility(
                 visible: widget.order.status == 'approved' &&
+                    widget.order.type != 'dropoff' &&
                     (identity == 'recipient' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Receive'),
@@ -331,6 +332,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
               ),
               Visibility(
                 visible: widget.order.status == 'approved' &&
+                    widget.order.type != 'dropoff' &&
                     (identity == 'employee' || identity == 'admin'),
                 child: TextButton(
                   child: const Text('Pick up'),
@@ -343,6 +345,31 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                               'Please confirm if you have picked up the order.',
                           title: 'Confirmation',
                           status: 'pickedup');
+                    } else {
+                      Navigator.pushNamed(
+                        context,
+                        OrderDeliveryPage.routeName,
+                        arguments: ScreenArguments(order: widget.order),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Visibility(
+                visible: widget.order.status == 'approved' &&
+                    widget.order.type == 'dropoff' &&
+                    (identity == 'employee' || identity == 'admin'),
+                child: TextButton(
+                  child: const Text('Droped off'),
+                  onPressed: () {
+                    if (identity == 'admin') {
+                      OrderUpdateDialog(
+                          context: context,
+                          order: widget.order,
+                          text:
+                              'Please confirm if you have received the drop off order.',
+                          title: 'Confirmation',
+                          status: 'dropedoff');
                     } else {
                       Navigator.pushNamed(
                         context,
