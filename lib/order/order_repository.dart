@@ -114,11 +114,11 @@ class OrdersRepository {
 
   Future<List<Order>> loadOrdersByAdmin({
     @required String userID,
-    @required String orderType,
-    @required List<String> status,
+    @required Set<String> orderType,
+    @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=$orderType&status=${status.join(',')}';
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=${orderType.toList().join(',')}&status=${status.toList().join(',')}';
 
     print(url);
     var response = await get(url);

@@ -50,8 +50,8 @@ class AdminOrderActionList extends StatefulWidget {
     this.orderType,
     this.status,
   }) : super(key: key);
-  final String orderType;
-  final List<String> status;
+  final Set<String> orderType;
+  final Set<String> status;
 
   @override
   _AdminOrderActionListState createState() =>
@@ -60,15 +60,15 @@ class AdminOrderActionList extends StatefulWidget {
 
 class _AdminOrderActionListState extends State<AdminOrderActionList> {
   _AdminOrderActionListState({this.orderType, this.status});
-  final String orderType;
-  final List<String> status;
+  final Set<String> orderType;
+  final Set<String> status;
 
   @override
   void didChangeDependencies() {
     RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-        orderType: 'all',
+        orderType: <String>{'all'},
         status: status);
   }
 
@@ -161,11 +161,11 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
 
   bool getOrderVisibility({
     @required Order order,
-    @required String orderType,
-    @required List<String> status,
+    @required Set<String> orderType,
+    @required Set<String> status,
   }) {
-    if (order.type != orderType ||
-        (status.isNotEmpty && !status.contains(order.status))) {
+    if ((!orderType.contains('all') && !orderType.contains(order.type)) ||
+        (!status.contains('all') && !orderType.contains(order.type))) {
       return false;
     }
     return true;

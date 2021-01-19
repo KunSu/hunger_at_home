@@ -54,8 +54,8 @@ class AccountPage extends StatelessWidget {
                   AdminOrderPage.routeName,
                   arguments: ScreenArguments(
                     screenTitle: 'Donation orders',
-                    orderType: 'donation,droppff',
-                    status: <String>['all'],
+                    orderType: <String>{'donation', 'dropoff'},
+                    status: <String>{'all'},
                   ),
                 );
               },
@@ -76,8 +76,8 @@ class AccountPage extends StatelessWidget {
                   AdminOrderPage.routeName,
                   arguments: ScreenArguments(
                     screenTitle: 'Request orders',
-                    orderType: 'request',
-                    status: <String>['all'],
+                    orderType: <String>{'request'},
+                    status: <String>{'all'},
                   ),
                 );
               },
@@ -98,13 +98,13 @@ class AccountPage extends StatelessWidget {
                   AdminOrderPage.routeName,
                   arguments: ScreenArguments(
                     screenTitle: 'Driver orders',
-                    orderType: 'donation',
-                    status: <String>[
+                    orderType: <String>{'donation'},
+                    status: <String>{
                       'approved',
                       'confirmed',
                       'pickedup',
                       'delivered',
-                    ],
+                    },
                   ),
                 );
               },
