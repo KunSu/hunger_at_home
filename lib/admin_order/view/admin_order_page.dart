@@ -151,7 +151,9 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
             //     }
             //   },
             // );
-            return const Text('OrdersLoadFailure');
+            // return const Text('OrdersLoadFailure');
+            // TODO: better handle error
+            return Text(state.error.toString());
           }
           return const Text('Something went wrong');
         },
@@ -369,7 +371,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                           text:
                               'Please confirm if you have received the drop off order.',
                           title: 'Confirmation',
-                          status: 'dropedoff');
+                          status: 'droppedoff');
                     } else {
                       Navigator.pushNamed(
                         context,
