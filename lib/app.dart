@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/address/address.dart';
 import 'package:fe/admin/view/admin_page.dart';
@@ -12,6 +14,7 @@ import 'package:fe/employee/employee.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/welcome/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/login/login.dart';
@@ -148,6 +151,10 @@ class _AppViewState extends State<AppView> {
                     WelcomePage.route(),
                     (route) => false,
                   );
+
+                  // TODO: better handle
+                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  exit(0);
                   break;
                 default:
                   break;
