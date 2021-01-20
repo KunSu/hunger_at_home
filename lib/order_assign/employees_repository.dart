@@ -57,7 +57,26 @@ class EmployeesRepository {
     if (response.statusCode == 200) {
       return body['message'];
     } else {
-      throw (body['message']);
+      throw body['message'];
+    }
+  }
+
+  Future<User> approveNewUser({
+    @required String userID,
+    @required String email,
+    @required String status,
+  }) async {
+    var url = '${FlutterConfig.get('BASE_URL')}/user/$userID/$email/$status';
+    print(url);
+
+    var headers = <String, String>{'Content-type': 'application/json'};
+    var response = await patch(url, headers: headers);
+
+    var body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      return User.fromJson(body);
+    } else {
+      throw body['message'];
     }
   }
 }

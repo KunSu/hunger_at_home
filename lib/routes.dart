@@ -10,6 +10,7 @@ import 'package:fe/login/view/login_page.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_detail/view/order_detail_page.dart';
 import 'package:fe/pantry/view/pantry_page.dart';
+import 'package:fe/pending_registraion/view/pending_registraion_page.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/register/view/register_page.dart';
 import 'package:fe/welcome/view/welcome_page.dart';
@@ -42,4 +43,5 @@ final Map<String, WidgetBuilder> routes = {
   AdminOrderPage.routeName: (context) => AdminOrderPage(),
   OrderEditPage.routeName: (context) => OrderEditPage(),
   OrderAssignPage.routeName: (context) => OrderAssignPage(),
+  PendingRegistrationPage.routeName: (context) => PendingRegistrationPage(),
 };

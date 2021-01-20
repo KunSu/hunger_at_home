@@ -6,7 +6,9 @@ import 'package:fe/admin/view/admin_page.dart';
 import 'package:fe/cart/bloc/cartform_bloc.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/company/company.dart';
+import 'package:fe/pending_registraion/pending_registraion.dart';
 import 'package:fe/order/order.dart';
+import 'package:fe/order_assign/order_assign.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
@@ -45,6 +47,9 @@ class App extends StatelessWidget {
             ),
             RepositoryProvider<OrdersRepository>(
               create: (context) => OrdersRepository(),
+            ),
+            RepositoryProvider<EmployeesRepository>(
+              create: (context) => EmployeesRepository(),
             ),
           ],
           child: AppView(),
@@ -103,6 +108,12 @@ class _AppViewState extends State<AppView> {
             authenticationRepository:
                 RepositoryProvider.of<AuthenticationRepository>(context),
           ),
+        ),
+        BlocProvider<EmployeesBloc>(
+          create: (_) => EmployeesBloc(
+              employeesRepository:
+                  RepositoryProvider.of<EmployeesRepository>(context))
+            ..add(EmployeesLoaded()),
         ),
       ],
       child: MaterialApp(
