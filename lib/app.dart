@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
 import 'package:fe/login/login.dart';
 
+import 'home/view/home_page.dart';
 import 'routes.dart';
 
 class App extends StatelessWidget {
@@ -134,6 +135,13 @@ class _AppViewState extends State<AppView> {
             listener: (context, state) {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
+                  if (state.user.status != 'approved') {
+                    _navigator.pushAndRemoveUntil<void>(
+                      HomePage.route(),
+                      (route) => false,
+                    );
+                    break;
+                  }
                   if ('recipient' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       RecipientPage.route(),

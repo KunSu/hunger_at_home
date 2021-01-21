@@ -8,17 +8,17 @@ import 'body.dart';
 class LoginPage extends StatelessWidget {
   static String routeName = '/login';
 
-  // static Route route() {
-  //   return MaterialPageRoute<LoginPage>(
-  //     builder: (context) => BlocProvider.value(
-  //       value: LoginBloc(
-  //         authenticationRepository:
-  //             RepositoryProvider.of<AuthenticationRepository>(context),
-  //       ),
-  //       child: LoginPage(),
-  //     ),
-  //   );
-  // }
+  static Route route() {
+    return MaterialPageRoute<LoginPage>(
+      builder: (context) => BlocProvider.value(
+        value: LoginBloc(
+          authenticationRepository:
+              RepositoryProvider.of<AuthenticationRepository>(context),
+        ),
+        child: LoginPage(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
