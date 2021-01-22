@@ -8,7 +8,6 @@ import 'package:fe/cart/cart.dart';
 import 'package:fe/company/company.dart';
 import 'package:fe/pending_registraion/pending_registraion.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_assign/order_assign.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
 import 'package:fe/donor/donor.dart';
