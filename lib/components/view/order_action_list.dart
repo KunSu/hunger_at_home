@@ -3,6 +3,7 @@ import 'package:fe/admin_order/view/admin_order_page.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
+import 'package:fe/components/view/dialog/order_update_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
 import 'package:fe/order_detail/view/order_detail_page.dart';
@@ -156,7 +157,7 @@ class OrderActionView extends StatelessWidget {
                 child: TextButton(
                   child: const Text('Withdraw'),
                   onPressed: () {
-                    OrderUpdateDialog(
+                    orderUpdateDialog(
                         context: context,
                         order: order,
                         text:
@@ -173,7 +174,7 @@ class OrderActionView extends StatelessWidget {
                   child: const Text('Pick up'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: order,
                           text:
@@ -197,7 +198,7 @@ class OrderActionView extends StatelessWidget {
                   child: const Text('Deliver'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: order,
                           text:
@@ -220,7 +221,7 @@ class OrderActionView extends StatelessWidget {
               //   child: TextButton(
               //     child: const Text('Receive'),
               //     onPressed: () {
-              //       OrderUpdateDialog(
+              //       orderUpdateDialog(
               //           context: context,
               //           order: order,
               //           text: 'Please confirm if you have received the order.',
@@ -235,39 +236,4 @@ class OrderActionView extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<void> _showMyDialog(context, order) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirmation'),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              const Text('Please confirm if you have received the order.'),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () {
-              var newOrder = order.copyWith(status: 'received');
-              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

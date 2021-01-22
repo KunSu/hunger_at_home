@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/ult/status_color.dart';
 import 'package:fe/components/view/contact_dialog.dart';
+import 'package:fe/components/view/dialog/order_update_dialog.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_assign/view/order_assign_page.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
@@ -290,7 +291,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                         arguments: ScreenArguments(order: widget.order),
                       );
                     } else {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: widget.order,
                           text:
@@ -306,7 +307,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 child: TextButton(
                   child: const Text('Withdraw'),
                   onPressed: () {
-                    OrderUpdateDialog(
+                    orderUpdateDialog(
                         context: context,
                         order: widget.order,
                         text:
@@ -323,7 +324,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 child: TextButton(
                   child: const Text('Receive'),
                   onPressed: () {
-                    OrderUpdateDialog(
+                    orderUpdateDialog(
                         context: context,
                         order: widget.order,
                         text: 'Please confirm if you have received the order.',
@@ -340,7 +341,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                   child: const Text('Pick up'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: widget.order,
                           text:
@@ -365,7 +366,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                   child: const Text('Droped off'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: widget.order,
                           text:
@@ -389,7 +390,7 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                   child: const Text('Deliver'),
                   onPressed: () {
                     if (identity == 'admin') {
-                      OrderUpdateDialog(
+                      orderUpdateDialog(
                           context: context,
                           order: widget.order,
                           text:
@@ -412,45 +413,4 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
       ),
     );
   }
-}
-
-Future<void> OrderUpdateDialog({
-  @required BuildContext context,
-  @required Order order,
-  @required String title,
-  @required String text,
-  @required String status,
-}) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(text),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () {
-              var newOrder = order.copyWith(status: status);
-              Navigator.of(context).pop();
-              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
-            },
-          ),
-        ],
-      );
-    },
-  );
 }
