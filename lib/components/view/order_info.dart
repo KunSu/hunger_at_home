@@ -31,6 +31,15 @@ class OrderInfo extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
+                    text: '${snapshot.data.orderType}\n',
+                  ),
+                  const TextSpan(
+                    text: '\nCompany: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
                     text: '${snapshot.data.companyName}\n',
                   ),
                   const TextSpan(

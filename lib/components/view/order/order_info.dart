@@ -24,6 +24,10 @@ Widget orderInfoView(Order order, BuildContext context) {
                     title: const Text('Company'),
                     subtitle: Text('${snapshot.data.companyName}'),
                   ),
+                  ListTile(
+                    title: const Text('Order Type'),
+                    subtitle: Text('${snapshot.data.orderType}'),
+                  ),
                   Visibility(
                     visible: snapshot.data.orderType != 'dropoff',
                     child: ListTile(

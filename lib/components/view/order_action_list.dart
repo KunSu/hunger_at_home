@@ -1,14 +1,11 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/admin_order/admin_order.dart';
-import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/ult/status_color.dart';
-import 'package:fe/components/view/contact_dialog.dart';
-import 'package:fe/components/view/dialog/order_update_dialog.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_delivery/view/order_delivery_page.dart';
-import 'package:fe/order_detail/view/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+
+import 'order/order_action.dart';
 
 class OrderActionList extends StatelessWidget {
   @override
@@ -50,7 +47,7 @@ class OrderActionList extends StatelessWidget {
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) =>
-                        AdminOrderActionView(order: snapshot.data[index]),
+                        OrderActionView(order: snapshot.data[index]),
                   );
                 } else if (snapshot.hasError) {
                   return Text(snapshot.error);
@@ -72,9 +69,6 @@ class OrderActionView extends StatelessWidget {
   final Order order;
   @override
   Widget build(BuildContext context) {
-    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
-        .user
-        .userIdentity;
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -86,6 +80,15 @@ class OrderActionView extends StatelessWidget {
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
+                  const TextSpan(
+                    text: 'Order Type: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '${order.type}\n',
+                  ),
                   const TextSpan(
                     text: 'Order date: ',
                     style: TextStyle(
@@ -130,107 +133,8 @@ class OrderActionView extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: const Text('Detail'),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    OrderDetailPage.routeName,
-                    arguments: ScreenArguments(order: order),
-                  );
-                },
-              ),
-              TextButton(
-                child: const Text('Contact'),
-                onPressed: () {
-                  contactDialog(
-                    context: context,
-                    order: order,
-                  );
-                },
-              ),
-              Visibility(
-                visible: order.status == 'pending',
-                child: TextButton(
-                  child: const Text('Withdraw'),
-                  onPressed: () {
-                    orderUpdateDialog(
-                        context: context,
-                        order: order,
-                        text:
-                            'Please confirm if you want to withdraw the order.',
-                        title: 'Confirmation',
-                        status: 'withdraw');
-                  },
-                ),
-              ),
-              Visibility(
-                visible: order.status == 'approved' &&
-                    (identity == 'employee' || identity == 'admin'),
-                child: TextButton(
-                  child: const Text('Pick up'),
-                  onPressed: () {
-                    if (identity == 'admin') {
-                      orderUpdateDialog(
-                          context: context,
-                          order: order,
-                          text:
-                              'Please confirm if you have picked up the order.',
-                          title: 'Confirmation',
-                          status: 'pickedup');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: order),
-                      );
-                    }
-                  },
-                ),
-              ),
-              Visibility(
-                visible: order.status == 'pickedup' &&
-                    (identity == 'employee' || identity == 'admin'),
-                child: TextButton(
-                  child: const Text('Deliver'),
-                  onPressed: () {
-                    if (identity == 'admin') {
-                      orderUpdateDialog(
-                          context: context,
-                          order: order,
-                          text:
-                              'Please confirm if you have delivered the order.',
-                          title: 'Confirmation',
-                          status: 'delivered');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: order),
-                      );
-                    }
-                  },
-                ),
-              ),
-              // Visibility(
-              //   visible: order.status == 'approved' &&
-              //       (identity == 'recipient' || identity == 'admin'),
-              //   child: TextButton(
-              //     child: const Text('Receive'),
-              //     onPressed: () {
-              //       orderUpdateDialog(
-              //           context: context,
-              //           order: order,
-              //           text: 'Please confirm if you have received the order.',
-              //           title: 'Confirmation',
-              //           status: 'received');
-              //     },
-              //   ),
-              // ),
-            ],
+          OrderAction(
+            order: order,
           ),
         ],
       ),

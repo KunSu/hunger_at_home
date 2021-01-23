@@ -105,6 +105,7 @@ class AccountPage extends StatelessWidget {
                       'confirmed',
                       'pickedup',
                       'delivered',
+                      'cancelled',
                     },
                   ),
                 );

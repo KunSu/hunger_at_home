@@ -162,10 +162,8 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
     @required Set<String> orderType,
     @required Set<String> status,
   }) {
-    if ((!orderType.contains('all') && !orderType.contains(order.type)) ||
-        (!status.contains('all') && !orderType.contains(order.type))) {
-      return false;
-    }
-    return true;
+    if ((orderType.contains('all') || orderType.contains(order.type)) &&
+        (status.contains('all') || status.contains(order.status))) return true;
+    return false;
   }
 }
