@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
-import 'package:fe/login/login.dart';
 
 import 'home/view/home_page.dart';
 import 'routes.dart';
@@ -102,12 +101,6 @@ class _AppViewState extends State<AppView> {
                   RepositoryProvider.of<AuthenticationRepository>(context),
               ordersRepository:
                   RepositoryProvider.of<OrdersRepository>(context)),
-        ),
-        BlocProvider<LoginBloc>(
-          create: (_) => LoginBloc(
-            authenticationRepository:
-                RepositoryProvider.of<AuthenticationRepository>(context),
-          ),
         ),
         BlocProvider<EmployeesBloc>(
           create: (_) => EmployeesBloc(

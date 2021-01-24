@@ -11,7 +11,7 @@ class LoginPage extends StatelessWidget {
   static Route route() {
     return MaterialPageRoute<LoginPage>(
       builder: (context) => BlocProvider.value(
-        value: LoginBloc(
+        value: LoginFormBloc(
           authenticationRepository:
               RepositoryProvider.of<AuthenticationRepository>(context),
         ),
