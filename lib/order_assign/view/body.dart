@@ -61,7 +61,7 @@ class _BodyState extends State<Body> {
           },
           child: Column(
             children: [
-              orderInfoView(widget.order, context),
+              OrderInfoView(order: order),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

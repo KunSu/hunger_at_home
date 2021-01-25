@@ -38,6 +38,10 @@ dependencies:
   # Phone call
   url_launcher: ^5.7.10
 
+  # Map Nagivation
+  map_launcher: ^1.1.2
+  geocoding: ^1.0.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
