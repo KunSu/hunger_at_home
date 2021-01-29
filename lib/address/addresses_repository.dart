@@ -25,7 +25,7 @@ class AddressesRepository {
 
       addresses.clear();
       addresses.addAll(body.map((e) => Address.fromJson(e)).toList());
-      return addresses.map((e) => e.address).toList();
+      return addresses.map((e) => '${e.address}, ${e.city}').toList();
     } else {
       var body = json.decode(response.body);
       throw (body['message']);

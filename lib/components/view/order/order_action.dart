@@ -6,6 +6,7 @@ import 'package:fe/order/order.dart';
 import 'package:fe/order_assign/view/order_assign_page.dart';
 import 'package:fe/order_delivery/view/order_delivery_page.dart';
 import 'package:fe/order_detail/view/order_detail_page.dart';
+import 'package:fe/order_edit/view/order_edit_page.dart';
 import 'package:fe/order_pickup/view/order_pickup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,16 +61,11 @@ class _OrderActionState extends State<OrderAction> {
           child: TextButton(
             child: const Text('Edit'),
             onPressed: () {
-              Scaffold.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('This feature will be implemented soon'),
-                ),
+              Navigator.pushNamed(
+                context,
+                OrderEditPage.routeName,
+                arguments: ScreenArguments(order: widget.order),
               );
-              // Navigator.pushNamed(
-              //   context,
-              //   OrderEditPage.routeName,
-              //   arguments: ScreenArguments(order: widget.order),
-              // );
             },
           ),
         ),

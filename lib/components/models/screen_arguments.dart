@@ -6,10 +6,12 @@ class ScreenArguments {
     this.orderType,
     this.status,
     this.order,
+    this.item,
   });
 
   final String screenTitle;
   final Set<String> orderType;
   final Set<String> status;
   final Order order;
+  final Item item;
 }
