@@ -114,11 +114,11 @@ class OrdersRepository {
 
   Future<List<Order>> loadOrdersByAdmin({
     @required String userID,
-    @required String orderType,
-    @required List<String> status,
+    @required Set<String> orderType,
+    @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=$orderType&status=${status.join(',')}';
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=${orderType.toList().join(',')}&status=${status.toList().join(',')}';
 
     print(url);
     var response = await get(url);
@@ -151,21 +151,43 @@ class OrdersRepository {
     }
   }
 
-  // Future<Order> editOrder({Order order, String orderID, String status}) async {
-  //   var url =
-  //       '${FlutterConfig.get('BASE_URL')}/users/$userID/orders/$orderID/status/$status';
-  //   print(url);
+  Future<Order> editOrder({
+    @required String userID,
+    @required String addressID,
+    @required String orderType,
+    @required String pickUpTime,
+    @required Order order,
+  }) async {
+    var url = '${FlutterConfig.get('BASE_URL')}/order';
+    print(url);
 
-  //   var headers = <String, String>{'Content-type': 'application/json'};
+    var headers = <String, String>{'Content-type': 'application/json'};
 
-  //   var response = await patch(url, headers: headers);
+    final Map<String, dynamic> jsonData = Map<String, dynamic>();
+    jsonData['userID'] = userID;
+    jsonData['orderID'] = order.id;
+    jsonData['addressID'] = addressID;
+    jsonData['orderType'] = orderType;
+    jsonData['note'] = 'NA';
+    if (orderType != 'dropoff') {
+      jsonData['pickUpTime'] = pickUpTime;
+    }
+    jsonData['items'] = order.items.map((e) => e.toJSON()).toList();
 
-  //   var body = json.decode(response.body);
-  //   if (response.statusCode == 200) {
-  //     var newOrder = Order.fromJson(body);
-  //     return newOrder;
-  //   } else {
-  //     throw (body['message']);
-  //   }
-  // }
+    print(json.encode(jsonData));
+    var response =
+        await patch(url, headers: headers, body: json.encode(jsonData));
+
+    var body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      var newOrder = Order.fromJson(body);
+      //TODO: simplify
+      for (var item in body['items'] as List) {
+        newOrder.items.add(Item.fromJson(item));
+      }
+      return newOrder;
+    } else {
+      throw body['message'];
+    }
+  }
 }

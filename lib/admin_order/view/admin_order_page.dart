@@ -1,12 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/admin_order/view/admin_order_action_view.dart';
 import 'package:fe/components/models/screen_arguments.dart';
-import 'package:fe/components/ult/status_color.dart';
-import 'package:fe/components/view/contact_dialog.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_assign/view/order_assign_page.dart';
-import 'package:fe/order_delivery/view/order_delivery_page.dart';
-import 'package:fe/order_detail/order_detail.dart';
-import 'package:fe/order_edit/order_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,8 +45,8 @@ class AdminOrderActionList extends StatefulWidget {
     this.orderType,
     this.status,
   }) : super(key: key);
-  final String orderType;
-  final List<String> status;
+  final Set<String> orderType;
+  final Set<String> status;
 
   @override
   _AdminOrderActionListState createState() =>
@@ -60,15 +55,16 @@ class AdminOrderActionList extends StatefulWidget {
 
 class _AdminOrderActionListState extends State<AdminOrderActionList> {
   _AdminOrderActionListState({this.orderType, this.status});
-  final String orderType;
-  final List<String> status;
+  final Set<String> orderType;
+  final Set<String> status;
 
   @override
-  void didChangeDependencies() {
-    RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    await RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-        orderType: 'all',
+        orderType: <String>{'all'},
         status: status);
   }
 
@@ -151,7 +147,9 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
             //     }
             //   },
             // );
-            return const Text('OrdersLoadFailure');
+            // return const Text('OrdersLoadFailure');
+            // TODO: better handle error
+            return Text(state.error.toString());
           }
           return const Text('Something went wrong');
         },
@@ -161,267 +159,11 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
 
   bool getOrderVisibility({
     @required Order order,
-    @required String orderType,
-    @required List<String> status,
+    @required Set<String> orderType,
+    @required Set<String> status,
   }) {
-    if (order.type != orderType ||
-        (status.isNotEmpty && !status.contains(order.status))) {
-      return false;
-    }
-    return true;
+    if ((orderType.contains('all') || orderType.contains(order.type)) &&
+        (status.contains('all') || status.contains(order.status))) return true;
+    return false;
   }
-}
-
-class AdminOrderActionView extends StatefulWidget {
-  const AdminOrderActionView({Key key, this.order}) : super(key: key);
-  final Order order;
-
-  @override
-  _AdminOrderActionViewState createState() => _AdminOrderActionViewState();
-}
-
-class _AdminOrderActionViewState extends State<AdminOrderActionView> {
-  @override
-  Widget build(BuildContext context) {
-    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
-        .user
-        .userIdentity;
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text('Order #: ${widget.order.id}'),
-            subtitle: RichText(
-              text: TextSpan(
-                style: DefaultTextStyle.of(context).style,
-                children: <TextSpan>[
-                  const TextSpan(
-                    text: 'Order date: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${widget.order.submitedDateAndTime}\n',
-                  ),
-                  const TextSpan(
-                    text: 'Address: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${widget.order.address}\n',
-                  ),
-                  const TextSpan(
-                    text: 'Pick up date: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${widget.order.pickupDateAndTime}\n',
-                  ),
-                  const TextSpan(
-                    text: 'Status: ',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(
-                    text: '${widget.order.status}\n',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: getStatusColor(status: widget.order.status),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: const Text('Detail'),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    OrderDetailPage.routeName,
-                    arguments: ScreenArguments(order: widget.order),
-                  );
-                },
-              ),
-              TextButton(
-                child: const Text('Contact'),
-                onPressed: () {
-                  contactDialog(
-                    context: context,
-                    order: widget.order,
-                  );
-                },
-              ),
-              // Visibility(
-              //   visible: identity == 'admin',
-              //   child: TextButton(
-              //     child: const Text('Edit'),
-              //     onPressed: () {
-              //       Navigator.pushNamed(
-              //         context,
-              //         OrderEditPage.routeName,
-              //         arguments: ScreenArguments(order: widget.order),
-              //       );
-              //     },
-              //   ),
-              // ),
-              Visibility(
-                visible:
-                    widget.order.status == 'pending' && identity == 'admin',
-                child: TextButton(
-                  child: const Text('Approve'),
-                  onPressed: () {
-                    if (widget.order.type == 'request') {
-                      OrderUpdateDialog(
-                          context: context,
-                          order: widget.order,
-                          text:
-                              'Please confirm if you want to approve the order.',
-                          title: 'Confirmation',
-                          status: 'approved');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderAssignPage.routeName,
-                        arguments: ScreenArguments(order: widget.order),
-                      );
-                    }
-                  },
-                ),
-              ),
-              Visibility(
-                visible: widget.order.status == 'pending',
-                child: TextButton(
-                  child: const Text('Withdraw'),
-                  onPressed: () {
-                    OrderUpdateDialog(
-                        context: context,
-                        order: widget.order,
-                        text:
-                            'Please confirm if you want to withdraw the order.',
-                        title: 'Confirmation',
-                        status: 'withdraw');
-                  },
-                ),
-              ),
-              Visibility(
-                visible: widget.order.status == 'approved' &&
-                    (identity == 'recipient' || identity == 'admin'),
-                child: TextButton(
-                  child: const Text('Receive'),
-                  onPressed: () {
-                    OrderUpdateDialog(
-                        context: context,
-                        order: widget.order,
-                        text: 'Please confirm if you have received the order.',
-                        title: 'Confirmation',
-                        status: 'received');
-                  },
-                ),
-              ),
-              Visibility(
-                visible: widget.order.status == 'approved' &&
-                    (identity == 'employee' || identity == 'admin'),
-                child: TextButton(
-                  child: const Text('Pick up'),
-                  onPressed: () {
-                    if (identity == 'admin') {
-                      OrderUpdateDialog(
-                          context: context,
-                          order: widget.order,
-                          text:
-                              'Please confirm if you have picked up the order.',
-                          title: 'Confirmation',
-                          status: 'pickedup');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: widget.order),
-                      );
-                    }
-                  },
-                ),
-              ),
-              Visibility(
-                visible: widget.order.status == 'pickedup' &&
-                    (identity == 'employee' || identity == 'admin'),
-                child: TextButton(
-                  child: const Text('Deliver'),
-                  onPressed: () {
-                    if (identity == 'admin') {
-                      OrderUpdateDialog(
-                          context: context,
-                          order: widget.order,
-                          text:
-                              'Please confirm if you have delivered the order.',
-                          title: 'Confirmation',
-                          status: 'delivered');
-                    } else {
-                      Navigator.pushNamed(
-                        context,
-                        OrderDeliveryPage.routeName,
-                        arguments: ScreenArguments(order: widget.order),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-Future<void> OrderUpdateDialog({
-  @required BuildContext context,
-  @required Order order,
-  @required String title,
-  @required String text,
-  @required String status,
-}) async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: <Widget>[
-              Text(text),
-            ],
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () {
-              var newOrder = order.copyWith(status: status);
-              Navigator.of(context).pop();
-              BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

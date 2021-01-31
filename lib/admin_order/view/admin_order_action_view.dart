@@ -1,87 +1,85 @@
-import 'package:fe/order/models/model.dart';
+import 'package:fe/components/ult/status_color.dart';
+import 'package:fe/components/view/order/order_action.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 
-class OrderInfo extends StatelessWidget {
-  const OrderInfo({
-    Key key,
-    @required this.order,
-    @required this.snapshot,
-  }) : super(key: key);
-
+class AdminOrderActionView extends StatefulWidget {
+  const AdminOrderActionView({Key key, this.order}) : super(key: key);
   final Order order;
-  final AsyncSnapshot<dynamic> snapshot;
 
   @override
+  _AdminOrderActionViewState createState() => _AdminOrderActionViewState();
+}
+
+class _AdminOrderActionViewState extends State<AdminOrderActionView> {
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(8.0),
+    return Card(
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            title: Text('Order # ${order.id}'),
+            title: Text('Order #: ${widget.order.id}'),
             subtitle: RichText(
               text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
                   const TextSpan(
-                    text: '\nCompany: ',
+                    text: 'Order Type: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   TextSpan(
-                    text: '${snapshot.data.orderType}\n',
+                    text: '${widget.order.type}\n',
                   ),
                   const TextSpan(
-                    text: '\nCompany: ',
+                    text: 'Order date: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   TextSpan(
-                    text: '${snapshot.data.companyName}\n',
+                    text: '${widget.order.submitedDateAndTime}\n',
                   ),
                   const TextSpan(
-                    text: '\nPick Up Date: ',
+                    text: 'Address: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   TextSpan(
-                    text: '${snapshot.data.pickupTime}\n',
+                    text: '${widget.order.address}\n',
                   ),
                   const TextSpan(
-                    text: '\nContact Number: ',
+                    text: 'Pick up date: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   TextSpan(
-                    // TODO: Phone Number is callable
-                    text: '${snapshot.data.phoneNumber}\n',
+                    text: '${widget.order.pickupDateAndTime}\n',
                   ),
                   const TextSpan(
-                    text: '\nAddress: ',
+                    text: 'Status: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   TextSpan(
-                    text:
-                        '${snapshot.data.address}, ${snapshot.data.city}, ${snapshot.data.state} ${snapshot.data.zipCode}\n',
+                    text: '${widget.order.status}\n',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: getStatusColor(status: widget.order.status),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-        ],
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.white,
-        boxShadow: [
-          const BoxShadow(color: Colors.grey, spreadRadius: 1),
+          OrderAction(
+            order: widget.order,
+          ),
         ],
       ),
     );

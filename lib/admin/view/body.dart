@@ -14,18 +14,18 @@ class Body extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           const UserInfo(),
-          const Text('Pick up orders'),
+          const Text('Donation orders'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: _AdminOrderList(orderType: 'donation,dropoff'),
+              child: _AdminOrderList(orderType: <String>{'donation,dropoff'}),
             ),
           ),
           const Text('Request orders'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: _AdminOrderList(orderType: 'request'),
+              child: _AdminOrderList(orderType: <String>{'request'}),
             ),
           ),
         ],
@@ -36,7 +36,7 @@ class Body extends StatelessWidget {
 
 class _AdminOrderList extends StatelessWidget {
   _AdminOrderList({Key key, this.orderType}) : super(key: key);
-  final String orderType;
+  final Set<String> orderType;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class _AdminOrderList extends StatelessWidget {
         userID:
             RepositoryProvider.of<AuthenticationRepository>(context).user.id,
         orderType: orderType,
-        status: <String>['all'],
+        status: <String>{'all'},
       ),
       builder: (context, AsyncSnapshot<List<Order>> snapshot) {
         // TODO: Add pull to refresh

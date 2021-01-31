@@ -23,7 +23,6 @@ class RecipientPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipient'),
-        // floating: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),

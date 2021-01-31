@@ -42,8 +42,7 @@ class AuthenticationRepository {
     var body = json.decode(response.body);
     print(body);
 
-    // TODO: stateCode should not be 201
-    if (statusCode == 200 || statusCode == 201) {
+    if (statusCode == 200) {
       user = User.fromJson(body);
       _controller.add(AuthenticationStatus.authenticated);
     } else {

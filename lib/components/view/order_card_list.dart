@@ -1,11 +1,6 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/ult/status_color.dart';
-import 'package:fe/components/view/contact_dialog.dart';
+import 'package:fe/components/view/order/order_action.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_delivery/view/order_delivery_page.dart';
-import 'package:fe/order_detail/view/order_detail_page.dart';
-import 'package:fe/order_pickup/view/view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
@@ -38,9 +33,6 @@ class OrderCardView extends StatelessWidget {
   final Order order;
   @override
   Widget build(BuildContext context) {
-    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
-        .user
-        .userIdentity;
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -69,55 +61,8 @@ class OrderCardView extends StatelessWidget {
               ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                child: const Text('Detail'),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    OrderDetailPage.routeName,
-                    arguments: ScreenArguments(order: order),
-                  );
-                },
-              ),
-              TextButton(
-                child: const Text('Contact'),
-                onPressed: () {
-                  contactDialog(
-                    context: context,
-                    order: order,
-                  );
-                },
-              ),
-              Visibility(
-                visible: order.status == 'approved' && identity == 'employee',
-                child: TextButton(
-                  child: const Text('Pick up'),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      OrderPickupPage.routeName,
-                      arguments: ScreenArguments(order: order),
-                    );
-                  },
-                ),
-              ),
-              Visibility(
-                visible: order.status == 'pickedup' && identity == 'employee',
-                child: TextButton(
-                  child: const Text('Deliver'),
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      OrderDeliveryPage.routeName,
-                      arguments: ScreenArguments(order: order),
-                    );
-                  },
-                ),
-              ),
-            ],
+          OrderAction(
+            order: order,
           ),
         ],
       ),

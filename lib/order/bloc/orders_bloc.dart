@@ -31,6 +31,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       yield* _mapOrderUpdatedToState(event);
     } else if (event is OrderDeleted) {
       yield* _mapOrderDeletedToState(event);
+    } else if (event is OrderEdited) {
+      yield* _mapOrderEditedToState(event);
     }
   }
 
@@ -41,8 +43,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       if (identity == 'admin') {
         await ordersRepository.loadOrdersByAdmin(
           userID: authenticationRepository.user.id,
-          orderType: 'all',
-          status: <String>['all'],
+          orderType: <String>{'all'},
+          status: <String>{'all'},
         ).then((value) => orders = value);
         yield OrdersLoadSuccess(
           orders,
@@ -110,5 +112,12 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     return ordersRepository.saveOrders(
       orders,
     );
+  }
+
+  Stream<OrdersState> _mapOrderEditedToState(OrderEdited event) async* {
+    final updatedOrders = (state as OrdersLoadSuccess).orders.map((order) {
+      return order.id == event.order.id ? event.order : order;
+    }).toList();
+    yield OrdersLoadSuccess(updatedOrders);
   }
 }

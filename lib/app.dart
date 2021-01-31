@@ -6,6 +6,7 @@ import 'package:fe/admin/view/admin_page.dart';
 import 'package:fe/cart/bloc/cartform_bloc.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/company/company.dart';
+import 'package:fe/pending_registraion/pending_registraion.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/pantry/bloc/catalog_bloc.dart';
 import 'package:fe/components/constants.dart';
@@ -17,8 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fe/authentication/authentication.dart';
-import 'package:fe/login/login.dart';
 
+import 'home/view/home_page.dart';
 import 'routes.dart';
 
 class App extends StatelessWidget {
@@ -45,6 +46,9 @@ class App extends StatelessWidget {
             ),
             RepositoryProvider<OrdersRepository>(
               create: (context) => OrdersRepository(),
+            ),
+            RepositoryProvider<EmployeesRepository>(
+              create: (context) => EmployeesRepository(),
             ),
           ],
           child: AppView(),
@@ -98,11 +102,11 @@ class _AppViewState extends State<AppView> {
               ordersRepository:
                   RepositoryProvider.of<OrdersRepository>(context)),
         ),
-        BlocProvider<LoginBloc>(
-          create: (_) => LoginBloc(
-            authenticationRepository:
-                RepositoryProvider.of<AuthenticationRepository>(context),
-          ),
+        BlocProvider<EmployeesBloc>(
+          create: (_) => EmployeesBloc(
+              employeesRepository:
+                  RepositoryProvider.of<EmployeesRepository>(context))
+            ..add(EmployeesLoaded()),
         ),
       ],
       child: MaterialApp(
@@ -123,6 +127,13 @@ class _AppViewState extends State<AppView> {
             listener: (context, state) {
               switch (state.status) {
                 case AuthenticationStatus.authenticated:
+                  if (state.user.status != 'approved') {
+                    _navigator.pushAndRemoveUntil<void>(
+                      HomePage.route(),
+                      (route) => false,
+                    );
+                    break;
+                  }
                   if ('recipient' == state.user.userIdentity) {
                     _navigator.pushAndRemoveUntil<void>(
                       RecipientPage.route(),

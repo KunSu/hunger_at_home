@@ -6,18 +6,6 @@ import 'body.dart';
 class RegisterPage extends StatelessWidget {
   static String routeName = '/register';
 
-  // static Route route() {
-  //   return MaterialPageRoute<RegisterPage>(
-  //     builder: (context) => BlocProvider.value(
-  //       value: RegisterBloc(
-  //         authenticationRepository:
-  //             RepositoryProvider.of<AuthenticationRepository>(context),
-  //       ),
-  //       child: RegisterPage(),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     CompanyIDArguments args = ModalRoute.of(context).settings.arguments;

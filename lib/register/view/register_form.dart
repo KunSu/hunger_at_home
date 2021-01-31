@@ -13,11 +13,6 @@ class RegisterForm extends StatelessWidget {
     formBloc.companyID = companyID;
 
     return FormBlocListener<RegisterFormBloc, String, String>(
-      onSuccess: (context, state) {
-        // context.bloc<RegisterBloc>().add(
-        //       RegisterUserIdentityChanged(formBloc.userIdentity.value),
-        //     );
-      },
       onFailure: (context, state) {
         Scaffold.of(context).showSnackBar(
           SnackBar(

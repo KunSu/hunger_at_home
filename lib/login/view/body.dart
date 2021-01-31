@@ -1,6 +1,6 @@
-import 'package:fe/Login/bloc/login_bloc.dart';
 import 'package:fe/Login/view/login_form.dart';
 import 'package:fe/components/view/background.dart';
+import 'package:fe/login/bloc/loginfrom_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +8,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 
 class Body extends StatelessWidget {
   Body({Key key}) : super(key: key);
-  final _authenticationRepository = AuthenticationRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +48,10 @@ class Body extends StatelessWidget {
               ),
               SizedBox(height: size.height * 0.03),
               BlocProvider(
-                create: (context) => LoginBloc(
-                    authenticationRepository: _authenticationRepository),
+                create: (context) => LoginFormBloc(
+                    authenticationRepository:
+                        RepositoryProvider.of<AuthenticationRepository>(
+                            context)),
                 child: LoginForm(),
               ),
             ],

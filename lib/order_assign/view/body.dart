@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/components/view/display_error.dart';
 import 'package:fe/components/view/order/order_info.dart';
+import 'package:fe/employee/employees_repository.dart';
 import 'package:fe/order/order.dart';
 import 'package:fe/order_assign/order_assign.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class _BodyState extends State<Body> {
           },
           child: Column(
             children: [
-              orderInfoView(widget.order, context),
+              OrderInfoView(order: order),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(

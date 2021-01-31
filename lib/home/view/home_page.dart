@@ -22,8 +22,14 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(
-              'UserID: ${context.bloc<AuthenticationBloc>().state.user.id}',
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                'Please contact admin to verify your registration.',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             RaisedButton(
               child: const Text('Logout'),
