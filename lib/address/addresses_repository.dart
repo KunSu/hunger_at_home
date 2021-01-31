@@ -34,7 +34,7 @@ class AddressesRepository {
 
   String getAddressID(String address) {
     for (var i = 0; i < addresses.length; i++) {
-      if (addresses[i].address == address) {
+      if ('${addresses[i].address}, ${addresses[i].city}' == address) {
         return addresses[i].id;
       }
     }

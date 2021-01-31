@@ -95,7 +95,6 @@ class _OrderActionState extends State<OrderAction> {
             status: widget.order.status,
             orderType: widget.order.type,
           ),
-          // widget.order.status == 'pending' && identity == 'admin',
           child: TextButton(
             child: const Text('Approve'),
             onPressed: () {
@@ -106,20 +105,43 @@ class _OrderActionState extends State<OrderAction> {
                   arguments: ScreenArguments(order: widget.order),
                 );
               } else if (widget.order.type == 'dropoff') {
-                orderUpdateDialog(
-                    context: context,
+                Navigator.pushNamed(
+                  context,
+                  OrderEditPage.routeName,
+                  arguments: ScreenArguments(
                     order: widget.order,
-                    text: 'Please confirm if you want to proceed the order.',
-                    title: 'Confirmation',
-                    status: 'confirmed');
+                    screenTitle: 'Approve order',
+                  ),
+                );
               } else if (widget.order.type == 'request') {
-                orderUpdateDialog(
-                    context: context,
+                Navigator.pushNamed(
+                  context,
+                  OrderEditPage.routeName,
+                  arguments: ScreenArguments(
                     order: widget.order,
-                    text: 'Please confirm if you want to approve the order.',
-                    title: 'Confirmation',
-                    status: 'approved');
+                    screenTitle: 'Approve order',
+                  ),
+                );
               }
+            },
+          ),
+        ),
+        Visibility(
+          visible: getOrderActionVisibility(
+            action: 'Withdraw',
+            identity: identity,
+            status: widget.order.status,
+            orderType: widget.order.type,
+          ),
+          child: TextButton(
+            child: const Text('Withdraw'),
+            onPressed: () {
+              orderUpdateDialog(
+                  context: context,
+                  order: widget.order,
+                  text: 'Please confirm if you want to withdraw the order.',
+                  title: 'Confirmation',
+                  status: 'withdraw');
             },
           ),
         ),
@@ -145,34 +167,11 @@ class _OrderActionState extends State<OrderAction> {
         ),
         Visibility(
           visible: getOrderActionVisibility(
-            action: 'Withdraw',
-            identity: identity,
-            status: widget.order.status,
-            orderType: widget.order.type,
-          ),
-          // widget.order.status == 'pending',
-          child: TextButton(
-            child: const Text('Withdraw'),
-            onPressed: () {
-              orderUpdateDialog(
-                  context: context,
-                  order: widget.order,
-                  text: 'Please confirm if you want to withdraw the order.',
-                  title: 'Confirmation',
-                  status: 'withdraw');
-            },
-          ),
-        ),
-        Visibility(
-          visible: getOrderActionVisibility(
             action: 'Receive',
             identity: identity,
             status: widget.order.status,
             orderType: widget.order.type,
           ),
-          // widget.order.status == 'approved' &&
-          //     widget.order.type != 'dropoff' &&
-          //     (identity == 'recipient' || identity == 'admin'),
           child: TextButton(
             child: const Text('Receive'),
             onPressed: () {
@@ -192,9 +191,6 @@ class _OrderActionState extends State<OrderAction> {
             status: widget.order.status,
             orderType: widget.order.type,
           ),
-          // widget.order.status == 'approved' &&
-          //     widget.order.type != 'dropoff' &&
-          //     (identity == 'employee' || identity == 'admin'),
           child: TextButton(
             child: const Text('Pick up'),
             onPressed: () {
@@ -222,9 +218,6 @@ class _OrderActionState extends State<OrderAction> {
             status: widget.order.status,
             orderType: widget.order.type,
           ),
-          // widget.order.status == 'approved' &&
-          //     widget.order.type == 'dropoff' &&
-          //     (identity == 'employee' || identity == 'admin'),
           child: TextButton(
             child: const Text('Drop off'),
             onPressed: () {
@@ -247,8 +240,6 @@ class _OrderActionState extends State<OrderAction> {
             status: widget.order.status,
             orderType: widget.order.type,
           ),
-          // widget.order.status == 'pickedup' &&
-          //     (identity == 'employee' || identity == 'admin'),
           child: TextButton(
             child: const Text('Deliver'),
             onPressed: () {

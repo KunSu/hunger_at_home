@@ -49,3 +49,15 @@ class OrderDeleted extends OrdersEvent {
   @override
   String toString() => 'OrderDeleted { order: $order }';
 }
+
+class OrderEdited extends OrdersEvent {
+  const OrderEdited(this.order);
+
+  final Order order;
+
+  @override
+  List<Object> get props => [order];
+
+  @override
+  String toString() => 'OrderEdited { editedOrder: $order }';
+}

@@ -136,54 +136,52 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     emitLoaded();
   }
 
-  // @override
-  // void onSubmitting() async {
-  //   if (order.items.isEmpty) {
-  //     emitFailure(failureResponse: 'Item can not be empty');
-  //     return;
-  //   }
+  @override
+  void onSubmitting() async {
+    if (order.items.isEmpty) {
+      emitFailure(failureResponse: 'Item can not be empty');
+      return;
+    }
 
-  //   try {
-  //     if (authenticationRepository.user.userIdentity == 'recipient') {
-  //       await ordersRepository
-  //           .signUp(
-  //             userID: authenticationRepository.user.id,
-  //             addressID: addressesRepository.getAddressID(
-  //               addresses.value,
-  //             ),
-  //             orderType: 'request',
-  //             pickUpTime: pickupDateAndTime.value.toString(),
-  //             status: 'pending',
-  //             orderItems: order.items,
-  //           )
-  //           .then((order) => this.order = order);
-  //     } else {
-  //       await ordersRepository
-  //           .signUp(
-  //             userID: authenticationRepository.user.id,
-  //             addressID: pickupOrDropoff.value == 'Pick up'
-  //                 ? addressesRepository.getAddressID(
-  //                     addresses.value,
-  //                   )
-  //                 : '1', // Default drop off address ID is 1 for Hunger at Home
-  //             orderType:
-  //                 pickupOrDropoff.value == 'Pick up' ? 'donation' : 'dropoff',
-  //             pickUpTime: pickupOrDropoff.value == 'Pick up'
-  //                 ? pickupDateAndTime.value.toString()
-  //                 : DateTime.fromMicrosecondsSinceEpoch(0).toString(),
-  //             status: 'pending',
-  //             orderItems: order.items,
-  //           )
-  //           .then((order) => this.order = order);
-  //     }
-  //   } catch (e) {
-  //     emitFailure(failureResponse: e.toString());
-  //     return;
-  //   }
-  //   emitSuccess(
-  //     canSubmitAgain: true,
-  //   );
-  // }
+    try {
+      if (order.type == 'request') {
+        await ordersRepository
+            .editOrder(
+              userID: authenticationRepository.user.id,
+              addressID: addressesRepository.getAddressID(
+                addresses.value,
+              ),
+              orderType: 'request',
+              pickUpTime: pickupDateAndTime.value.toString(),
+              order: order,
+            )
+            .then((order) => this.order = order);
+      } else {
+        await ordersRepository
+            .editOrder(
+              userID: authenticationRepository.user.id,
+              addressID: pickupOrDropoff.value == 'Pick up'
+                  ? addressesRepository.getAddressID(
+                      addresses.value,
+                    )
+                  : '1', // Default drop off address ID is 1 for Hunger at Home
+              orderType:
+                  pickupOrDropoff.value == 'Pick up' ? 'donation' : 'dropoff',
+              pickUpTime: pickupOrDropoff.value == 'Pick up'
+                  ? pickupDateAndTime.value.toString()
+                  : DateTime.fromMicrosecondsSinceEpoch(0).toString(),
+              order: order,
+            )
+            .then((order) => this.order = order);
+      }
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
+      return;
+    }
+    emitSuccess(
+      canSubmitAgain: true,
+    );
+  }
 
   String getAddressID() {
     return addressesRepository.getAddressID(addresses.value);
@@ -217,10 +215,5 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     } catch (e) {
       emitFailure(failureResponse: e.toString());
     }
-  }
-
-  @override
-  void onSubmitting() {
-    // TODO: implement onSubmitting
   }
 }
