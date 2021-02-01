@@ -5,7 +5,6 @@ import 'package:fe/components/view/display_error.dart';
 import 'package:fe/components/view/my_circularprogress_indicator.dart';
 import 'package:fe/item_edit/view/item_edit_page.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_detail/order_detail_repository.dart';
 import 'package:fe/order_edit/bloc/order_edit_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -25,51 +24,54 @@ class _OrderEditPageState extends State<OrderEditPage> {
     super.didChangeDependencies();
     final ScreenArguments args = ModalRoute.of(context).settings.arguments;
     order = args.order;
-    if (args.screenTitle.isNotEmpty) {
+    if (args.screenTitle != null) {
       screenTitle = args.screenTitle;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => OrderEditFormBloc(
-        addressesRepository:
-            RepositoryProvider.of<AddressesRepository>(context),
-        authenticationRepository:
-            RepositoryProvider.of<AuthenticationRepository>(context),
-        ordersRepository: RepositoryProvider.of<OrdersRepository>(context),
-        order: order,
-      ),
-      child: Builder(
-        builder: (context) {
-          final formBloc = RepositoryProvider.of<OrderEditFormBloc>(context);
-          return FormBlocListener<OrderEditFormBloc, String, String>(
-            onSuccess: (context, state) {
-              Navigator.pop(context);
-              BlocProvider.of<OrdersBloc>(context)
-                  .add(OrderEdited(formBloc.order));
-            },
-            onFailure: (context, state) {
-              displayError(
-                context: context,
-                error: state.failureResponse,
-              );
-            },
-            child: Scaffold(
-              appBar: AppBar(title: Text(screenTitle)),
-              body: BlocBuilder<OrderEditFormBloc, FormBlocState>(
+    return Scaffold(
+      appBar: AppBar(title: Text(screenTitle)),
+      body: BlocProvider(
+        create: (context) => OrderEditFormBloc(
+          addressesRepository:
+              RepositoryProvider.of<AddressesRepository>(context),
+          authenticationRepository:
+              RepositoryProvider.of<AuthenticationRepository>(context),
+          ordersRepository: RepositoryProvider.of<OrdersRepository>(context),
+          order: order,
+        ),
+        child: Builder(
+          builder: (context) {
+            final formBloc = RepositoryProvider.of<OrderEditFormBloc>(context);
+            return FormBlocListener<OrderEditFormBloc, String, String>(
+              onSuccess: (context, state) {
+                Navigator.pop(context);
+                BlocProvider.of<OrdersBloc>(context)
+                    .add(OrderEdited(formBloc.order));
+              },
+              onFailure: (context, state) {
+                displayError(
+                  context: context,
+                  error: state.failureResponse,
+                );
+              },
+              child: BlocBuilder<OrderEditFormBloc, FormBlocState>(
                 builder: (context, state) {
                   if (state is FormBlocLoaded) {
                     return EditOrderView(formBloc: formBloc);
                   } else {
+                    if (state is FormBlocFailure) {
+                      formBloc.emitLoaded();
+                    }
                     return const MyCircularProgressIndicator();
                   }
                 },
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -151,53 +153,48 @@ class EditOrderView extends StatelessWidget {
   }
 }
 
-class OrderEditList extends StatelessWidget {
+class OrderEditList extends StatefulWidget {
   const OrderEditList({Key key, this.formBloc}) : super(key: key);
   final OrderEditFormBloc formBloc;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<OrderEditFormBloc, FormBlocState>(
-      builder: (context, state) {
-        if (state is FormBlocLoaded) {
-          return FutureBuilder<List<Item>>(
-              future: OrderDetailRepository().loadOrderItems(
-                orderID: formBloc.order.id,
-              ),
-              builder: (context, AsyncSnapshot<List<Item>> snapshot) {
-                if (snapshot.hasData) {
-                  if (formBloc.order.items.isEmpty) {
-                    formBloc.reloadItems();
-                  }
-                  return ListView.builder(
-                    itemCount: formBloc.order.items.length,
-                    itemBuilder: (context, index) => ItemEditView(
-                        item: formBloc.order.items[index], formBloc: formBloc),
-                  );
-                } else {
-                  return const MyCircularProgressIndicator();
-                }
-              });
-        } else {
-          return const MyCircularProgressIndicator();
-        }
-      },
-    );
-  }
+  _OrderEditListState createState() => _OrderEditListState();
 }
 
-class ItemEditView extends StatelessWidget {
-  const ItemEditView({Key key, this.item, this.formBloc}) : super(key: key);
-  final OrderEditFormBloc formBloc;
-  final Item item;
-
+class _OrderEditListState extends State<OrderEditList> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          ListTile(
+    return ListView.builder(
+      itemCount: widget.formBloc.order.items.length,
+      itemBuilder: (context, index) {
+        final item = widget.formBloc.order.items[index];
+
+        return Dismissible(
+          key: UniqueKey(),
+          onDismissed: (direction) {
+            setState(() {
+              widget.formBloc.order.items.removeAt(index);
+            });
+            Scaffold.of(context).showSnackBar(
+                SnackBar(content: Text('${item.name} has been removed')));
+          },
+          background: Container(
+            padding: const EdgeInsets.only(left: 5.0),
+            color: Colors.red,
+            child: const Center(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Swipe to remove this item',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          child: ListTile(
             title: Text('${item.name}'),
             subtitle: Text('${item.quantityNumber} ${item.quantityUnit}'),
             trailing: IconButton(
@@ -207,7 +204,7 @@ class ItemEditView extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ItemEditPage(
-                      orderEditFormBloc: formBloc,
+                      orderEditFormBloc: widget.formBloc,
                       item: item,
                     ),
                   ),
@@ -215,8 +212,8 @@ class ItemEditView extends StatelessWidget {
               },
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

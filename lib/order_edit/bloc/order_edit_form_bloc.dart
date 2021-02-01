@@ -202,9 +202,6 @@ class OrderEditFormBloc extends FormBloc<String, String> {
 
   void removeItem(Item item) {
     order.items.remove(item);
-    emitSuccess(
-      canSubmitAgain: true,
-    );
   }
 
   void reloadItems() {
