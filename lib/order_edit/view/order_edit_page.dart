@@ -1,5 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/address/addresses_repository.dart';
+// import 'package:fe/address/addresses_repository.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/display_error.dart';
 import 'package:fe/components/view/my_circularprogress_indicator.dart';
@@ -35,8 +35,8 @@ class _OrderEditPageState extends State<OrderEditPage> {
       appBar: AppBar(title: Text(screenTitle)),
       body: BlocProvider(
         create: (context) => OrderEditFormBloc(
-          addressesRepository:
-              RepositoryProvider.of<AddressesRepository>(context),
+          // addressesRepository:
+          //     RepositoryProvider.of<AddressesRepository>(context),
           authenticationRepository:
               RepositoryProvider.of<AuthenticationRepository>(context),
           ordersRepository: RepositoryProvider.of<OrdersRepository>(context),
@@ -113,18 +113,18 @@ class EditOrderView extends StatelessWidget {
               prefixIcon: Icon(Icons.date_range),
             ),
           ),
-          DropdownFieldBlocBuilder(
-            selectFieldBloc: formBloc.addresses,
-            itemBuilder: (context, value) => value,
-            decoration: const InputDecoration(
-                labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
-          ),
-          DropdownFieldBlocBuilder(
-            selectFieldBloc: formBloc.dropoffAddress,
-            itemBuilder: (context, value) => value,
-            decoration: const InputDecoration(
-                labelText: 'Drop off address', prefixIcon: Icon(Icons.edit)),
-          ),
+          // DropdownFieldBlocBuilder(
+          //   selectFieldBloc: formBloc.addresses,
+          //   itemBuilder: (context, value) => value,
+          //   decoration: const InputDecoration(
+          //       labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
+          // ),
+          // DropdownFieldBlocBuilder(
+          //   selectFieldBloc: formBloc.dropoffAddress,
+          //   itemBuilder: (context, value) => value,
+          //   decoration: const InputDecoration(
+          //       labelText: 'Drop off address', prefixIcon: Icon(Icons.edit)),
+          // ),
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(8.0),

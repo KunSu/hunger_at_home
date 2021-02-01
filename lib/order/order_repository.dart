@@ -153,7 +153,7 @@ class OrdersRepository {
 
   Future<Order> editOrder({
     @required String userID,
-    @required String addressID,
+    @required String addressID, // It is not used for API
     @required String orderType,
     @required String pickUpTime,
     @required Order order,
@@ -166,7 +166,7 @@ class OrdersRepository {
     final Map<String, dynamic> jsonData = Map<String, dynamic>();
     jsonData['userID'] = userID;
     jsonData['orderID'] = order.id;
-    jsonData['addressID'] = addressID;
+    jsonData['addressID'] = addressID; // It is not used for API
     jsonData['orderType'] = orderType;
     jsonData['note'] = 'NA';
     if (orderType != 'dropoff') {
