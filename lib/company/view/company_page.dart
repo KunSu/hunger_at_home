@@ -65,15 +65,14 @@ class CompanyForm extends StatelessWidget {
           selectFieldBloc: formBloc.companies,
           itemBuilder: (context, value) => value,
           decoration: const InputDecoration(
-              labelText: 'Companies',
-              prefixIcon: Icon(Icons.sentiment_satisfied)),
+              labelText: 'Companies', prefixIcon: Icon(Icons.business)),
         ),
         TextFieldBlocBuilder(
           textFieldBloc: formBloc.name,
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: 'Company Name',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.edit),
           ),
         ),
         TextFieldBlocBuilder(
@@ -81,7 +80,7 @@ class CompanyForm extends StatelessWidget {
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: '501c3 FED ID',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.description),
           ),
         ),
         TextFieldBlocBuilder(
@@ -89,7 +88,7 @@ class CompanyForm extends StatelessWidget {
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: 'EIN ID',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.assignment),
           ),
         ),
         TextFieldBlocBuilder(
@@ -97,7 +96,7 @@ class CompanyForm extends StatelessWidget {
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: 'Address',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.place),
           ),
         ),
         TextFieldBlocBuilder(
@@ -105,21 +104,21 @@ class CompanyForm extends StatelessWidget {
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: 'City',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.location_city),
           ),
         ),
         DropdownFieldBlocBuilder(
           selectFieldBloc: formBloc.usState,
           itemBuilder: (context, value) => value,
           decoration: const InputDecoration(
-              labelText: 'State', prefixIcon: Icon(Icons.sentiment_satisfied)),
+              labelText: 'State', prefixIcon: Icon(Icons.flag)),
         ),
         TextFieldBlocBuilder(
           textFieldBloc: formBloc.zipCode,
           keyboardType: TextInputType.text,
           decoration: const InputDecoration(
             labelText: 'ZipCode',
-            prefixIcon: Icon(Icons.sentiment_very_satisfied),
+            prefixIcon: Icon(Icons.near_me),
           ),
         ),
         RaisedButton(
