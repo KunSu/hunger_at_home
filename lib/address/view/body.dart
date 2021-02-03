@@ -31,7 +31,7 @@ class Body extends StatelessWidget {
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         labelText: 'Address',
-                        prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                        prefixIcon: Icon(Icons.place),
                       ),
                     ),
                     TextFieldBlocBuilder(
@@ -39,22 +39,21 @@ class Body extends StatelessWidget {
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         labelText: 'City',
-                        prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                        prefixIcon: Icon(Icons.location_city),
                       ),
                     ),
                     DropdownFieldBlocBuilder(
                       selectFieldBloc: formBloc.usState,
                       itemBuilder: (context, value) => value,
                       decoration: const InputDecoration(
-                          labelText: 'State',
-                          prefixIcon: Icon(Icons.sentiment_satisfied)),
+                          labelText: 'State', prefixIcon: Icon(Icons.flag)),
                     ),
                     TextFieldBlocBuilder(
                       textFieldBloc: formBloc.zipCode,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         labelText: 'ZipCode',
-                        prefixIcon: Icon(Icons.sentiment_very_satisfied),
+                        prefixIcon: Icon(Icons.near_me),
                       ),
                     ),
                     RaisedButton(
