@@ -1,7 +1,10 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/anonymous_order/view/anonymous_order_page.dart';
 import 'package:fe/cart/cart.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
+import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
 import 'package:fe/item/bloc/item_bloc.dart';
+import 'package:fe/item/item_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
@@ -15,7 +18,10 @@ class ItemPage extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final formBloc = BlocProvider.of<ItemBloc>(context);
-
+          final identity =
+              RepositoryProvider.of<AuthenticationRepository>(context)
+                  .user
+                  .userIdentity;
           return Theme(
             data: Theme.of(context).copyWith(
               inputDecorationTheme: InputDecorationTheme(
@@ -31,7 +37,14 @@ class ItemPage extends StatelessWidget {
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.shopping_cart),
-                    onPressed: () => Navigator.of(context).pushNamed('/cart'),
+                    onPressed: () {
+                      if (identity == 'admin') {
+                        Navigator.pushNamed(
+                            context, AnonymousOrderPage.routeName);
+                      } else {
+                        Navigator.of(context).pushNamed('/cart');
+                      }
+                    },
                   ),
                 ],
               ),
@@ -41,8 +54,14 @@ class ItemPage extends StatelessWidget {
                 },
                 onSuccess: (context, state) {
                   LoadingDialog.hide(context);
-                  context.read<CartBloc>().add(CartItemAdded(formBloc.item));
-                  Navigator.of(context).pushNamed('/cart');
+                  if (identity == 'admin') {
+                    RepositoryProvider.of<ItemsRepository>(context)
+                        .add(formBloc.item);
+                    Navigator.pushNamed(context, AnonymousOrderPage.routeName);
+                  } else {
+                    context.read<CartBloc>().add(CartItemAdded(formBloc.item));
+                    Navigator.of(context).pushNamed('/cart');
+                  }
                 },
                 onFailure: (context, state) {
                   LoadingDialog.hide(context);
@@ -95,12 +114,20 @@ class ItemPage extends StatelessWidget {
                   ),
                 ),
               ),
-              bottomNavigationBar: MyBottomNavigationBar(
-                identity:
-                    RepositoryProvider.of<AuthenticationRepository>(context)
-                        .user
-                        .userIdentity,
-              ),
+              bottomNavigationBar: identity == 'donor' ||
+                      identity == 'recipient'
+                  ? MyBottomNavigationBar(
+                      identity: RepositoryProvider.of<AuthenticationRepository>(
+                              context)
+                          .user
+                          .userIdentity,
+                    )
+                  : MyBottomNavigationBarV2(
+                      identity: RepositoryProvider.of<AuthenticationRepository>(
+                              context)
+                          .user
+                          .userIdentity,
+                    ),
             ),
           );
         },

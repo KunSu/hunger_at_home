@@ -190,4 +190,53 @@ class OrdersRepository {
       throw body['message'];
     }
   }
+
+  Future<Order> anonymousOrder({
+    @required String userID,
+    @required String addressID,
+    @required String orderType,
+    @required List<Item> items,
+  }) async {
+    var url = '${FlutterConfig.get('BASE_URL')}/anonymousOrder';
+    print(url);
+
+    var headers = <String, String>{'Content-type': 'application/json'};
+
+    final jsonData = <String, dynamic>{};
+    jsonData['userID'] = userID;
+    jsonData['addressID'] = addressID;
+    jsonData['orderType'] = orderType;
+    jsonData['note'] = 'NA';
+    jsonData['items'] = items.map((e) => e.toJSON()).toList();
+
+    print(json.encode(jsonData));
+    var response =
+        await post(url, headers: headers, body: json.encode(jsonData));
+
+    // var body = json.decode(response.body);
+    if (response.statusCode == 201) {
+      var body = json.decode(response.body);
+      var newOrder = Order.fromJson(body);
+      // TODO: simplify
+      for (var item in body['items'] as List) {
+        newOrder.items.add(Item.fromJson(item));
+      }
+      return newOrder;
+    } else {
+      // TODO: fakeOrder should be deleted after the BE API has been provided
+      var fakeOrder = Order(
+        id: 'anonymous ${DateTime.now().toLocal().toString()}',
+        type: 'anonymous',
+        items: items,
+        status: 'confirmed',
+        address: '1234 camino del rey',
+        pickupDateAndTime: 'No available',
+        submitedDateAndTime: DateTime.now().toString(),
+      );
+      var newOrder = fakeOrder;
+      return newOrder;
+      var body = json.decode(response.body);
+      throw body['message'];
+    }
+  }
 }
