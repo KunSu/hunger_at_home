@@ -17,6 +17,7 @@ import 'package:fe/welcome/view/welcome_page.dart';
 import 'package:flutter/material.dart';
 
 import 'account/view/account_page.dart';
+import 'anonymous_order/view/anonymous_order_page.dart';
 import 'item_edit/view/item_edit_page.dart';
 import 'order_assign/view/order_assign_page.dart';
 import 'order_delivery/view/order_delivery_page.dart';
@@ -46,4 +47,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderAssignPage.routeName: (context) => OrderAssignPage(),
   PendingRegistrationPage.routeName: (context) => PendingRegistrationPage(),
   ItemEditPage.routeName: (context) => ItemEditPage(),
+  AnonymousOrderPage.routeName: (context) => AnonymousOrderPage(),
 };

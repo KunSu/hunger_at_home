@@ -1,55 +1,52 @@
 import 'package:authentication_repository/authentication_repository.dart';
-// import 'package:fe/address/addresses_repository.dart';
+import 'package:fe/account/account.dart';
+import 'package:fe/address/addresses_repository.dart';
+import 'package:fe/admin_order/view/admin_order_page.dart';
+import 'package:fe/anonymous_order/anonymous_order.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/display_error.dart';
 import 'package:fe/components/view/my_circularprogress_indicator.dart';
-import 'package:fe/item_edit/view/item_edit_page.dart';
+import 'package:fe/item/item_repository.dart';
+import 'package:fe/item/view/view.dart';
 import 'package:fe/order/order.dart';
-import 'package:fe/order_edit/bloc/order_edit_form_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-class OrderEditPage extends StatefulWidget {
+class AnonymousOrderPage extends StatelessWidget {
   static String routeName = '/order_edit';
-
-  @override
-  _OrderEditPageState createState() => _OrderEditPageState();
-}
-
-class _OrderEditPageState extends State<OrderEditPage> {
-  Order order;
-  String screenTitle = 'Edit Order';
-  @override
-  Future<void> didChangeDependencies() async {
-    super.didChangeDependencies();
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
-    order = args.order;
-    if (args.screenTitle != null) {
-      screenTitle = args.screenTitle;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(screenTitle)),
+      appBar: AppBar(title: const Text('Anonymous Order')),
       body: BlocProvider(
-        create: (context) => OrderEditFormBloc(
-          // addressesRepository:
-          //     RepositoryProvider.of<AddressesRepository>(context),
+        create: (context) => AnonymousOrderBloc(
+          addressesRepository:
+              RepositoryProvider.of<AddressesRepository>(context),
           authenticationRepository:
               RepositoryProvider.of<AuthenticationRepository>(context),
           ordersRepository: RepositoryProvider.of<OrdersRepository>(context),
-          order: order,
+          itemsRepository: RepositoryProvider.of<ItemsRepository>(context),
         ),
         child: Builder(
           builder: (context) {
-            final formBloc = RepositoryProvider.of<OrderEditFormBloc>(context);
-            return FormBlocListener<OrderEditFormBloc, String, String>(
+            final formBloc = RepositoryProvider.of<AnonymousOrderBloc>(context);
+
+            return FormBlocListener<AnonymousOrderBloc, String, String>(
               onSuccess: (context, state) {
-                Navigator.pop(context);
                 BlocProvider.of<OrdersBloc>(context)
-                    .add(OrderEdited(formBloc.order));
+                    .add(OrderAdded(formBloc.order));
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AdminOrderPage.routeName,
+                  (route) => false,
+                  arguments: ScreenArguments(
+                    screenTitle: 'Donation orders',
+                    orderType: <String>{'donation', 'dropoff', 'anonymous'},
+                    status: <String>{'all'},
+                  ),
+                );
+                formBloc.reset();
               },
               onFailure: (context, state) {
                 displayError(
@@ -57,7 +54,7 @@ class _OrderEditPageState extends State<OrderEditPage> {
                   error: state.failureResponse,
                 );
               },
-              child: BlocBuilder<OrderEditFormBloc, FormBlocState>(
+              child: BlocBuilder<AnonymousOrderBloc, FormBlocState>(
                 builder: (context, state) {
                   if (state is FormBlocLoaded) {
                     return EditOrderView(formBloc: formBloc);
@@ -83,7 +80,7 @@ class EditOrderView extends StatelessWidget {
     @required this.formBloc,
   }) : super(key: key);
 
-  final OrderEditFormBloc formBloc;
+  final AnonymousOrderBloc formBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -91,40 +88,12 @@ class EditOrderView extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          RadioButtonGroupFieldBlocBuilder(
-            selectFieldBloc: formBloc.pickupOrDropoff,
+          DropdownFieldBlocBuilder(
+            selectFieldBloc: formBloc.addresses,
             itemBuilder: (context, value) => value,
             decoration: const InputDecoration(
-              labelText: 'Do you want to pick up or drop off?',
-              prefixIcon: SizedBox(),
-            ),
+                labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
           ),
-          DateTimeFieldBlocBuilder(
-            dateTimeFieldBloc: formBloc.pickupDateAndTime,
-            canSelectTime: true,
-            format: DateFormat('dd-MM-yyyy hh:mm'),
-            initialDate: DateTime.now(),
-            initialTime: TimeOfDay.fromDateTime(
-                DateTime.now().add(const Duration(minutes: 30))),
-            firstDate: DateTime(1900),
-            lastDate: DateTime(2100),
-            decoration: const InputDecoration(
-              labelText: 'Pick Up Date and Time',
-              prefixIcon: Icon(Icons.date_range),
-            ),
-          ),
-          // DropdownFieldBlocBuilder(
-          //   selectFieldBloc: formBloc.addresses,
-          //   itemBuilder: (context, value) => value,
-          //   decoration: const InputDecoration(
-          //       labelText: 'Addresses', prefixIcon: Icon(Icons.edit)),
-          // ),
-          // DropdownFieldBlocBuilder(
-          //   selectFieldBloc: formBloc.dropoffAddress,
-          //   itemBuilder: (context, value) => value,
-          //   decoration: const InputDecoration(
-          //       labelText: 'Drop off address', prefixIcon: Icon(Icons.edit)),
-          // ),
           Expanded(
             child: Container(
               margin: const EdgeInsets.all(8.0),
@@ -136,9 +105,23 @@ class EditOrderView extends StatelessWidget {
             children: [
               RaisedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AccountPage.routeName,
+                    (route) => false,
+                  );
                 },
                 child: const Text('Cancel'),
+              ),
+              const SizedBox(width: 10),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    ItemPage.routeName,
+                  );
+                },
+                child: const Text('Add more items'),
               ),
               const SizedBox(width: 10),
               RaisedButton(
@@ -155,7 +138,7 @@ class EditOrderView extends StatelessWidget {
 
 class OrderEditList extends StatefulWidget {
   const OrderEditList({Key key, this.formBloc}) : super(key: key);
-  final OrderEditFormBloc formBloc;
+  final AnonymousOrderBloc formBloc;
 
   @override
   _OrderEditListState createState() => _OrderEditListState();
@@ -200,15 +183,14 @@ class _OrderEditListState extends State<OrderEditList> {
             trailing: IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ItemEditPage(
-                      orderEditFormBloc: widget.formBloc,
-                      item: item,
-                    ),
-                  ),
-                );
+                // Navigator.push(
+                // context,
+                // MaterialPageRoute(
+                //   builder: (context) => ItemEditPage(
+                //     item: item,
+                //   ),
+                // ),
+                // );
               },
             ),
           ),

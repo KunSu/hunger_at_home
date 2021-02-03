@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Order extends Equatable {
+  // TODO: Clear up Order after it is stable
   Order({
     this.id,
     this.type,
@@ -12,8 +13,8 @@ class Order extends Equatable {
     this.address,
     this.pickupDateAndTime,
     this.submitedDateAndTime,
-    this.deliveryTemperature,
-    this.deliveryDateAndTime,
+    // this.deliveryTemperature,
+    // this.deliveryDateAndTime,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -25,8 +26,8 @@ class Order extends Equatable {
       address: json['address'],
       pickupDateAndTime: json['pickUpTime'],
       submitedDateAndTime: json['timestamp'],
-      deliveryTemperature: json[''],
-      deliveryDateAndTime: json[''],
+      // deliveryTemperature: json[''],
+      // deliveryDateAndTime: json[''],
     );
   }
 
@@ -37,8 +38,8 @@ class Order extends Equatable {
   final String address;
   final String pickupDateAndTime;
   final String submitedDateAndTime;
-  final String deliveryTemperature;
-  final String deliveryDateAndTime;
+  // final String deliveryTemperature;
+  // final String deliveryDateAndTime;
 
   Order copyWith({
     String id,
@@ -48,8 +49,8 @@ class Order extends Equatable {
     String address,
     String pickupDateAndTime,
     String submitedDateAndTime,
-    String deliveryTemperature,
-    String deliveryDateAndTime,
+    // String deliveryTemperature,
+    // String deliveryDateAndTime,
   }) {
     return Order(
       id: id ?? this.id,
@@ -59,8 +60,8 @@ class Order extends Equatable {
       address: address ?? this.address,
       pickupDateAndTime: pickupDateAndTime ?? this.pickupDateAndTime,
       submitedDateAndTime: submitedDateAndTime ?? this.submitedDateAndTime,
-      deliveryTemperature: deliveryTemperature ?? this.deliveryTemperature,
-      deliveryDateAndTime: deliveryDateAndTime ?? this.deliveryDateAndTime,
+      // // // deliveryTemperature: deliveryTemperature ?? this.deliveryTemperature,
+      // // // deliveryDateAndTime: deliveryDateAndTime ?? this.deliveryDateAndTime,
     );
   }
 
@@ -73,7 +74,7 @@ class Order extends Equatable {
         address,
         pickupDateAndTime,
         submitedDateAndTime,
-        deliveryTemperature,
-        deliveryDateAndTime,
+        // deliveryTemperature,
+        // deliveryDateAndTime,
       ];
 }

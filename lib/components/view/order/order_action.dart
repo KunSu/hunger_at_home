@@ -301,7 +301,7 @@ bool getOrderActionVisibility({
           status == 'confirmed') return true;
       break;
     case 'Receive':
-      if (orderType == 'request' &&
+      if ((orderType == 'request' || orderType == 'anonymous') &&
           identity == 'admin' &&
           status == 'confirmed') return true;
       break;

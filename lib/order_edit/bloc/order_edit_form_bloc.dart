@@ -1,5 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:fe/address/address.dart';
+// import 'package:fe/address/address.dart';
 import 'package:fe/order/models/model.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
@@ -8,22 +8,22 @@ import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 class OrderEditFormBloc extends FormBloc<String, String> {
   OrderEditFormBloc({
     @required this.authenticationRepository,
-    @required this.addressesRepository,
+    // @required this.addressesRepository,
     @required this.ordersRepository,
     this.order,
   }) : super(isLoading: true) {
     removeFieldBlocs(
       fieldBlocs: [
         pickupDateAndTime,
-        addresses,
-        dropoffAddress,
+        // addresses,
+        // dropoffAddress,
       ],
     );
     if (order.type == 'request') {
       addFieldBlocs(
         fieldBlocs: [
           pickupDateAndTime,
-          addresses,
+          // addresses,
         ],
       );
     } else if (order.type == 'donation') {
@@ -31,14 +31,14 @@ class OrderEditFormBloc extends FormBloc<String, String> {
         fieldBlocs: [
           pickupOrDropoff,
           pickupDateAndTime,
-          addresses,
+          // addresses,
         ],
       );
     } else if (order.type == 'dropoff') {
       addFieldBlocs(
         fieldBlocs: [
           pickupOrDropoff,
-          dropoffAddress,
+          // dropoffAddress,
         ],
       );
     }
@@ -48,21 +48,21 @@ class OrderEditFormBloc extends FormBloc<String, String> {
         removeFieldBlocs(
           fieldBlocs: [
             pickupDateAndTime,
-            addresses,
-            dropoffAddress,
+            // addresses,
+            // dropoffAddress,
           ],
         );
         if (current.value == 'Pick up') {
           addFieldBlocs(
             fieldBlocs: [
               pickupDateAndTime,
-              addresses,
+              // addresses,
             ],
           );
         } else if (current.value == 'Drop off') {
           addFieldBlocs(
             fieldBlocs: [
-              dropoffAddress,
+              // dropoffAddress,
             ],
           );
         }
@@ -71,7 +71,7 @@ class OrderEditFormBloc extends FormBloc<String, String> {
   }
 
   final OrdersRepository ordersRepository;
-  final AddressesRepository addressesRepository;
+  // final AddressesRepository addressesRepository;
   final AuthenticationRepository authenticationRepository;
   Order order;
 
@@ -90,18 +90,18 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     toJson: (value) => value.toUtc().toIso8601String(),
   );
 
-  final addresses = SelectFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-  );
+  // final addresses = SelectFieldBloc(
+  //   validators: [
+  //     FieldBlocValidators.required,
+  //   ],
+  // );
 
-  final dropoffAddress = SelectFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-    items: ['1534 berger drive, san jose, ca 95112'],
-  );
+  // final dropoffAddress = SelectFieldBloc(
+  //   validators: [
+  //     FieldBlocValidators.required,
+  //   ],
+  //   items: ['1534 berger drive, san jose, ca 95112'],
+  // );
 
   @override
   Future<void> onLoading() async {
@@ -111,13 +111,13 @@ class OrderEditFormBloc extends FormBloc<String, String> {
       final items = await ordersRepository.loadOrderItems(orderID: order.id);
       order = order.copyWith(items: items);
 
-      var companyID = authenticationRepository.user.companyID;
-      if (authenticationRepository.user.userIdentity == 'recipient') {
-        companyID = '1'; // Hunger at Home default id
-      }
-      var newAddresses =
-          await addressesRepository.loadAddressNames(companyID: companyID);
-      addresses.updateItems(newAddresses);
+      // var companyID = authenticationRepository.user.companyID;
+      // if (authenticationRepository.user.userIdentity == 'recipient') {
+      //   companyID = '1'; // Hunger at Home default id
+      // }
+      // var newAddresses =
+      //     await addressesRepository.loadAddressNames(companyID: companyID);
+      // addresses.updateItems(newAddresses);
     } catch (e) {
       emitFailure(failureResponse: e.toString());
     }
@@ -131,8 +131,6 @@ class OrderEditFormBloc extends FormBloc<String, String> {
       pickupDateAndTime
           .updateInitialValue(DateTime.parse(order.pickupDateAndTime));
     }
-    // TODO: add default value for address
-
     emitLoaded();
   }
 
@@ -148,9 +146,10 @@ class OrderEditFormBloc extends FormBloc<String, String> {
         await ordersRepository
             .editOrder(
               userID: authenticationRepository.user.id,
-              addressID: addressesRepository.getAddressID(
-                addresses.value,
-              ),
+              addressID: '-1', // It is not used for API
+              // addressID: addressesRepository.getAddressID(
+              //   addresses.value,
+              // ),
               orderType: 'request',
               pickUpTime: pickupDateAndTime.value.toString(),
               order: order,
@@ -160,11 +159,12 @@ class OrderEditFormBloc extends FormBloc<String, String> {
         await ordersRepository
             .editOrder(
               userID: authenticationRepository.user.id,
-              addressID: pickupOrDropoff.value == 'Pick up'
-                  ? addressesRepository.getAddressID(
-                      addresses.value,
-                    )
-                  : '1', // Default drop off address ID is 1 for Hunger at Home
+              addressID: '-1', // It is not used for API
+              // addressID: pickupOrDropoff.value == 'Pick up'
+              //     ? addressesRepository.getAddressID(
+              //         addresses.value,
+              //       )
+              //     : '1', // Default drop off address ID is 1 for Hunger at Home
               orderType:
                   pickupOrDropoff.value == 'Pick up' ? 'donation' : 'dropoff',
               pickUpTime: pickupOrDropoff.value == 'Pick up'
@@ -183,9 +183,9 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     );
   }
 
-  String getAddressID() {
-    return addressesRepository.getAddressID(addresses.value);
-  }
+  // String getAddressID() {
+  //   return addressesRepository.getAddressID(addresses.value);
+  // }
 
   void reset() {
     order = null;
@@ -202,9 +202,6 @@ class OrderEditFormBloc extends FormBloc<String, String> {
 
   void removeItem(Item item) {
     order.items.remove(item);
-    emitSuccess(
-      canSubmitAgain: true,
-    );
   }
 
   void reloadItems() {

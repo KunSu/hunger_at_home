@@ -1,6 +1,8 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/admin_order/view/admin_order_action_view.dart';
 import 'package:fe/components/models/screen_arguments.dart';
+import 'package:fe/components/view/buttom_navigation_bar.dart';
+import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +20,9 @@ class AdminOrderPage extends StatelessWidget {
     final screenTitle = args.screenTitle;
     final orderType = args.orderType;
     final status = args.status;
-
+    final identity = RepositoryProvider.of<AuthenticationRepository>(context)
+        .user
+        .userIdentity;
     return Scaffold(
       appBar: AppBar(title: Text(screenTitle)),
       // TODO: init OrdersRepository right here
@@ -35,6 +39,17 @@ class AdminOrderPage extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: identity == 'donor' || identity == 'recipient'
+          ? MyBottomNavigationBar(
+              identity: RepositoryProvider.of<AuthenticationRepository>(context)
+                  .user
+                  .userIdentity,
+            )
+          : MyBottomNavigationBarV2(
+              identity: RepositoryProvider.of<AuthenticationRepository>(context)
+                  .user
+                  .userIdentity,
+            ),
     );
   }
 }
