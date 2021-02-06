@@ -18,7 +18,8 @@ class Body extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: _AdminOrderList(orderType: <String>{'donation,dropoff'}),
+              child: _AdminOrderList(
+                  orderType: <String>{'donation,dropoff,anonymous'}),
             ),
           ),
           const Text('Request orders'),
