@@ -91,12 +91,6 @@ class _OrderInfoViewState extends State<OrderInfoView> {
                         subtitle: Text('${snapshot.data.pickupTime}'),
                       ),
                     ),
-                    Visibility(
-                      visible: snapshot.data.orderType == 'dropoff',
-                      child: const ListTile(
-                        title: Text('Drop off order'),
-                      ),
-                    ),
                     ListTile(
                       title: const Text('Contact Number'),
                       subtitle: FlatButton(
