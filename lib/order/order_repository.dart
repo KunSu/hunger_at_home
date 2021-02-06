@@ -169,7 +169,7 @@ class OrdersRepository {
     jsonData['addressID'] = addressID; // It is not used for API
     jsonData['orderType'] = orderType;
     jsonData['note'] = 'NA';
-    if (orderType != 'dropoff') {
+    if (orderType != 'dropoff' && orderType != 'anonymous') {
       jsonData['pickUpTime'] = pickUpTime;
     }
     jsonData['items'] = order.items.map((e) => e.toJSON()).toList();
@@ -213,29 +213,18 @@ class OrdersRepository {
     var response =
         await post(url, headers: headers, body: json.encode(jsonData));
 
-    // var body = json.decode(response.body);
+    var body = json.decode(response.body);
     if (response.statusCode == 201) {
-      var body = json.decode(response.body);
       var newOrder = Order.fromJson(body);
       // TODO: simplify
       for (var item in body['items'] as List) {
         newOrder.items.add(Item.fromJson(item));
       }
+      if (newOrder.pickupDateAndTime == null) {
+        newOrder = newOrder.copyWith(pickupDateAndTime: 'Not Available');
+      }
       return newOrder;
     } else {
-      // TODO: fakeOrder should be deleted after the BE API has been provided
-      var fakeOrder = Order(
-        id: 'anonymous ${DateTime.now().toLocal().toString()}',
-        type: 'anonymous',
-        items: items,
-        status: 'confirmed',
-        address: '1234 camino del rey',
-        pickupDateAndTime: 'No available',
-        submitedDateAndTime: DateTime.now().toString(),
-      );
-      var newOrder = fakeOrder;
-      return newOrder;
-      var body = json.decode(response.body);
       throw body['message'];
     }
   }

@@ -110,14 +110,6 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     try {
       final items = await ordersRepository.loadOrderItems(orderID: order.id);
       order = order.copyWith(items: items);
-
-      // var companyID = authenticationRepository.user.companyID;
-      // if (authenticationRepository.user.userIdentity == 'recipient') {
-      //   companyID = '1'; // Hunger at Home default id
-      // }
-      // var newAddresses =
-      //     await addressesRepository.loadAddressNames(companyID: companyID);
-      // addresses.updateItems(newAddresses);
     } catch (e) {
       emitFailure(failureResponse: e.toString());
     }
@@ -127,7 +119,7 @@ class OrderEditFormBloc extends FormBloc<String, String> {
     } else if (order.type == 'dropoff') {
       pickupOrDropoff.updateInitialValue('Drop off');
     }
-    if (order.type != 'dropoff') {
+    if (order.type == 'donation' || order.type == 'request') {
       pickupDateAndTime
           .updateInitialValue(DateTime.parse(order.pickupDateAndTime));
     }
@@ -152,6 +144,19 @@ class OrderEditFormBloc extends FormBloc<String, String> {
               // ),
               orderType: 'request',
               pickUpTime: pickupDateAndTime.value.toString(),
+              order: order,
+            )
+            .then((order) => this.order = order);
+      } else if (order.type == 'anonymous') {
+        await ordersRepository
+            .editOrder(
+              userID: authenticationRepository.user.id,
+              addressID: '-1', // It is not used for API
+              // addressID: addressesRepository.getAddressID(
+              //   addresses.value,
+              // ),
+              orderType: 'anonymous',
+              pickUpTime: 'Not Available',
               order: order,
             )
             .then((order) => this.order = order);

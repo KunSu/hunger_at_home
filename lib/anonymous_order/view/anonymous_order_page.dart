@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 class AnonymousOrderPage extends StatelessWidget {
-  static String routeName = '/order_edit';
+  static String routeName = '/anonymous_order';
 
   @override
   Widget build(BuildContext context) {

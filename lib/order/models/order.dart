@@ -11,7 +11,7 @@ class Order extends Equatable {
     this.items,
     this.status,
     this.address,
-    this.pickupDateAndTime,
+    this.pickupDateAndTime = 'Not Available',
     this.submitedDateAndTime,
     // this.deliveryTemperature,
     // this.deliveryDateAndTime,
