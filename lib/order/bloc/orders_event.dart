@@ -61,3 +61,28 @@ class OrderEdited extends OrdersEvent {
   @override
   String toString() => 'OrderEdited { editedOrder: $order }';
 }
+
+class OrderLoadSummary extends OrdersEvent {
+  const OrderLoadSummary(
+      {this.userID,
+      this.startDate,
+      this.endDate,
+      this.type,
+      this.status,
+      this.download,
+      });
+
+  final String userID;
+  final String startDate;
+  final String endDate;
+  final Set<String> type;
+  final Set<String> status;
+  final bool download;
+
+  @override
+  List<Object> get props =>
+      [userID, startDate, endDate, type, status, download];
+
+  // @override
+  // String toString() => 'OrderLoadSummary { order: $userID }';
+}

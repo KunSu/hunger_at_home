@@ -48,4 +48,9 @@ class Item extends Equatable {
         quantityUnit,
         quantityNumber,
       ];
+
+  @override
+  String toString() {
+    return '$name $quantityNumber $quantityUnit';
+  }
 }

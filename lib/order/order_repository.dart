@@ -137,11 +137,11 @@ class OrdersRepository {
     @required String orderID,
   }) async {
     var url = '${FlutterConfig.get('BASE_URL')}/orders/$orderID/items';
-    print(url);
+    // print(url);
     var response = await get(url);
 
     var body = json.decode(response.body) as List;
-    print(body);
+    // print(body);
 
     if (response.statusCode == 200) {
       var items = body.map((e) => Item.fromJson(e)).toList();
@@ -227,5 +227,64 @@ class OrdersRepository {
     } else {
       throw body['message'];
     }
+  }
+
+  Future<List<Order>> loadOrderSummary({
+    @required String userID,
+    @required String startDate,
+    @required String endDate,
+    @required Set<String> type,
+    @required Set<String> status,
+    @required bool download,
+  }) async {
+    var url =
+        '${FlutterConfig.get('BASE_URL')}/user/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=$download}';
+    print(url);
+    var response = await get(url);
+
+    if (response.statusCode != 200) {
+      url =
+          '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=${type.toList().join(',')}&status=${status.toList().join(',')}';
+
+      print(url);
+      response = await get(url);
+
+      var body = json.decode(response.body) as List;
+      print(body);
+
+      if (response.statusCode == 200) {
+        orders = body.map((e) => Order.fromJson(e)).toList();
+        var updatedOrders = <Order>[];
+        for (var order in orders) {
+          await loadOrderItems(orderID: order.id)
+              .then((items) => updatedOrders.add(order.copyWith(items: items)));
+        }
+        orders = updatedOrders;
+        print('download: $download');
+      } else {
+        throw json.decode(response.body)['message'];
+      }
+    } else if (response.statusCode == 200) {
+      var body = json.decode(response.body) as List;
+      print(body);
+
+      orders.clear();
+      // TODO: simplify
+      for (var order in body) {
+        var newOrder = Order.fromJson(order);
+        for (var item in order['items'] as List) {
+          newOrder.items.add(Item.fromJson(item));
+        }
+        if (newOrder.pickupDateAndTime == null) {
+          newOrder = newOrder.copyWith(pickupDateAndTime: 'Not Available');
+        }
+        orders.add(newOrder);
+      }
+      print('download: $download');
+    } else {
+      throw json.decode(response.body)['message'];
+    }
+
+    return orders;
   }
 }

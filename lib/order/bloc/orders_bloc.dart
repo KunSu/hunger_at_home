@@ -33,6 +33,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       yield* _mapOrderDeletedToState(event);
     } else if (event is OrderEdited) {
       yield* _mapOrderEditedToState(event);
+    } else if (event is OrderLoadSummary) {
+      yield* _mapOrderLoadSummaryToState(event);
     }
   }
 
@@ -119,5 +121,21 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       return order.id == event.order.id ? event.order : order;
     }).toList();
     yield OrdersLoadSuccess(updatedOrders);
+  }
+
+  Stream<OrdersState> _mapOrderLoadSummaryToState(
+      OrderLoadSummary event) async* {
+    List<Order> orders;
+    await ordersRepository
+        .loadOrderSummary(
+          userID: event.userID,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          type: event.type,
+          status: event.status,
+          download: event.download,
+        )
+        .then((value) => orders = value);
+    yield OrdersLoadSuccess(orders);
   }
 }

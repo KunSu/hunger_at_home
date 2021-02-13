@@ -6,6 +6,7 @@ import 'package:fe/components/view/buttom_navigation_bar.dart';
 import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
 import 'package:fe/item/view/view.dart';
 import 'package:fe/order/view/order_page.dart';
+import 'package:fe/order_summary/view/view.dart';
 import 'package:fe/pending_registraion/view/pending_registraion_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -138,6 +139,20 @@ class AccountPage extends StatelessWidget {
                   )),
               onTap: () {
                 Navigator.pushNamed(context, ItemPage.routeName);
+              },
+            ),
+          ),
+          Visibility(
+            visible: identity == 'admin',
+            child: ListTile(
+              title: const Text('Order Summary',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                    fontSize: 18,
+                  )),
+              onTap: () {
+                Navigator.pushNamed(context, OrderSummaryPage.routeName);
               },
             ),
           ),

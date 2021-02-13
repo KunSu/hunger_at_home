@@ -23,6 +23,7 @@ import 'order_assign/view/order_assign_page.dart';
 import 'order_delivery/view/order_delivery_page.dart';
 import 'order_edit/view/order_edit_page.dart';
 import 'order_pickup/view/order_pickup_page.dart';
+import 'order_summary/view/order_summary_page.dart';
 
 final Map<String, WidgetBuilder> routes = {
   WelcomePage.routeName: (context) => WelcomePage(),
@@ -48,4 +49,5 @@ final Map<String, WidgetBuilder> routes = {
   PendingRegistrationPage.routeName: (context) => PendingRegistrationPage(),
   ItemEditPage.routeName: (context) => ItemEditPage(),
   AnonymousOrderPage.routeName: (context) => AnonymousOrderPage(),
+  OrderSummaryPage.routeName: (context) => OrderSummaryPage(),
 };
