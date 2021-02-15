@@ -235,37 +235,53 @@ class OrdersRepository {
     @required String endDate,
     @required Set<String> type,
     @required Set<String> status,
-    @required bool download,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=$download}';
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=false';
     print(url);
     var response = await get(url);
 
-    if (download) {
-      var body = json.decode(response.body);
-      print(body);
-    } else {
-      var body = json.decode(response.body) as List;
-      print(body);
-      if (response.statusCode == 200) {
-        orders.clear();
-        // TODO: simplify
-        for (var order in body) {
-          var newOrder = Order.fromJson(order);
-          for (var item in order['items'] as List) {
-            newOrder.items.add(Item.fromJson(item));
-          }
-          if (newOrder.pickupDateAndTime == null) {
-            newOrder = newOrder.copyWith(pickupDateAndTime: 'Not Available');
-          }
-          orders.add(newOrder);
-        }
-      } else {
-        throw json.decode(response.body)['message'];
-      }
-    }
+    var body = json.decode(response.body) as List;
+    print(body);
 
+    if (response.statusCode == 200) {
+      orders.clear();
+      // TODO: simplify
+      for (var order in body) {
+        var newOrder = Order.fromJson(order);
+        for (var item in order['items'] as List) {
+          newOrder.items.add(Item.fromJson(item));
+        }
+        if (newOrder.pickupDateAndTime == null) {
+          newOrder = newOrder.copyWith(pickupDateAndTime: 'Not Available');
+        }
+        orders.add(newOrder);
+      }
+    } else {
+      throw json.decode(response.body)['message'];
+    }
     return orders;
+  }
+
+  Future<String> downloadOrderSummary({
+    @required String userID,
+    @required String startDate,
+    @required String endDate,
+    @required Set<String> type,
+    @required Set<String> status,
+  }) async {
+    var url =
+        '${FlutterConfig.get('BASE_URL')}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=true';
+    print(url);
+    var response = await get(url);
+
+    var body = json.decode(response.body);
+    print(body);
+
+    if (response.statusCode == 200) {
+      return body['path'];
+    } else {
+      throw body['message'];
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class OrderSummaryBloc extends FormBloc<String, String> {
   OrderSummaryBloc({
@@ -78,6 +79,23 @@ class OrderSummaryBloc extends FormBloc<String, String> {
 
   @override
   void onSubmitting() async {
+    // if (download) {
+    //   var url = await ordersRepository.downloadOrderSummary(
+    //     userID: authenticationRepository.user.id,
+    //     startDate: startDate.value.toIso8601String(),
+    //     endDate: endDate.value.toIso8601String(),
+    //     type: <String>{type.value},
+    //     status: <String>{status.value},
+    //   );
+    //   final taskId = await FlutterDownloader.enqueue(
+    //     url: url,
+    //     savedDir: './',
+    //     showNotification:
+    //         true, // show download progress in status bar (for Android)
+    //     openFileFromNotification:
+    //         true, // click on notification to open downloaded file (for Android)
+    //   );
+    // }
     emitSuccess();
   }
 

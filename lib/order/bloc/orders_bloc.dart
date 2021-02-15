@@ -133,7 +133,6 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
           endDate: event.endDate,
           type: event.type,
           status: event.status,
-          download: event.download,
         )
         .then((value) => orders = value);
     yield OrdersLoadInProgress();

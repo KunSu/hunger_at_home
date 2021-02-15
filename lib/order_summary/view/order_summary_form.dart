@@ -24,19 +24,25 @@ class OrderSummaryForm extends StatelessWidget {
             final formBloc = RepositoryProvider.of<OrderSummaryBloc>(context);
             return FormBlocListener<OrderSummaryBloc, String, String>(
               onSuccess: (context, state) {
-                context.read<OrdersBloc>().add(OrderLoadSummary(
-                      userID: RepositoryProvider.of<AuthenticationRepository>(
-                              context)
-                          .user
-                          .id,
-                      startDate: formBloc.startDate.value.toIso8601String(),
-                      endDate: formBloc.endDate.value.toIso8601String(),
-                      type: <String>{'all'},
-                      status: <String>{'all'},
-                      download: formBloc.download,
-                    ));
-                formBloc.setDownload(false);
-                formBloc.emitLoaded();
+                if (!formBloc.download) {
+                  try {
+                    context.read<OrdersBloc>().add(OrderLoadSummary(
+                          userID:
+                              RepositoryProvider.of<AuthenticationRepository>(
+                                      context)
+                                  .user
+                                  .id,
+                          startDate: formBloc.startDate.value.toIso8601String(),
+                          endDate: formBloc.endDate.value.toIso8601String(),
+                          type: <String>{'all'},
+                          status: <String>{'all'},
+                          download: formBloc.download,
+                        ));
+                    formBloc.emitLoaded();
+                  } catch (e) {
+                    formBloc.emitFailure(failureResponse: e.toString());
+                  }
+                }
               },
               onFailure: (context, state) {
                 displayError(
@@ -124,9 +130,17 @@ class OrderSummaryFormView extends StatelessWidget {
               const SizedBox(width: 10),
               RaisedButton(
                 onPressed: () {
-                  formBloc.setDownload(true);
-                  formBloc.submit();
+                  Scaffold.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'This function will be released in the next version.'),
+                    ),
+                  );
                 },
+                // () {
+                //   formBloc.setDownload(true);
+                //   formBloc.submit();
+                // },
                 child: const Text('Download'),
               ),
             ],
