@@ -136,6 +136,7 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
           download: event.download,
         )
         .then((value) => orders = value);
+    yield OrdersLoadInProgress();
     yield OrdersLoadSuccess(orders);
   }
 }

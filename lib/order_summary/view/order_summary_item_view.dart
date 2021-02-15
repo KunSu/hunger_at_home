@@ -15,7 +15,7 @@ class OrderSummaryItemView extends StatelessWidget {
           style: DefaultTextStyle.of(context).style,
           children: <TextSpan>[
             const TextSpan(
-              text: 'type: ',
+              text: 'Type: ',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),

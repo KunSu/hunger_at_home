@@ -22,7 +22,7 @@ class OrderSummaryOrderView extends StatelessWidget {
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
                   const TextSpan(
-                    text: 'Order Type: ',
+                    text: 'Type: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
