@@ -95,7 +95,7 @@ class OrderSummaryFormView extends StatelessWidget {
           DateTimeFieldBlocBuilder(
             dateTimeFieldBloc: formBloc.startDate,
             format: DateFormat('dd-MM-yyyy'),
-            initialDate: DateTime.now().subtract(const Duration(days: 7)),
+            initialDate: DateTime.now(),
             firstDate: DateTime(1900),
             lastDate: DateTime(2100),
             decoration: const InputDecoration(

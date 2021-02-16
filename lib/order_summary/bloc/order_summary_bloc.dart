@@ -27,7 +27,7 @@ class OrderSummaryBloc extends FormBloc<String, String> {
     validators: [
       FieldBlocValidators.required,
     ],
-    initialValue: DateTime.now().subtract(const Duration(days: 7)),
+    initialValue: DateTime.now(),
     name: 'startDate',
     toJson: (value) => value.toUtc().toIso8601String(),
   );
