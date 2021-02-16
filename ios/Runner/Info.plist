@@ -48,19 +48,3 @@
 	<false/>
 </dict>
 </plist>
-
-<!-- Completely disable ATS -->
-<key>NSAppTransportSecurity</key>
-<dict>
-    <key>NSAllowsArbitraryLoads</key><true/>
-</dict>
-
-<!-- changes this number to configure the maximum number of concurrent tasks -->
-<key>FDMaximumConcurrentTasks</key>
-<integer>5</integer>
-
-<!-- Localize notification messages: the plugin will send a notification message to notify user
-in case all files are downloaded while your application is not running in foreground.
-This message is English by default. -->
-<key>FDAllFilesDownloadedMessage</key>
-<string>Your report have been downloaded</string>

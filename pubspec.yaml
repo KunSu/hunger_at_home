@@ -56,6 +56,9 @@ dev_dependencies:
   # Launcher Icons
   flutter_launcher_icons: ^0.8.0
 
+  # Download
+  permission_handler: ^5.1.0+2
+
 flutter_icons:
   android: true
   ios: true

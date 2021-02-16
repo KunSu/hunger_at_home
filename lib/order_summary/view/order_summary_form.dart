@@ -7,9 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
-class OrderSummaryForm extends StatelessWidget {
+class OrderSummaryForm extends StatefulWidget {
   const OrderSummaryForm({Key key}) : super(key: key);
 
+  @override
+  _OrderSummaryFormState createState() => _OrderSummaryFormState();
+}
+
+class _OrderSummaryFormState extends State<OrderSummaryForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,6 +54,7 @@ class OrderSummaryForm extends StatelessWidget {
                   context: context,
                   error: state.failureResponse,
                 );
+                formBloc.emitLoaded();
               },
               child: BlocBuilder<OrderSummaryBloc, FormBlocState>(
                 builder: (context, state) {
@@ -130,17 +136,9 @@ class OrderSummaryFormView extends StatelessWidget {
               const SizedBox(width: 10),
               RaisedButton(
                 onPressed: () {
-                  Scaffold.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                          'This function will be released in the next version.'),
-                    ),
-                  );
+                  formBloc.setDownload(true);
+                  formBloc.submit();
                 },
-                // () {
-                //   formBloc.setDownload(true);
-                //   formBloc.submit();
-                // },
                 child: const Text('Download'),
               ),
             ],
