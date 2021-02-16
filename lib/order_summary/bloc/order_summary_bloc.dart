@@ -3,7 +3,6 @@ import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrderSummaryBloc extends FormBloc<String, String> {
@@ -82,8 +81,8 @@ class OrderSummaryBloc extends FormBloc<String, String> {
   @override
   void onSubmitting() async {
     if (download) {
-      final permissionStatus = await Permission.storage.request();
-      if (permissionStatus.isGranted) {
+      setDownload(false);
+      try {
         var url = await ordersRepository.downloadOrderSummary(
           userID: authenticationRepository.user.id,
           startDate: startDate.value.toIso8601String(),
@@ -91,18 +90,18 @@ class OrderSummaryBloc extends FormBloc<String, String> {
           type: <String>{type.value},
           status: <String>{status.value},
         );
-        url = 'http://${FlutterConfig.get('DOWNLOAD_URL')}/$url';
-
+        url = '${FlutterConfig.get('DOWNLOAD_URL')}/$url';
+        print(url);
         if (await canLaunch(url)) {
           await launch(url);
         } else {
           emitFailure(failureResponse: 'Could not launch $url');
         }
-
-        emitLoaded();
-      } else {
-        emitFailure(failureResponse: 'Permission denied');
+      } catch (e) {
+        emitFailure(failureResponse: e.toString());
+        return;
       }
+      emitLoaded();
     } else {
       emitSuccess();
     }
