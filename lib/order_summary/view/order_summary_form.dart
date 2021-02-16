@@ -43,10 +43,10 @@ class _OrderSummaryFormState extends State<OrderSummaryForm> {
                           status: <String>{'all'},
                           download: formBloc.download,
                         ));
-                    formBloc.emitLoaded();
                   } catch (e) {
                     formBloc.emitFailure(failureResponse: e.toString());
                   }
+                  formBloc.emitLoaded();
                 }
               },
               onFailure: (context, state) {

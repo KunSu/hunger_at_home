@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -81,9 +82,10 @@ class OrderSummaryBloc extends FormBloc<String, String> {
   @override
   void onSubmitting() async {
     if (download) {
+      var url = '';
       setDownload(false);
       try {
-        var url = await ordersRepository.downloadOrderSummary(
+        url = await ordersRepository.downloadOrderSummary(
           userID: authenticationRepository.user.id,
           startDate: startDate.value.toIso8601String(),
           endDate: endDate.value.toIso8601String(),
@@ -98,8 +100,11 @@ class OrderSummaryBloc extends FormBloc<String, String> {
           emitFailure(failureResponse: 'Could not launch $url');
         }
       } catch (e) {
-        emitFailure(failureResponse: e.toString());
-        return;
+        if (e is PlatformException) {
+          // TODO: handle this error
+        } else {
+          emitFailure(failureResponse: e.toString());
+        }
       }
       emitLoaded();
     } else {
