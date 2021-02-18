@@ -2,7 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -92,7 +92,7 @@ class OrderSummaryBloc extends FormBloc<String, String> {
           type: <String>{type.value},
           status: <String>{status.value},
         );
-        url = '${FlutterConfig.get('DOWNLOAD_URL')}/$url';
+        url = '${env['DOWNLOAD_URL']}/$url';
         print(url);
         if (await canLaunch(url)) {
           await launch(url);

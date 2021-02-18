@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -26,7 +26,8 @@ class AuthenticationRepository {
     assert(email != null);
     assert(password != null);
 
-    var url = '${FlutterConfig.get('BASE_URL')}/user/$email/$password';
+    print('${env['BASE_URL']}');
+    var url = '${env['BASE_URL']}/user/$email/$password';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -70,7 +71,7 @@ class AuthenticationRepository {
     print('companyID: $companyID');
     userIdentity = userIdentity.toLowerCase();
 
-    var url = '${FlutterConfig.get('BASE_URL')}/user';
+    var url = '${env['BASE_URL']}/user';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};

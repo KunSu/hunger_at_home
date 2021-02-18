@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:fe/company/models/model.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 
 class CompaniesRepository {
@@ -15,7 +15,7 @@ class CompaniesRepository {
   }
 
   Future<List<String>> loadCompanyNames() async {
-    var url = '${FlutterConfig.get('BASE_URL')}/companies';
+    var url = '${env['BASE_URL']}/companies';
     print(url);
 
     var response = await get(url);
@@ -54,7 +54,7 @@ class CompaniesRepository {
     String state,
     String zipCode,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/company';
+    var url = '${env['BASE_URL']}/company';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};

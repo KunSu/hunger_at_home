@@ -3,7 +3,7 @@ import 'dart:core';
 
 import 'package:fe/order/order.dart';
 import 'package:fe/order_detail/order_detail.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -14,8 +14,7 @@ class OrderDetailRepository {
     @required String userID,
     @required String orderID,
   }) async {
-    var url =
-        '${FlutterConfig.get('BASE_URL')}/users/$userID/orders/$orderID/info';
+    var url = '${env['BASE_URL']}/users/$userID/orders/$orderID/info';
     print(url);
     var response = await get(url);
 
@@ -33,7 +32,7 @@ class OrderDetailRepository {
   Future<List<Item>> loadOrderItems({
     @required String orderID,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/orders/$orderID/items';
+    var url = '${env['BASE_URL']}/orders/$orderID/items';
     print(url);
     var response = await get(url);
 

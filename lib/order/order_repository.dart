@@ -3,7 +3,7 @@ import 'dart:core';
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:fe/order/models/model.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -26,15 +26,15 @@ class OrdersRepository {
     switch (user.userIdentity) {
       case 'donor':
         url =
-            '${FlutterConfig.get('BASE_URL')}/donor/${user.id}/orders?status=all&amount=100';
+            '${env['BASE_URL']}/donor/${user.id}/orders?status=all&amount=100';
         break;
       case 'employee':
         url =
-            '${FlutterConfig.get('BASE_URL')}/employee/${user.id}/orders?status=all&amount=100';
+            '${env['BASE_URL']}/employee/${user.id}/orders?status=all&amount=100';
         break;
       case 'recipient':
         url =
-            '${FlutterConfig.get('BASE_URL')}/recipient/${user.id}/orders?status=all&amount=100';
+            '${env['BASE_URL']}/recipient/${user.id}/orders?status=all&amount=100';
         break;
       default:
         break;
@@ -62,7 +62,7 @@ class OrdersRepository {
     String status,
     List<Item> orderItems,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/order';
+    var url = '${env['BASE_URL']}/order';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -95,8 +95,7 @@ class OrdersRepository {
   }
 
   Future<Order> update({String userID, String orderID, String status}) async {
-    var url =
-        '${FlutterConfig.get('BASE_URL')}/users/$userID/orders/$orderID/status/$status';
+    var url = '${env['BASE_URL']}/users/$userID/orders/$orderID/status/$status';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -118,7 +117,7 @@ class OrdersRepository {
     @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/orders?orderType=${orderType.toList().join(',')}&status=${status.toList().join(',')}';
+        '${env['BASE_URL']}/admin/$userID/orders?orderType=${orderType.toList().join(',')}&status=${status.toList().join(',')}';
 
     print(url);
     var response = await get(url);
@@ -136,7 +135,7 @@ class OrdersRepository {
   Future<List<Item>> loadOrderItems({
     @required String orderID,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/orders/$orderID/items';
+    var url = '${env['BASE_URL']}/orders/$orderID/items';
     // print(url);
     var response = await get(url);
 
@@ -158,7 +157,7 @@ class OrdersRepository {
     @required String pickUpTime,
     @required Order order,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/order';
+    var url = '${env['BASE_URL']}/order';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -197,7 +196,7 @@ class OrdersRepository {
     @required String orderType,
     @required List<Item> items,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/anonymousOrder';
+    var url = '${env['BASE_URL']}/anonymousOrder';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -237,7 +236,7 @@ class OrdersRepository {
     @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=false';
+        '${env['BASE_URL']}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=false';
     print(url);
     var response = await get(url);
 
@@ -271,7 +270,7 @@ class OrdersRepository {
     @required Set<String> status,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=true';
+        '${env['BASE_URL']}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=true';
     print(url);
     var response = await get(url);
 

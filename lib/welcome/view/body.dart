@@ -4,7 +4,6 @@ import 'package:fe/components/view/background.dart';
 import 'package:fe/components/view/rounded_botton.dart';
 import 'package:fe/login/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_config/flutter_config.dart';
 
 class Body extends StatelessWidget {
   @override

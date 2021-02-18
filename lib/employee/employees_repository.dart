@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +14,7 @@ class EmployeesRepository {
   List<User> employees;
 
   Future<List<User>> getAllEmployees() async {
-    var url = '${FlutterConfig.get('BASE_URL')}/employees';
+    var url = '${env['BASE_URL']}/employees';
     print(url);
     var response = await get(url);
 
@@ -47,7 +47,7 @@ class EmployeesRepository {
     @required String employeeID,
   }) async {
     var url =
-        '${FlutterConfig.get('BASE_URL')}/orderAssociate/$userID/$orderID/$employeeID/approved';
+        '${env['BASE_URL']}/orderAssociate/$userID/$orderID/$employeeID/approved';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
@@ -66,7 +66,7 @@ class EmployeesRepository {
     @required String email,
     @required String status,
   }) async {
-    var url = '${FlutterConfig.get('BASE_URL')}/user/$userID/$email/$status';
+    var url = '${env['BASE_URL']}/user/$userID/$email/$status';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
