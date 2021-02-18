@@ -44,5 +44,8 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission
+     android:name="android.permission.INTERNET"
+     android:maxSdkVersion="18" />
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="16" />
 </manifest>
