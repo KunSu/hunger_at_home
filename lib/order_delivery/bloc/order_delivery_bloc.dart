@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:fe/order/order.dart';
 import 'package:fe/order/order_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
@@ -33,13 +34,23 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
     ],
   );
 
-  String orderID;
+  Order order;
 
   @override
   void onSubmitting() async {
-    emitSuccess(
-      canSubmitAgain: true,
-    );
+    try {
+      final newOrder = await ordersRepository.delivered(
+        userID: authenticationRepository.user.id,
+        orderID: order.id,
+        temperature: temperature.value,
+      );
+      order = newOrder;
+      emitSuccess(
+        canSubmitAgain: true,
+      );
+    } catch (e) {
+      emitFailure(failureResponse: e.toString());
+    }
   }
 
   String _checkTemperatureUnit(String string) {

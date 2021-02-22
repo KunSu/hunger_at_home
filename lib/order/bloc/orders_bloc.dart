@@ -35,8 +35,8 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
       yield* _mapOrderEditedToState(event);
     } else if (event is OrderLoadSummary) {
       yield* _mapOrderLoadSummaryToState(event);
-    } else if (event is OrderDelivered) {
-      yield* _mapOrderDeliveriedToState(event);
+    } else if (event is OrderChanged) {
+      yield* _mapOrderChangedToState(event);
     }
   }
 
@@ -141,16 +141,9 @@ class OrdersBloc extends Bloc<OrdersEvent, OrdersState> {
     yield OrdersLoadSuccess(orders);
   }
 
-  Stream<OrdersState> _mapOrderDeliveriedToState(OrderDelivered event) async* {
-    Order newOrder;
+  Stream<OrdersState> _mapOrderChangedToState(OrderChanged event) async* {
+    final newOrder = event.order;
     try {
-      await ordersRepository
-          .delivered(
-            userID: authenticationRepository.user.id,
-            orderID: event.order.id,
-            temperature: event.temperature,
-          )
-          .then((value) => newOrder = event.order);
       final List<Order> updatedOrders =
           (state as OrdersLoadSuccess).orders.map((order) {
         return order.id == event.order.id ? newOrder : order;

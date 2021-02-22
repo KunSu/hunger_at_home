@@ -80,12 +80,10 @@ class _OrderDeliveryCheck extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formBloc = BlocProvider.of<OrderDeliveryBloc>(context);
+    formBloc.order = order;
     return FormBlocListener<OrderDeliveryBloc, String, String>(
       onSuccess: (context, state) {
-        BlocProvider.of<OrdersBloc>(context).add(OrderDelivered(
-          order: order,
-          temperature: formBloc.temperature.value,
-        ));
+        BlocProvider.of<OrdersBloc>(context).add(OrderChanged(formBloc.order));
         Navigator.pushNamed(context, OrderPage.routeName);
       },
       child: Container(

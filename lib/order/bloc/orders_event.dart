@@ -87,12 +87,11 @@ class OrderLoadSummary extends OrdersEvent {
   // String toString() => 'OrderLoadSummary { order: $userID }';
 }
 
-class OrderDelivered extends OrdersEvent {
-  const OrderDelivered({this.order, this.temperature});
+class OrderChanged extends OrdersEvent {
+  const OrderChanged(this.order);
 
   final Order order;
-  final String temperature;
 
   @override
-  List<Object> get props => [order, temperature];
+  List<Object> get props => [order];
 }
