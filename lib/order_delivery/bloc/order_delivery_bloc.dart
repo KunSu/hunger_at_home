@@ -15,6 +15,8 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
         temperature,
       ],
     );
+
+    temperature.addValidators([_checkTemperatureUnit]);
   }
   final OrdersRepository ordersRepository;
   final AuthenticationRepository authenticationRepository;
@@ -25,7 +27,7 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
     ],
   );
 
-  final temperature = BooleanFieldBloc(
+  final temperature = TextFieldBloc(
     validators: [
       FieldBlocValidators.required,
     ],
@@ -38,5 +40,11 @@ class OrderDeliveryBloc extends FormBloc<String, String> {
     emitSuccess(
       canSubmitAgain: true,
     );
+  }
+
+  String _checkTemperatureUnit(String string) {
+    string = string.trim();
+    if (string.endsWith('C') || string.endsWith('F')) return null;
+    return 'Temperature must ends with a C or F';
   }
 }

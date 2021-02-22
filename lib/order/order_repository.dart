@@ -283,4 +283,26 @@ class OrdersRepository {
       throw body['message'];
     }
   }
+
+  Future<Order> delivered({
+    @required String userID,
+    @required String orderID,
+    @required String temperature,
+  }) async {
+    var url =
+        '${env['BASE_URL']}/users/$userID/orders/$orderID/temperature/$temperature';
+    print(url);
+
+    var headers = <String, String>{'Content-type': 'application/json'};
+
+    var response = await patch(url, headers: headers);
+
+    var body = json.decode(response.body);
+    if (response.statusCode == 200) {
+      var newOrder = Order.fromJson(body);
+      return newOrder;
+    } else {
+      throw (body['message']);
+    }
+  }
 }

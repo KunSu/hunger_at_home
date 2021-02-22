@@ -82,9 +82,10 @@ class _OrderDeliveryCheck extends StatelessWidget {
     final formBloc = BlocProvider.of<OrderDeliveryBloc>(context);
     return FormBlocListener<OrderDeliveryBloc, String, String>(
       onSuccess: (context, state) {
-        var newOrder = order.copyWith(status: 'delivered');
-
-        BlocProvider.of<OrdersBloc>(context).add(OrderUpdated(newOrder));
+        BlocProvider.of<OrdersBloc>(context).add(OrderDelivered(
+          order: order,
+          temperature: formBloc.temperature.value,
+        ));
         Navigator.pushNamed(context, OrderPage.routeName);
       },
       child: Container(
@@ -101,11 +102,14 @@ class _OrderDeliveryCheck extends StatelessWidget {
                 prefixIcon: Icon(Icons.access_time),
               ),
             ),
-            CheckboxFieldBlocBuilder(
-              booleanFieldBloc: formBloc.temperature,
-              body: Container(
-                alignment: Alignment.centerLeft,
-                child: const Text('Delivery Temperature Check'),
+            TextFieldBlocBuilder(
+              textFieldBloc: formBloc.temperature,
+              keyboardType: TextInputType.text,
+              decoration: const InputDecoration(
+                labelText: 'Temperature',
+                prefixIcon: Icon(
+                  Icons.ac_unit,
+                ),
               ),
             ),
             RaisedButton(
