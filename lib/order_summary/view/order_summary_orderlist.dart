@@ -33,11 +33,8 @@ class _OrderSummaryOrderListState extends State<OrderSummaryOrderList> {
     context.read<OrdersBloc>().add(OrderLoadSummary(
           userID:
               RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-          startDate: DateTime.now()
-              .subtract(const Duration(days: 7))
-              .toUtc()
-              .toIso8601String(),
-          endDate: DateTime.now().toUtc().toIso8601String(),
+          startDate: DateTime.now().toIso8601String(),
+          endDate: DateTime.now().toIso8601String(),
           type: <String>{'all'},
           status: <String>{'all'},
           download: false,

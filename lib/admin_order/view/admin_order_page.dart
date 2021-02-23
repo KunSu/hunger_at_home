@@ -25,7 +25,6 @@ class AdminOrderPage extends StatelessWidget {
         .userIdentity;
     return Scaffold(
       appBar: AppBar(title: Text(screenTitle)),
-      // TODO: init OrdersRepository right here
       body: Column(
         children: [
           Expanded(
@@ -76,38 +75,17 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
+
     await RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
-        userID:
-            RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-        orderType: <String>{'all'},
-        status: status);
+      userID: RepositoryProvider.of<AuthenticationRepository>(context).user.id,
+      orderType: <String>{'all'},
+      status: status,
+    );
+    context.read<OrdersBloc>().add(OrdersLoaded());
   }
 
   @override
   Widget build(BuildContext context) {
-    // return FutureBuilder<List<Order>>(
-    //   future:
-    //       RepositoryProvider.of<OrdersRepository>(context).loadOrdersByAdmin(
-    //     userID:
-    //         RepositoryProvider.of<AuthenticationRepository>(context).user.id,
-    //     orderType: orderType,
-    //     status: status,
-    //   ),
-    //   builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-    //     if (snapshot.hasData) {
-    //       return ListView.builder(
-    //         itemCount: snapshot.data.length,
-    //         itemBuilder: (context, index) =>
-    //             AdminOrderActionView(order: snapshot.data[index]),
-    //       );
-    //     } else if (snapshot.hasError) {
-    //       return Text(snapshot.error);
-    //     } else {
-    //       return const CircularProgressIndicator();
-    //     }
-    //   },
-    // );
-
     return BlocListener<OrdersBloc, OrdersState>(
       listener: (context, state) {
         if (state is OrdersLoadFailure) {
@@ -139,31 +117,6 @@ class _AdminOrderActionListState extends State<AdminOrderActionList> {
             );
           }
           if (state is OrdersLoadFailure) {
-            // return FutureBuilder<List<Order>>(
-            //   future: RepositoryProvider.of<OrdersRepository>(context)
-            //       .loadOrdersByAdmin(
-            //     userID: RepositoryProvider.of<AuthenticationRepository>(context)
-            //         .user
-            //         .id,
-            //     orderType: widget.orderType,
-            //     status: widget.status,
-            //   ),
-            //   builder: (context, AsyncSnapshot<List<Order>> snapshot) {
-            //     if (snapshot.hasData) {
-            //       return ListView.builder(
-            //         itemCount: snapshot.data.length,
-            //         itemBuilder: (context, index) =>
-            //             AdminOrderActionView(order: snapshot.data[index]),
-            //       );
-            //     } else if (snapshot.hasError) {
-            //       return Text(snapshot.error.toString());
-            //     } else {
-            //       return const CircularProgressIndicator();
-            //     }
-            //   },
-            // );
-            // return const Text('OrdersLoadFailure');
-            // TODO: better handle error
             return Text(state.error.toString());
           }
           return const Text('Something went wrong');
