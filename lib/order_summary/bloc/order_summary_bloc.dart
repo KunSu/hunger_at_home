@@ -45,7 +45,7 @@ class OrderSummaryBloc extends FormBloc<String, String> {
 
   final category = SelectFieldBloc(
     items: [
-      'Fruits',
+      'Fruit',
       'Veggies',
       'Meat',
       'Seafood',

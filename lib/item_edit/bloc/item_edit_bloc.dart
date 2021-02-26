@@ -31,7 +31,7 @@ class ItemEditBloc extends FormBloc<String, String> {
       FieldBlocValidators.required,
     ],
     items: [
-      'fruits',
+      'fruit',
       'veggies',
       'meat',
       'seafood',
