@@ -42,6 +42,7 @@ class _OrderSummaryFormState extends State<OrderSummaryForm> {
                           type: <String>{'all'},
                           status: <String>{'all'},
                           download: formBloc.download,
+                          category: formBloc.category.value,
                         ));
                   } catch (e) {
                     formBloc.emitFailure(failureResponse: e.toString());
@@ -113,6 +114,13 @@ class OrderSummaryFormView extends StatelessWidget {
               labelText: 'End date',
               prefixIcon: Icon(Icons.date_range),
             ),
+          ),
+          DropdownFieldBlocBuilder(
+            selectFieldBloc: formBloc.category,
+            itemBuilder: (context, value) => value,
+            decoration: const InputDecoration(
+                labelText: 'Filter by category (Optional)',
+                prefixIcon: Icon(Icons.edit)),
           ),
           // DropdownFieldBlocBuilder(
           //   selectFieldBloc: formBloc.type,

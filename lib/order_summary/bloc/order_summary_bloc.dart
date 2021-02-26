@@ -15,6 +15,7 @@ class OrderSummaryBloc extends FormBloc<String, String> {
       fieldBlocs: [
         startDate,
         endDate,
+        category,
         type,
         status,
       ],
@@ -40,6 +41,17 @@ class OrderSummaryBloc extends FormBloc<String, String> {
     initialValue: DateTime.now(),
     name: 'endDate',
     toJson: (value) => value.toUtc().toIso8601String(),
+  );
+
+  final category = SelectFieldBloc(
+    items: [
+      'Fruits',
+      'Veggies',
+      'Meat',
+      'Seafood',
+      'Dry',
+      'Others',
+    ],
   );
 
   final type = SelectFieldBloc(
@@ -91,6 +103,7 @@ class OrderSummaryBloc extends FormBloc<String, String> {
           endDate: endDate.value.toIso8601String(),
           type: <String>{type.value},
           status: <String>{status.value},
+          category: category.value,
         );
         url = '${env['DOWNLOAD_URL']}/$url';
         print(url);

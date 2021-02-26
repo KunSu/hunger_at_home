@@ -234,9 +234,13 @@ class OrdersRepository {
     @required String endDate,
     @required Set<String> type,
     @required Set<String> status,
+    String category,
   }) async {
     var url =
         '${env['BASE_URL']}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=false';
+    if (category != null) {
+      url += '&category=$category';
+    }
     print(url);
     var response = await get(url);
 
@@ -268,9 +272,13 @@ class OrdersRepository {
     @required String endDate,
     @required Set<String> type,
     @required Set<String> status,
+    String category,
   }) async {
     var url =
         '${env['BASE_URL']}/admin/$userID/report?startDate=$startDate&endDate=$endDate&orderType=${type.toList().join(',')}&status=${status.toList().join(',')}&download=true';
+    if (category != null) {
+      url += '&category=$category';
+    }
     print(url);
     var response = await get(url);
 

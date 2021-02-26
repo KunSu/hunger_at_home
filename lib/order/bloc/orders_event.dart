@@ -70,6 +70,7 @@ class OrderLoadSummary extends OrdersEvent {
     this.type,
     this.status,
     this.download,
+    this.category,
   });
 
   final String userID;
@@ -78,10 +79,11 @@ class OrderLoadSummary extends OrdersEvent {
   final Set<String> type;
   final Set<String> status;
   final bool download;
+  final String category;
 
   @override
   List<Object> get props =>
-      [userID, startDate, endDate, type, status, download];
+      [userID, startDate, endDate, type, status, download, category];
 
   // @override
   // String toString() => 'OrderLoadSummary { order: $userID }';
