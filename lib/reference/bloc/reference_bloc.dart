@@ -19,9 +19,6 @@ class ReferenceBloc extends FormBloc<String, String> {
   final ReferencesRepository referencesRepository;
 
   final references = MultiSelectFieldBloc<String, dynamic>(
-    validators: [
-      FieldBlocValidators.required,
-    ],
     items: [
       'fruit',
       'veggies',
@@ -56,7 +53,7 @@ class ReferenceBloc extends FormBloc<String, String> {
       await referencesRepository
           .updateReference(
             userID: authenticationRepository.user.id,
-            references: references.value,
+            newReferences: references.value,
           )
           .then(references.updateInitialValue);
       emitSuccess(

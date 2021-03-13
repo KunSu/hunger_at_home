@@ -31,9 +31,9 @@ class ReferencesRepository {
   }
 
   Future<List<String>> updateReference(
-      {@required String userID, @required List<String> references}) async {
+      {@required String userID, @required List<String> newReferences}) async {
     var url =
-        '${env['BASE_URL']}/users/$userID/reference?category=${references.join(',')}';
+        '${env['BASE_URL']}/users/$userID/reference?category=${newReferences.join(',')}';
     print(url);
 
     var headers = <String, String>{'Content-type': 'application/json'};
