@@ -8,6 +8,7 @@ import 'package:fe/item/view/view.dart';
 import 'package:fe/order/view/order_page.dart';
 import 'package:fe/order_summary/view/view.dart';
 import 'package:fe/pending_registraion/view/pending_registraion_page.dart';
+import 'package:fe/reference/reference.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -153,6 +154,20 @@ class AccountPage extends StatelessWidget {
                   )),
               onTap: () {
                 Navigator.pushNamed(context, OrderSummaryPage.routeName);
+              },
+            ),
+          ),
+          Visibility(
+            visible: identity == 'recipient',
+            child: ListTile(
+              title: const Text('Reference',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                    fontSize: 18,
+                  )),
+              onTap: () {
+                Navigator.pushNamed(context, ReferencePage.routeName);
               },
             ),
           ),
