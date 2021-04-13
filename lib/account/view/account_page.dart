@@ -9,6 +9,7 @@ import 'package:fe/order/view/order_page.dart';
 import 'package:fe/order_summary/view/view.dart';
 import 'package:fe/pending_registraion/view/pending_registraion_page.dart';
 import 'package:fe/reference/reference.dart';
+import 'package:fe/reset_password/reset_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -42,6 +43,22 @@ class AccountPage extends StatelessWidget {
                 );
               },
             ),
+          ),
+          ListTile(
+            title: const Text(
+              'Reset Password',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+                fontSize: 18,
+              ),
+            ),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                ResetPasswordPage.routeName,
+              );
+            },
           ),
           Visibility(
             visible: identity == 'admin',

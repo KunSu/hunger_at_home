@@ -14,6 +14,7 @@ import 'package:fe/pending_registraion/view/pending_registraion_page.dart';
 import 'package:fe/recipient/view/recipient_page.dart';
 import 'package:fe/reference/reference.dart';
 import 'package:fe/register/view/register_page.dart';
+import 'package:fe/reset_password/reset_password.dart';
 import 'package:fe/welcome/view/welcome_page.dart';
 import 'package:flutter/material.dart';
 
@@ -52,4 +53,5 @@ final Map<String, WidgetBuilder> routes = {
   AnonymousOrderPage.routeName: (context) => AnonymousOrderPage(),
   OrderSummaryPage.routeName: (context) => OrderSummaryPage(),
   ReferencePage.routeName: (context) => ReferencePage(),
+  ResetPasswordPage.routeName: (context) => ResetPasswordPage(),
 };
