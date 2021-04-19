@@ -1,4 +1,5 @@
 import 'package:fe/login/bloc/loginfrom_bloc.dart';
+import 'package:fe/reset_password/reset_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,6 +48,12 @@ class LoginForm extends StatelessWidget {
               RaisedButton(
                 onPressed: formBloc.submit,
                 child: const Text('Login'),
+              ),
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed(ResetPasswordPage.routeName);
+                },
+                child: const Text('Reset Password'),
               ),
             ],
           ),
