@@ -18,18 +18,16 @@ class EmployeesBloc extends Bloc<EmployeesEvent, EmployeesState> {
     EmployeesEvent event,
   ) async* {
     if (event is EmployeesLoaded) {
-      yield* _mapEmployeesLoadedToState();
+      yield* _mapPendingsLoadedToState();
     } else if (event is EmployeesUpdated) {
       yield* _mapEmployeesUpdatedToState(event);
     }
   }
 
-  Stream<EmployeesState> _mapEmployeesLoadedToState() async* {
+  Stream<EmployeesState> _mapPendingsLoadedToState() async* {
     List<User> users;
     try {
-      await employeesRepository
-          .getAllEmployees()
-          .then((value) => users = value);
+      await employeesRepository.getAllPendings().then((value) => users = value);
       yield EmployeesSuccess(
         users,
       );

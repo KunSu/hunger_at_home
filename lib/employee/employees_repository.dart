@@ -32,6 +32,25 @@ class EmployeesRepository {
     }
   }
 
+  Future<List<User>> getAllPendings() async {
+    var url = '${env['BASE_URL']}/pendings';
+    print(url);
+    var response = await get(url);
+
+    var body = json.decode(response.body) as List;
+    print(body);
+
+    if (response.statusCode == 200) {
+      employees.clear();
+      for (var user in body) {
+        employees.add(User.fromJson(user));
+      }
+      return employees;
+    } else {
+      return [];
+    }
+  }
+
   String getEmployeeID({String email}) {
     for (var i = 0; i < employees.length; i++) {
       if (employees[i].email == email) {
