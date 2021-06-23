@@ -149,7 +149,7 @@ class AccountPage extends StatelessWidget {
           Visibility(
             visible: identity == 'admin',
             child: ListTile(
-              title: const Text('Create anonymous order',
+              title: const Text('Enter inventory item',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
