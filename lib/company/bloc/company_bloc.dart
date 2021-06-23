@@ -70,16 +70,8 @@ class CompanyBloc extends FormBloc<String, String> {
     ],
   );
 
-  final fedID = TextFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-  );
-  final einID = TextFieldBloc(
-    validators: [
-      FieldBlocValidators.required,
-    ],
-  );
+  final fedID = TextFieldBloc();
+  final einID = TextFieldBloc();
 
   final address = TextFieldBloc(
     validators: [
