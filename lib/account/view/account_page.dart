@@ -63,7 +63,7 @@ class AccountPage extends StatelessWidget {
           Visibility(
             visible: identity == 'admin',
             child: ListTile(
-              title: const Text('Donation orders',
+              title: const Text('Donation offers',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.blue,
@@ -74,7 +74,7 @@ class AccountPage extends StatelessWidget {
                   context,
                   AdminOrderPage.routeName,
                   arguments: ScreenArguments(
-                    screenTitle: 'Donation orders',
+                    screenTitle: 'Donation offers',
                     orderType: <String>{'donation', 'dropoff', 'anonymous'},
                     status: <String>{'all'},
                   ),
