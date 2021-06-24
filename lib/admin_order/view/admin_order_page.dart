@@ -3,6 +3,7 @@ import 'package:fe/admin_order/view/admin_order_action_view.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
 import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
+import 'package:fe/item/item.dart';
 import 'package:fe/order/order.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +28,15 @@ class AdminOrderPage extends StatelessWidget {
       appBar: AppBar(title: Text(screenTitle)),
       body: Column(
         children: [
+          Visibility(
+            visible: screenTitle == 'Donation offers',
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, ItemPage.routeName);
+              },
+              child: const Text('Add new offer'),
+            ),
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
