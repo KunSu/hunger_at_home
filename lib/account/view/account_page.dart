@@ -4,6 +4,7 @@ import 'package:fe/authentication/authentication.dart';
 import 'package:fe/components/models/screen_arguments.dart';
 import 'package:fe/components/view/buttom_navigation_bar.dart';
 import 'package:fe/components/view/buttom_navigation_bar_v2.dart';
+import 'package:fe/components/view/contact_us.dart';
 import 'package:fe/item/view/view.dart';
 import 'package:fe/order/view/order_page.dart';
 import 'package:fe/order_summary/view/view.dart';
@@ -185,6 +186,22 @@ class AccountPage extends StatelessWidget {
                   )),
               onTap: () {
                 Navigator.pushNamed(context, ReferencePage.routeName);
+              },
+            ),
+          ),
+          Visibility(
+            visible: identity != 'admin',
+            child: ListTile(
+              title: const Text(
+                'Contact Us',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                  fontSize: 18,
+                ),
+              ),
+              onTap: () {
+                contactUs(context: context);
               },
             ),
           ),

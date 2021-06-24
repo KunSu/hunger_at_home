@@ -29,3 +29,6 @@ const hahBorderBlue = Color(0xFF0a64c8);
 const hahBlue = Color(0xFF37b4eb);
 const hahSkyBlue = Color(0xFFc3ebff);
 const hahRed = Color(0xFFd72328);
+
+const hungerAtHomePhoneNumber = 4083180038;
+const hungerAtHomeAddress = '1560 Berger Dr, San Jose, CA 95112';
