@@ -15,6 +15,7 @@ class AnonymousOrderBloc extends FormBloc<String, String> {
   }) : super(isLoading: true) {
     addFieldBlocs(
       fieldBlocs: [
+        name,
         addresses,
       ],
     );
@@ -30,12 +31,13 @@ class AnonymousOrderBloc extends FormBloc<String, String> {
     ],
   );
 
+  final name = TextFieldBloc();
   Order order = Order();
 
   @override
   Future<void> onLoading() async {
     super.onLoading();
-
+    name.updateInitialValue(order.name);
     try {
       final companyID = '1'; // Hunger at Home default id
       var newAddresses =
@@ -60,6 +62,7 @@ class AnonymousOrderBloc extends FormBloc<String, String> {
     try {
       await ordersRepository
           .anonymousOrder(
+            name: name.value,
             userID: authenticationRepository.user.id,
             addressID: addressesRepository.getAddressID(
               addresses.value,

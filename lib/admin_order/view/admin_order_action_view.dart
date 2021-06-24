@@ -25,6 +25,16 @@ class _AdminOrderActionViewState extends State<AdminOrderActionView> {
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
                   const TextSpan(
+                    text: 'Order Name: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        '${widget.order.name != null ? widget.order.name : "N/A"}\n',
+                  ),
+                  const TextSpan(
                     text: 'Order Type: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

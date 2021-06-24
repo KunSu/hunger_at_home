@@ -151,6 +151,7 @@ class OrdersRepository {
   }
 
   Future<Order> editOrder({
+    String name,
     @required String userID,
     @required String addressID, // It is not used for API
     @required String orderType,
@@ -163,6 +164,9 @@ class OrdersRepository {
     var headers = <String, String>{'Content-type': 'application/json'};
 
     final Map<String, dynamic> jsonData = Map<String, dynamic>();
+    if (name != null) {
+      jsonData['name'] = name;
+    }
     jsonData['userID'] = userID;
     jsonData['orderID'] = order.id;
     jsonData['addressID'] = addressID; // It is not used for API
@@ -191,6 +195,7 @@ class OrdersRepository {
   }
 
   Future<Order> anonymousOrder({
+    String name,
     @required String userID,
     @required String addressID,
     @required String orderType,
@@ -202,6 +207,9 @@ class OrdersRepository {
     var headers = <String, String>{'Content-type': 'application/json'};
 
     final jsonData = <String, dynamic>{};
+    if (name != null) {
+      jsonData['name'] = name;
+    }
     jsonData['userID'] = userID;
     jsonData['addressID'] = addressID;
     jsonData['orderType'] = orderType;

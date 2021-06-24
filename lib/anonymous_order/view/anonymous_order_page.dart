@@ -41,7 +41,7 @@ class AnonymousOrderPage extends StatelessWidget {
                   AdminOrderPage.routeName,
                   (route) => false,
                   arguments: ScreenArguments(
-                    screenTitle: 'Donation orders',
+                    screenTitle: 'Donation offers',
                     orderType: <String>{'donation', 'dropoff', 'anonymous'},
                     status: <String>{'all'},
                   ),
@@ -88,6 +88,14 @@ class EditOrderView extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
+          TextFieldBlocBuilder(
+            textFieldBloc: formBloc.name,
+            keyboardType: TextInputType.text,
+            decoration: const InputDecoration(
+              labelText: 'Order Name',
+              prefixIcon: Icon(Icons.edit),
+            ),
+          ),
           DropdownFieldBlocBuilder(
             selectFieldBloc: formBloc.addresses,
             itemBuilder: (context, value) => value,

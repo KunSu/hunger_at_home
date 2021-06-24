@@ -14,7 +14,7 @@ class Body extends StatelessWidget {
         children: [
           const SizedBox(height: 20),
           const UserInfo(),
-          const Text('Donation orders'),
+          const Text('Donation offers'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8),
